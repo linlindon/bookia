@@ -1,4 +1,3 @@
-import { async } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -11,9 +10,6 @@ import {
   collection,
   addDoc,
 } from "firebase/firestore";
-import Card from "./components/Card";
-import SearchBookTitle from "./pages/searchBook";
-import Tags from "./pages/tags";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBM3IamCWyJi_8vyVPP34KUixJJKXlAwQ8",
@@ -26,15 +22,3 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-function App() {
-  return (
-    <>
-      {/* <SearchBookTitle />
-      <Card /> */}
-      <Tags />
-    </>
-  );
-}
-
-export default App;

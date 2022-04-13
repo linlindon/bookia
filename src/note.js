@@ -7,7 +7,13 @@ const db = getFirestore(app);
 // collection ref
 const colRef = collection(db, "users");
 
-// get collection data
+// get single data。注意getDoc沒有s
+const MoaRef = doc(db, "users", "E5EiDYKVIUd0wuHie6N5");
+getDoc(MoaRef).then((item) => {
+  console.log(item.data());
+});
+
+// get collection data (路徑會是 collection(...))
 // getDocs是promise，所以後面一定要.then or async func才能接到資料
 getDocs(colRef)
   .then((snapshot) => {
@@ -39,6 +45,12 @@ async function test(qDoc) {
 }
 test(q);
 
+// 新增資料夾的同時，也定義它的ref，晚點可以使用。
+// Add a new document with a generated id
+const newCityRef = doc(collection(db, "cities"));
+// later...
+await setDoc(newCityRef, data);
+
 // 修改或新增(如果要修改，但裡面不變動的東西也要再複製上去)
 const citiesRef = collection(db, "cities");
 async function test() {
@@ -59,3 +71,10 @@ try {
 } catch (err) {
   console.log("fetch failed", err);
 }
+
+// 更新某項資料
+// Set the "capital" field of the city 'DC'
+const washingtonRef = doc(db, "cities", "DC");
+await updateDoc(washingtonRef, {
+  capital: true,
+});
