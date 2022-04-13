@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 import { initializeApp } from "firebase/app";
 import {
@@ -9,7 +10,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import React from "react";
+import { tagsRef, tagGroupsRef } from "../utils/firebasetools";
 
 const TagBoxContainer = styled.div`
   display: flex;
@@ -61,30 +62,13 @@ const AddBoxSign = styled.div`
 `;
 
 function TagBox() {
-  const firebaseConfig = {
-    apiKey: "AIzaSyBM3IamCWyJi_8vyVPP34KUixJJKXlAwQ8",
-    authDomain: "bookia-280d8.firebaseapp.com",
-    projectId: "bookia-280d8",
-    storageBucket: "bookia-280d8.appspot.com",
-    messagingSenderId: "330107513484",
-    appId: "1:330107513484:web:b81b9e8f3748a595dd69a9",
-  };
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const tagGroupRef = collection(
-    db,
-    "users",
-    "E5EiDYKVIUd0wuHie6N5",
-    "tagGroups"
-  );
-  const tagsRef = collection(db, "users", "E5EiDYKVIUd0wuHie6N5", "tags");
   const [boxDatas, setboxDatas] = React.useState([]);
   let tagBoxData = [];
 
   React.useEffect(() => {
     async function getTagGroupData() {
       try {
-        const tagGroupsDocs = await getDocs(tagGroupRef);
+        const tagGroupsDocs = await getDocs(tagGroupsRef);
         const tagGroupIds = [];
         const tagsInfo = [];
         tagGroupsDocs.forEach((doc) => {
@@ -96,14 +80,13 @@ function TagBox() {
           tagGroupIds.push(doc.data().id);
         });
 
-        const result = await Promise.all(
+        await Promise.all(
           tagGroupIds.map(async (id) => {
             const tagQuery = query(tagsRef, where("tagGroupID", "==", id));
             const tagDocs = await getDocs(tagQuery);
             tagDocs.forEach((item) => {
               tagsInfo.push(item.data());
             });
-            return tagDocs;
           })
         );
         tagsInfo.forEach((tagItem) => {
@@ -124,25 +107,21 @@ function TagBox() {
 
   return (
     <>
-      {boxDatas &&
-        boxDatas.map((item) => (
-          <>
-            <TagBoxContainer>
-              <BoxName>{item.title}</BoxName>
-              <TagsContainer>
-                {item.tags.map((i) => (
-                  <Tag>
-                    {i}
-                    <DeleteSign>x</DeleteSign>
-                  </Tag>
-                ))}
-              </TagsContainer>
-
-              <AddSign>新增</AddSign>
-            </TagBoxContainer>
-            {/* <AddBoxSign>+</AddBoxSign> */}
-          </>
-        ))}
+      {boxDatas.map((item) => (
+        <TagBoxContainer>
+          <BoxName>{item.title}</BoxName>
+          <TagsContainer>
+            {item.tags.map((i) => (
+              <Tag>
+                {i}
+                <DeleteSign>x</DeleteSign>
+              </Tag>
+            ))}
+          </TagsContainer>
+          <AddSign>新增</AddSign>
+        </TagBoxContainer>
+      ))}
+      <AddBoxSign>+</AddBoxSign>
     </>
   );
 }

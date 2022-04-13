@@ -22,3 +22,12 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const tagGroupsRef = collection(
+  db,
+  "users",
+  "E5EiDYKVIUd0wuHie6N5",
+  "tagGroups"
+);
+const tagsRef = collection(db, "users", "E5EiDYKVIUd0wuHie6N5", "tags");
+
+export { tagsRef, tagGroupsRef };
