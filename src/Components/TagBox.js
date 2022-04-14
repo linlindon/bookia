@@ -53,63 +53,58 @@ const AddSign = styled.div`
   line-height: 2.5;
 `;
 
-function TagBox() {
-  const [boxDatas, setboxDatas] = React.useState([]);
+const Wrapper = styled.div`
+  position: relative;
+`;
+const InputBox = styled.div`
+  position: absolute;
+  top: -150px;
+  width: 50%;
+  height: 200px;
+  border: solid black 1px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  z-index: 9;
+`;
 
-  React.useEffect(() => {
-    let tagBoxData = [];
-    async function getTagGroupData() {
-      try {
-        const tagGroupsDocs = await getDocs(tagGroupsRef);
-        const tagGroupIds = [];
-        const tagsInfo = [];
-        tagGroupsDocs.forEach((doc) => {
-          tagBoxData.push({
-            title: doc.data().title,
-            id: doc.data().id,
-            tags: [],
-          });
-          tagGroupIds.push(doc.data().id);
-        });
+function TagBox(props) {
+  const [showInputBox, setShowInputBox] = React.useState(false);
+  const [inputTagName, setInputTagName] = React.useState("");
+  console.log(props.data);
+  function showTagHandler() {
+    setShowInputBox(true);
+  }
 
-        await Promise.all(
-          tagGroupIds.map(async (id) => {
-            const tagQuery = query(tagsRef, where("tagGroupID", "==", id));
-            const tagDocs = await getDocs(tagQuery);
-            tagDocs.forEach((item) => {
-              tagsInfo.push(item.data());
-            });
-          })
-        );
-        tagsInfo.forEach((tagItem) => {
-          tagBoxData.forEach((boxItem, index) => {
-            if (tagItem.tagGroupID === boxItem.id) {
-              tagBoxData[index].tags.push(tagItem.name);
-            }
-          });
-        });
-
-        setboxDatas(tagBoxData);
-      } catch (err) {
-        console.log("fetch failed", err);
-      }
-    }
-    getTagGroupData();
-  }, []);
-
+  function inputBoxTagHandler(e) {
+    setInputTagName(e);
+  }
+  function addTagHandler() {}
   return (
     <>
-      {boxDatas.map((box) => (
+      {props.data.map((box) => (
         <TagBoxContainer>
           <BoxName>{box.title}</BoxName>
           <TagsContainer>
-            {box.tags.map((tag, index) => (
-              <Tag key={index}>{tag}</Tag>
-            ))}
+            {box.tags &&
+              box.tags.map((tag, index) => <Tag key={index}>{tag}</Tag>)}
           </TagsContainer>
-          <AddSign>新增</AddSign>
+          <AddSign onClick={showTagHandler}>新增</AddSign>
         </TagBoxContainer>
       ))}
+      {showInputBox ? (
+        <Wrapper>
+          <InputBox>
+            <h3>請輸入要新增的書籤</h3>
+            <input
+              onChange={(e) => inputBoxTagHandler(e.target.value)}
+              type="text"
+            />
+            <button onClick={addTagHandler}>新增書籤</button>
+          </InputBox>
+        </Wrapper>
+      ) : (
+        ""
+      )}
     </>
   );
 }

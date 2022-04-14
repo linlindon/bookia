@@ -1,8 +1,17 @@
 import styled from "styled-components";
 import React from "react";
 import TagBox from "../components/TagBox";
-import { tagGroupsRef } from "../utils/fireBaseConfig";
-import { setDoc, doc, onSnapshot } from "firebase/firestore";
+import { tagsRef, tagGroupsRef } from "../utils/fireBaseConfig";
+import {
+  setDoc,
+  getFirestore,
+  getDocs,
+  collection,
+  doc,
+  getDoc,
+  query,
+  where,
+} from "firebase/firestore";
 
 const Container = styled.div`
   display: flex;
@@ -33,9 +42,57 @@ const InputBox = styled.div`
   z-index: 9;
 `;
 
+const CloseButton = styled.span`
+  display: block;
+  margin-left: 60%;
+  font-size: 16px;
+`;
+
 function Tags() {
+  const [boxDatas, setboxDatas] = React.useState([]);
   const [showInputBox, setShowInputBox] = React.useState(false);
   const [inputBoxTitle, setInputBoxTitle] = React.useState("");
+
+  React.useEffect(() => {
+    let tagBoxData = [];
+    async function getTagGroupData() {
+      try {
+        const tagGroupsDocs = await getDocs(tagGroupsRef);
+        const tagGroupIds = [];
+        const tagsInfo = [];
+        tagGroupsDocs.forEach((doc) => {
+          tagBoxData.push({
+            title: doc.data().title,
+            id: doc.data().id,
+            tags: [],
+          });
+          tagGroupIds.push(doc.data().id);
+        });
+
+        await Promise.all(
+          tagGroupIds.map(async (id) => {
+            const tagQuery = query(tagsRef, where("tagGroupID", "==", id));
+            const tagDocs = await getDocs(tagQuery);
+            tagDocs.forEach((item) => {
+              tagsInfo.push(item.data());
+            });
+          })
+        );
+        tagsInfo.forEach((tagItem) => {
+          tagBoxData.forEach((boxItem, index) => {
+            if (tagItem.tagGroupID === boxItem.id) {
+              tagBoxData[index].tags.push(tagItem.name);
+            }
+          });
+        });
+
+        setboxDatas(tagBoxData);
+      } catch (err) {
+        console.log("fetch failed", err);
+      }
+    }
+    getTagGroupData();
+  }, []);
 
   function showBoxHandler() {
     setShowInputBox(true);
@@ -54,22 +111,25 @@ function Tags() {
         id: setTagGroupsRef.id,
       });
       setShowInputBox(false);
-      onSnapshot(tagGroupsRef, { includeMetadataChanges: true }, () => {});
+      setboxDatas([...boxDatas, { title: inputBoxTitle, tags: [] }]);
     }
-    console.log(inputBoxTitle);
+  }
+  function closeInputBoxHandler() {
+    setShowInputBox(false);
   }
 
   return (
     <>
       <Container>
         <h1>書籤櫃</h1>
-        <TagBox />
+        <TagBox data={boxDatas} />
       </Container>
       <AddBoxSign onClick={showBoxHandler}>+</AddBoxSign>
       {showInputBox ? (
         <Wrapper>
           <InputBox>
             <h3>請輸入要新增的書籤櫃名稱</h3>
+            <CloseButton onClick={closeInputBoxHandler}>x</CloseButton>
             <input
               onChange={(e) => inputBoxTitleHandler(e.target.value)}
               type="text"
