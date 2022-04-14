@@ -10,7 +10,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { tagsRef, tagGroupsRef } from "../utils/firebasetools";
+import { tagsRef, tagGroupsRef } from "../utils/fireBaseConfig";
 
 const TagBoxContainer = styled.div`
   display: flex;
@@ -44,7 +44,7 @@ const Tag = styled.p`
   border: 1px solid #ffb226;
   border-radius: 5px;
 `;
-const DeleteSign = styled.span``;
+// const DeleteSign = styled.span``;
 const AddSign = styled.div`
   width: 30px;
   height: 30px;
@@ -52,20 +52,12 @@ const AddSign = styled.div`
   border: solid 1px black;
   line-height: 2.5;
 `;
-const AddBoxSign = styled.div`
-  width: 50px;
-  height: 50px;
-  font-size: 26px;
-  border-radius: 25px;
-  border: solid 1px black;
-  line-height: 2;
-`;
 
 function TagBox() {
   const [boxDatas, setboxDatas] = React.useState([]);
-  let tagBoxData = [];
 
   React.useEffect(() => {
+    let tagBoxData = [];
     async function getTagGroupData() {
       try {
         const tagGroupsDocs = await getDocs(tagGroupsRef);
@@ -107,21 +99,17 @@ function TagBox() {
 
   return (
     <>
-      {boxDatas.map((item) => (
+      {boxDatas.map((box) => (
         <TagBoxContainer>
-          <BoxName>{item.title}</BoxName>
+          <BoxName>{box.title}</BoxName>
           <TagsContainer>
-            {item.tags.map((i) => (
-              <Tag>
-                {i}
-                <DeleteSign>x</DeleteSign>
-              </Tag>
+            {box.tags.map((tag, index) => (
+              <Tag key={index}>{tag}</Tag>
             ))}
           </TagsContainer>
           <AddSign>新增</AddSign>
         </TagBoxContainer>
       ))}
-      <AddBoxSign>+</AddBoxSign>
     </>
   );
 }
