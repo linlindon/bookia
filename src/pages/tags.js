@@ -87,6 +87,7 @@ function Tags() {
         });
 
         setboxDatas(tagBoxData);
+        console.log(tagBoxData);
       } catch (err) {
         console.log("fetch failed", err);
       }
@@ -122,7 +123,7 @@ function Tags() {
     <>
       <Container>
         <h1>書籤櫃</h1>
-        <TagBox data={boxDatas} />
+        <TagBox data={boxDatas} setboxDatas={setboxDatas} />
       </Container>
       <AddBoxSign onClick={showBoxHandler}>+</AddBoxSign>
       {showInputBox ? (

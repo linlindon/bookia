@@ -19,15 +19,11 @@ const firebaseConfig = {
   messagingSenderId: "330107513484",
   appId: "1:330107513484:web:b81b9e8f3748a595dd69a9",
 };
+const userID = "E5EiDYKVIUd0wuHie6N5";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const tagGroupsRef = collection(
-  db,
-  "users",
-  "E5EiDYKVIUd0wuHie6N5",
-  "tagGroups"
-);
-const tagsRef = collection(db, "users", "E5EiDYKVIUd0wuHie6N5", "tags");
-
-export { tagsRef, tagGroupsRef };
+const tagGroupsRef = collection(db, "users", userID, "tagGroups");
+const tagsRef = collection(db, "users", userID, "tags");
+const notesRef = collection(db, "users", userID, "notes");
+export { tagsRef, tagGroupsRef, notesRef };

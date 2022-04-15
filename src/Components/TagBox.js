@@ -9,8 +9,9 @@ import {
   getDoc,
   query,
   where,
+  setDoc,
 } from "firebase/firestore";
-import { tagsRef, tagGroupsRef } from "../utils/fireBaseConfig";
+import { tagsRef, notesRef, tagGroupsRef } from "../utils/fireBaseConfig";
 
 const TagBoxContainer = styled.div`
   display: flex;
@@ -44,7 +45,7 @@ const Tag = styled.p`
   border: 1px solid #ffb226;
   border-radius: 5px;
 `;
-// const DeleteSign = styled.span``;
+
 const AddSign = styled.div`
   width: 30px;
   height: 30px;
@@ -56,51 +57,116 @@ const AddSign = styled.div`
 const Wrapper = styled.div`
   position: relative;
 `;
-const InputBox = styled.div`
+
+const AddTagBox = styled.div`
   position: absolute;
-  top: -150px;
-  width: 50%;
-  height: 200px;
+  top: -600px;
+  width: 150px;
+  height: 60px;
   border: solid black 1px;
   border-radius: 10px;
   background-color: #ffffff;
   z-index: 9;
 `;
 
+const TagInput = styled.input`
+  margin: 5%;
+`;
+
+const AddTagButton = styled.button`
+  margin-left: 70%;
+`;
+const CloseTagInput = styled.span`
+  font-size: 16px;
+`;
+
 function TagBox(props) {
-  const [showInputBox, setShowInputBox] = React.useState(false);
+  const [showTagInput, setShowTagInput] = React.useState(false);
   const [inputTagName, setInputTagName] = React.useState("");
-  console.log(props.data);
-  function showTagHandler() {
-    setShowInputBox(true);
+  const [tagBoxId, getTagBoxId] = React.useState("");
+
+  function showTagHandler(boxId) {
+    getTagBoxId(boxId);
+    setShowTagInput(true);
   }
 
-  function inputBoxTagHandler(e) {
+  function inputTagHandler(e) {
     setInputTagName(e);
   }
-  function addTagHandler() {}
+  async function addTagHandler() {
+    if (!inputTagName) {
+      alert("請輸入標籤名稱");
+    } else {
+      const setTagsRef = doc(tagsRef);
+      await setDoc(setTagsRef, {
+        name: inputTagName,
+        tagID: setTagsRef.id,
+        tagGroupID: tagBoxId,
+      });
+      setShowTagInput(false);
+
+      const newDatas = props.data.map((item, index) => {
+        if (item.id === tagBoxId) {
+          console.log(item.id);
+          item.tags.push(inputTagName);
+          console.log(item.tags);
+        }
+        return { ...item, tags: [...item.tags] };
+      });
+      props.setboxDatas(newDatas);
+    }
+  }
+  function closeInputTagHandler() {
+    setShowTagInput(false);
+  }
+
+  async function choseTagHandler(tagName) {
+    console.log(tagName);
+    const q = query(tagsRef, where("name", "==", tagName));
+    const tagData = await getDocs(q);
+    const clickTagIdArray = tagData.docs.map((item) => {
+      return item.data().tagID;
+    });
+
+    await Promise.all(
+      clickTagIdArray.map(async (i) => {
+        console.log("map i", i);
+        const tagNameQuery = query(
+          notesRef,
+          where("tags", "array-contains", i)
+        );
+        const notes = await getDocs(tagNameQuery);
+        notes.forEach((item) => {});
+      })
+    );
+  }
+
   return (
     <>
       {props.data.map((box) => (
-        <TagBoxContainer>
+        <TagBoxContainer key={box.id}>
           <BoxName>{box.title}</BoxName>
           <TagsContainer>
             {box.tags &&
-              box.tags.map((tag, index) => <Tag key={index}>{tag}</Tag>)}
+              box.tags.map((tag, index) => (
+                <Tag onClick={() => choseTagHandler(tag)} key={index}>
+                  {tag}
+                </Tag>
+              ))}
           </TagsContainer>
-          <AddSign onClick={showTagHandler}>新增</AddSign>
+          <AddSign onClick={() => showTagHandler(box.id)}>新增</AddSign>
         </TagBoxContainer>
       ))}
-      {showInputBox ? (
+      {showTagInput ? (
         <Wrapper>
-          <InputBox>
-            <h3>請輸入要新增的書籤</h3>
-            <input
-              onChange={(e) => inputBoxTagHandler(e.target.value)}
-              type="text"
-            />
-            <button onClick={addTagHandler}>新增書籤</button>
-          </InputBox>
+          <AddTagBox>
+            <TagInput
+              onChange={(e) => inputTagHandler(e.target.value)}
+              placeholder="新增標籤"
+            ></TagInput>
+            <CloseTagInput onClick={closeInputTagHandler}>x</CloseTagInput>
+            <AddTagButton onClick={addTagHandler}>新增</AddTagButton>
+          </AddTagBox>
         </Wrapper>
       ) : (
         ""
