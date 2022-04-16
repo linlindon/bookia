@@ -87,7 +87,6 @@ function Tags() {
         });
 
         setboxDatas(tagBoxData);
-        console.log(tagBoxData);
       } catch (err) {
         console.log("fetch failed", err);
       }
@@ -112,7 +111,10 @@ function Tags() {
         id: setTagGroupsRef.id,
       });
       setShowInputBox(false);
-      setboxDatas([...boxDatas, { title: inputBoxTitle, tags: [] }]);
+      setboxDatas([
+        ...boxDatas,
+        { title: inputBoxTitle, tags: [], id: setTagGroupsRef.id },
+      ]);
     }
   }
   function closeInputBoxHandler() {
@@ -126,7 +128,7 @@ function Tags() {
         <TagBox data={boxDatas} setboxDatas={setboxDatas} />
       </Container>
       <AddBoxSign onClick={showBoxHandler}>+</AddBoxSign>
-      {showInputBox ? (
+      {showInputBox && (
         <Wrapper>
           <InputBox>
             <h3>請輸入要新增的書籤櫃名稱</h3>
@@ -138,8 +140,6 @@ function Tags() {
             <button onClick={addBoxHandler}>新增標籤櫃</button>
           </InputBox>
         </Wrapper>
-      ) : (
-        ""
       )}
     </>
   );
