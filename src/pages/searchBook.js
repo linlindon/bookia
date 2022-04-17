@@ -7,7 +7,7 @@ const Container = styled.div`
   align-items: center;
 `;
 
-function SearchBookTitle() {
+function SearchBook() {
   return (
     <Container>
       <h1>搜尋要新增筆記的書籍</h1>
@@ -16,4 +16,4 @@ function SearchBookTitle() {
   );
 }
 
-export default SearchBookTitle;
+export default SearchBook;

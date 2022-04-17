@@ -4,7 +4,6 @@ import TagBox from "../components/TagBox";
 import { tagsRef, tagGroupsRef } from "../utils/fireBaseConfig";
 import {
   setDoc,
-  getFirestore,
   getDocs,
   collection,
   doc,

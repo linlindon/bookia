@@ -14,6 +14,10 @@ import {
 import Card from "./components/Card";
 import SearchBookTitle from "./pages/searchBook";
 import Tags from "./pages/tags";
+import Notes from "./pages/notes";
+import SearchBook from "./pages/searchBook";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBM3IamCWyJi_8vyVPP34KUixJJKXlAwQ8",
@@ -30,9 +34,18 @@ const db = getFirestore(app);
 function App() {
   return (
     <>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Notes />} />
+          <Route path="search" element={<SearchBook />} />
+          <Route path="alltags" element={<Tags />} />
+        </Routes>
+      </BrowserRouter>
       {/* <SearchBookTitle />
       <Card /> */}
-      <Tags />
+      {/* <Tags /> */}
+      {/* <Notes /> */}
     </>
   );
 }

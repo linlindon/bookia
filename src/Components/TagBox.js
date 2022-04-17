@@ -11,7 +11,7 @@ import {
   where,
   setDoc,
 } from "firebase/firestore";
-import { tagsRef, notesRef, tagGroupsRef } from "../utils/fireBaseConfig";
+import { tagsRef, notesRef } from "../utils/fireBaseConfig";
 
 const TagBoxContainer = styled.div`
   display: flex;
@@ -95,6 +95,7 @@ const BookName = styled.div`
 `;
 
 let clickTagNameArray = [];
+let notesData = [];
 function TagBox(props) {
   const [showTagInput, setShowTagInput] = React.useState(false);
   const [inputTagName, setInputTagName] = React.useState("");
@@ -136,23 +137,48 @@ function TagBox(props) {
     setShowTagInput(false);
   }
 
-  async function choseTagHandler(tagName, id) {
+  async function choseTagHandler(tagName) {
     console.log(tagName);
-    clickTagNameArray.push(tagName);
+    if (clickTagNameArray.includes(tagName)) {
+      clickTagNameArray = clickTagNameArray.filter((item) => {
+        console.log("tagname to delete===>", tagName);
+        return item !== tagName;
+      });
+    } else {
+      console.log("tagname to add to array===>", tagName);
+      clickTagNameArray.push(tagName);
+    }
+
     console.log(clickTagNameArray);
 
-    let notesData = [];
-    let tagIdArray;
+    let clickTagIdArray = [];
+    let tagIdArray = [];
 
     // 用tag name取得該tag的ID, assign到 clickTagIdArray
-    const q = query(tagsRef, where("name", "==", tagName));
-    const tagData = await getDocs(q);
-    let clickTagIdArray = tagData.docs.map((item) => {
-      return item.data().tagID;
-    });
+    await Promise.all(
+      clickTagNameArray.map(async (name) => {
+        console.log(name);
+        const q = query(tagsRef, where("name", "==", name));
+        const tagData = await getDocs(q);
 
+        tagData.docs.map((item) => {
+          clickTagIdArray.push(item.data().tagID);
+        });
+
+        // clickTagIdArray = tagData.docs.map((item) => {
+        //   console.log(item.data());
+        //   return item.data().tagID;
+        // });
+      })
+    );
+    console.log(clickTagIdArray);
+
+    // 問題: 案第二筆資料的時候第一筆資料也會被再加進去一次。
+    //所以另外設空陣列currentNotesData，讓他去複寫全域的notesData
+    let currentNotesData = [];
     await Promise.all(
       // 用tag ID array取得有那個標籤的note
+
       clickTagIdArray.map(async (i) => {
         const tagNameQuery = query(
           notesRef,
@@ -163,25 +189,33 @@ function TagBox(props) {
         // 把note內容塞到要render 畫面的data裡
         notes.forEach((note) => {
           // console.log(item.data().tags);
-          notesData.push({
+          currentNotesData.push({
             title: note.data().title,
             bookName: note.data().bookTitle,
             content: note.data().content,
             tags: [],
           });
+          notesData = currentNotesData;
+          console.log(notesData);
           // 取得那個note擁有的 tag id 塞到array
           tagIdArray = note.data().tags;
 
+          // 這裡要再一個 promise all
+          // 問題: tag會被塞到同一個資料包裡面。
+          //如果把notesDataIndex = 0移到map外，遇到promise問題tags。
           tagIdArray.map(async (id) => {
             // 筆記裡面的id array
+            let notesDataIndex = 0;
             console.log("該筆記裡面有的tags id===", id);
             const tagQuery = query(tagsRef, where("tagID", "==", id));
             const tagDocs = await getDocs(tagQuery);
-            let notesDataIndex = 0;
+
             tagDocs.forEach((tagItem) => {
+              console.log(notesDataIndex);
               // for each note data，把tag 塞進去
               console.log("該筆記裡面有的標籤中文版===", tagItem.data().name);
               notesData[notesDataIndex].tags.push(tagItem.data().name);
+
               // console.log(notesData);
             });
             notesDataIndex += 1;
@@ -194,24 +228,9 @@ function TagBox(props) {
     console.log(notesBox);
   }
 
-  // React.useEffect(() => {
-  //   let newArray = [];
-  //   for (let i = 0; i < props.data.length; i++) {
-  //     let a = 100;
-  //     newArray.push(a);
-  //   }
-  //   setChagne(newArray);
-  // }, [props.data]);
-
-  // const changeIndex = function (boxIndex, index) {
-  //   console.log(boxIndex, index);
-  //   change[boxIndex] = index;
-  //   setChagne([...change]);
-  // };
-
   return (
     <>
-      {props.data?.map((box, boxIndex) => (
+      {props.data?.map((box) => (
         <TagBoxContainer key={box.id}>
           <BoxName>{box.title}</BoxName>
           <TagsContainer>
@@ -246,7 +265,7 @@ function TagBox(props) {
             <BoxName>{note.title}</BoxName>
             <BookName>{note.bookName}</BookName>
             <TagsContainer>
-              {note.tags.map((tag) => (
+              {note.tags?.map((tag) => (
                 <Tag>
                   {tag}
                   <deleteSign>x</deleteSign>
