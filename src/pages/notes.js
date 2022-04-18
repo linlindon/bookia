@@ -1,8 +1,7 @@
-import { getDocs } from "firebase/firestore";
+import { getDocs, getDoc, doc, query, where } from "firebase/firestore";
 import React from "react";
 import styled from "styled-components";
-import { tagsRef, notesRef } from "../utils/fireBaseConfig";
-import Header from "../components/Header";
+import { booksRef, tagsRef } from "../utils/fireBaseConfig";
 
 const Container = styled.div`
   display: flex;
@@ -56,40 +55,72 @@ const AddNoteSign = styled.div`
   border: solid 1px black;
   line-height: 2;
 `;
-
+// [{title:book1,...,tags:["中文",...]},{title:book2,tags:[...]}]
+let bookData = [];
 function Notes() {
   React.useEffect(() => {
+    let noteBookTagsIdArray = [];
+    let noteBookTagsId = [];
+    // let noteBookTagsNameArray = [];
     async function getNotesData() {
       try {
-        // (await getDocs(notesRef)).forEach((doc) => {
-        //   console.log(doc.data());
-        // });
+        (await getDocs(booksRef)).forEach((doc) => {
+          bookData.push({
+            title: doc.data().title,
+            author: doc.data().author,
+            publish: doc.data().publish,
+            img: doc.data().img,
+            tags: [],
+          });
+          noteBookTagsId.push({});
+          noteBookTagsIdArray.push(doc.data().tags);
+        });
+        let promiseList = [];
+        noteBookTagsIdArray.map(async (ids, index) => {
+          // 跑兩次
+          let noteBookTagsNameArray = [];
+          await Promise.all(
+            ids.map(async (id) => {
+              // 跑七次
+              const tagDoc = await getDoc(doc(tagsRef, id));
+              noteBookTagsNameArray.push(tagDoc.data().name);
+            })
+          );
+          // console.log(noteBookTagsNameArray);
+          bookData[index].tags.push(...noteBookTagsNameArray);
+          // console.log(bookData);
+        });
       } catch (err) {
         console.log("fetch failed", err);
       }
+      // await Promise.all();
     }
     getNotesData();
   }, []);
   return (
     <>
-      <Container>
-        <Title>筆記櫃</Title>
-        <NoteBox>
-          <BookImg>
-            <Img src="https://picsum.photos/200/300" alt="" />
-          </BookImg>
-          <ContentContainer>
-            <BookTitle>書名: 瀕臨崩潰邊緣的人</BookTitle>
-            <TagsContainer>
-              <Tag>親情</Tag>
-              <Tag>友情</Tag>
-              <Tag>友情</Tag>
-              <Tag>友情</Tag>
-            </TagsContainer>
-          </ContentContainer>
-        </NoteBox>
-      </Container>
-      <AddNoteSign>+</AddNoteSign>
+      {bookData?.map((book) => (
+        <>
+          <Container>
+            <Title>筆記櫃</Title>
+            <NoteBox>
+              <BookImg>
+                <Img src={book.img} alt="" />
+              </BookImg>
+              <ContentContainer>
+                <BookTitle>書名: {book.title}</BookTitle>
+                <TagsContainer>
+                  <Tag>親情</Tag>
+                  <Tag>友情</Tag>
+                  <Tag>友情</Tag>
+                  <Tag>友情</Tag>
+                </TagsContainer>
+              </ContentContainer>
+            </NoteBox>
+          </Container>
+          <AddNoteSign>+</AddNoteSign>
+        </>
+      ))}
     </>
   );
 }

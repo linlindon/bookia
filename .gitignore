@@ -66,3 +66,5 @@ node_modules/
 .env
 
 .src/utils/fireBaseConfig.js
+
+src/note.js

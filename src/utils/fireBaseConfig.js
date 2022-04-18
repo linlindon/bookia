@@ -26,4 +26,6 @@ const db = getFirestore(app);
 const tagGroupsRef = collection(db, "users", userID, "tagGroups");
 const tagsRef = collection(db, "users", userID, "tags");
 const notesRef = collection(db, "users", userID, "notes");
-export { tagsRef, tagGroupsRef, notesRef };
+const booksRef = collection(db, "users", userID, "books");
+const userRef = doc(db, "users", userID);
+export { tagsRef, tagGroupsRef, notesRef, booksRef, userRef };

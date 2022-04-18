@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React from "react";
 import TagBox from "../components/TagBox";
-import { tagsRef, tagGroupsRef } from "../utils/fireBaseConfig";
+import { tagsRef, tagGroupsRef, userRef } from "../utils/fireBaseConfig";
 import {
   setDoc,
   getDocs,
@@ -51,6 +51,7 @@ function Tags() {
   const [boxDatas, setboxDatas] = React.useState([]);
   const [showInputBox, setShowInputBox] = React.useState(false);
   const [inputBoxTitle, setInputBoxTitle] = React.useState("");
+  const [groupData, setGroupData] = React.useState([]);
 
   React.useEffect(() => {
     let tagBoxData = [];
@@ -91,6 +92,14 @@ function Tags() {
       }
     }
     getTagGroupData();
+
+    async function x() {
+      const userDoc = await getDoc(userRef);
+      // userDoc.forEach(())
+      setGroupData(userDoc.data().tagGroups);
+    }
+    x();
+    console.log(groupData);
   }, []);
 
   function showBoxHandler() {
@@ -124,7 +133,11 @@ function Tags() {
     <>
       <Container>
         <h1>書籤櫃</h1>
-        <TagBox data={boxDatas} setboxDatas={setboxDatas} />
+        <TagBox
+          data={boxDatas}
+          setboxDatas={setboxDatas}
+          groupData={groupData}
+        />
       </Container>
       <AddBoxSign onClick={showBoxHandler}>+</AddBoxSign>
       {showInputBox && (
