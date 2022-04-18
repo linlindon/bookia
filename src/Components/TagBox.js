@@ -10,8 +10,9 @@ import {
   query,
   where,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
-import { tagsRef, notesRef } from "../utils/fireBaseConfig";
+import { tagsRef, notesRef, userRef } from "../utils/fireBaseConfig";
 
 const TagBoxContainer = styled.div`
   display: flex;
@@ -103,23 +104,26 @@ const DeleteSign = styled.span``;
 
 let clickTagNameArray = [];
 let allNotesData = [];
+let allTagBoxData = [];
+let boxName = "";
 function TagBox(props) {
   const [showTagInput, setShowTagInput] = React.useState(false);
   const [inputTagName, setInputTagName] = React.useState("");
-  const [tagBoxId, getTagBoxId] = React.useState("");
+  // const [tagBoxId, getTagBoxId] = React.useState("");
   const [notesBox, setNotesBoxData] = React.useState([]);
-  const [changeTagStyle, setChagneTagStyle] = React.useState(false);
+  // const [changeTagStyle, setChagneTagStyle] = React.useState(false);
 
   React.useEffect(async () => {
     (await getDocs(notesRef)).forEach((note) => {
       allNotesData.push(note.data());
     });
-    console.log(allNotesData);
+    // console.log(allNotesData);
+    allTagBoxData = (await getDoc(userRef)).data().tagGroups;
+    // console.log(allTagBoxData);
   }, []);
 
-  function showTagHandler(boxId) {
-    console.log(boxId);
-    getTagBoxId(boxId);
+  function showTagInputHandler(name) {
+    boxName = name;
     setShowTagInput(true);
   }
 
@@ -130,20 +134,25 @@ function TagBox(props) {
     if (!inputTagName) {
       alert("請輸入標籤名稱");
     } else {
-      const setTagsRef = doc(tagsRef);
-      await setDoc(setTagsRef, {
-        name: inputTagName,
-        tagID: setTagsRef.id,
-        tagGroupID: tagBoxId,
-      });
+      await Promise.all(
+        allTagBoxData.map(async (tagBox) => {
+          if (tagBox.name === boxName) {
+            tagBox.tags.push(inputTagName);
+            await updateDoc(userRef, {
+              tagGroups: [...allTagBoxData],
+            });
+          }
+        })
+      );
       setShowTagInput(false);
+      props.setGroupData(allTagBoxData);
 
-      const newDatas = props.data.map((item) => {
-        if (item.id === tagBoxId) {
-          item.tags.push(inputTagName);
-        }
-        return { ...item, tags: [...item.tags] };
-      });
+      // updateDoc(userRef, {
+      //   tagGrouptwo: [
+      //     { name: "test", tags: ["嗚嗚", "j j "] },
+      //     { name: "test22", tags: ["阿嗚嗚", "ttt"] },
+      //   ],
+      // });
     }
   }
   function closeInputTagHandler() {
@@ -155,16 +164,11 @@ function TagBox(props) {
     let currentNoteData = [];
     if (clickTagNameArray.includes(tagName)) {
       clickTagNameArray = clickTagNameArray.filter((item) => {
-        console.log("tagname to delete===>", tagName);
         return item !== tagName;
       });
     } else {
-      console.log("tagname to add to array===>", tagName);
       clickTagNameArray.push(tagName);
     }
-
-    console.log(clickTagNameArray);
-    // console.log(allNotesData);
 
     const noteIncludeTag = (tagArray, data) => {
       if (tagArray.length === 0) {
@@ -177,7 +181,6 @@ function TagBox(props) {
     };
 
     allNotesData.forEach((note) => {
-      console.log(noteIncludeTag(clickTagNameArray, note));
       if (noteIncludeTag(clickTagNameArray, note)) {
         currentNoteData.push(note);
       }
@@ -201,7 +204,7 @@ function TagBox(props) {
                 </Label>
               ))}
           </TagsContainer>
-          <AddSign onClick={() => showTagHandler(box.id)}>新增</AddSign>
+          <AddSign onClick={() => showTagInputHandler(box.name)}>新增</AddSign>
         </TagBoxContainer>
       ))}
       {showTagInput && (

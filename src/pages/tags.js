@@ -95,7 +95,6 @@ function Tags() {
 
     async function x() {
       const userDoc = await getDoc(userRef);
-      // userDoc.forEach(())
       setGroupData(userDoc.data().tagGroups);
     }
     x();
@@ -137,6 +136,7 @@ function Tags() {
           data={boxDatas}
           setboxDatas={setboxDatas}
           groupData={groupData}
+          setGroupData={setGroupData}
         />
       </Container>
       <AddBoxSign onClick={showBoxHandler}>+</AddBoxSign>
