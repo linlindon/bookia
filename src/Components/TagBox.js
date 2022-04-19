@@ -94,7 +94,6 @@ const DeleteSign = styled.span``;
 
 let clickTagNameArray = [];
 let allNotesData = [];
-let allTagBoxData = [];
 let boxName = "";
 function TagBox(props) {
   const [showTagInput, setShowTagInput] = useState(false);
@@ -102,12 +101,10 @@ function TagBox(props) {
   const [notesBox, setNotesBoxData] = useState([]);
 
   useEffect(async () => {
-    // 先把所有的筆記抓下來
     (await getDocs(notesRef)).forEach((note) => {
       allNotesData.push(note.data());
     });
     // console.log(allNotesData);
-    allTagBoxData = props.groupData;
     // console.log(allTagBoxData);
   }, []);
 
@@ -117,27 +114,25 @@ function TagBox(props) {
     setShowTagInput(true);
   }
 
-  function inputTagHandler(e) {
-    setInputTagName(e);
-    console.log(inputTagName);
-  }
   async function addTagHandler() {
     if (!inputTagName) {
       alert("請輸入標籤名稱");
     } else {
-      await Promise.all(
-        allTagBoxData.map(async (tagBox) => {
-          if (tagBox.name === boxName) {
-            tagBox.tags.push(inputTagName);
-            await updateDoc(userRef, {
-              tagGroups: [...allTagBoxData],
-            });
-            console.log("tagbox page");
-          }
-        })
-      );
+      let data = [...props.groupData];
+
+      data.forEach((tagBox) => {
+        if (tagBox.name === boxName) {
+          tagBox.tags.push(inputTagName);
+        } else {
+          console.log("no match box name");
+        }
+      });
+
+      await updateDoc(userRef, {
+        tagGroups: data,
+      });
       setShowTagInput(false);
-      props.setGroupData(allTagBoxData);
+      props.setGroupData(data);
     }
   }
   function closeInputTagHandler() {
@@ -197,7 +192,7 @@ function TagBox(props) {
         <Wrapper>
           <AddTagBox>
             <TagInput
-              onChange={(e) => inputTagHandler(e.target.value)}
+              onChange={(e) => setInputTagName(e.target.value)}
               placeholder="新增標籤"
             ></TagInput>
             <CloseTagInput onClick={closeInputTagHandler}>x</CloseTagInput>

@@ -1,6 +1,6 @@
-import { getDocs, getDoc, doc, query, where } from "firebase/firestore";
+import { getDocs } from "firebase/firestore";
 import styled from "styled-components";
-import { booksRef, tagsRef } from "../utils/fireBaseConfig";
+import { booksRef } from "../utils/fireBaseConfig";
 import { useEffect, useState } from "react";
 
 const Container = styled.div`

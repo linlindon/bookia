@@ -1,8 +1,8 @@
-import styled from "styled-components";
 import { useEffect, useState } from "react";
-import TagBox from "../components/TagBox";
-import { tagsRef, tagGroupsRef, userRef } from "../utils/fireBaseConfig";
+import styled from "styled-components";
 import { getDoc, updateDoc } from "firebase/firestore";
+import { userRef } from "../utils/fireBaseConfig";
+import TagBox from "../components/TagBox";
 
 const Container = styled.div`
   display: flex;
@@ -69,7 +69,6 @@ function Tags() {
       alert("請輸入標籤櫃名稱");
     } else {
       allGroupData.push({ name: inputBoxTitle, tags: [] });
-      console.log(allGroupData);
       await updateDoc(userRef, {
         tagGroups: [...allGroupData],
       });

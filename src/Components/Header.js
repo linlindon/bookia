@@ -31,7 +31,7 @@ function Header() {
       <BarContent>
         <Link to="/">筆記櫃</Link>
         <Link to="/alltags">書籤櫃</Link>
-        <Link to="/search">新增筆記</Link>
+        <Link to="/newnote">新增筆記</Link>
         <Link to="/">站內搜尋</Link>
       </BarContent>
     </Navbar>
