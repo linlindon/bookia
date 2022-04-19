@@ -1,16 +1,8 @@
 import styled from "styled-components";
-import React from "react";
+import { useEffect, useState } from "react";
 import TagBox from "../components/TagBox";
 import { tagsRef, tagGroupsRef, userRef } from "../utils/fireBaseConfig";
-import {
-  setDoc,
-  getDocs,
-  collection,
-  doc,
-  getDoc,
-  query,
-  where,
-} from "firebase/firestore";
+import { getDoc, updateDoc } from "firebase/firestore";
 
 const Container = styled.div`
   display: flex;
@@ -46,59 +38,23 @@ const CloseButton = styled.span`
   margin-left: 60%;
   font-size: 16px;
 `;
-
+let allGroupData = [];
 function Tags() {
-  const [boxDatas, setboxDatas] = React.useState([]);
-  const [showInputBox, setShowInputBox] = React.useState(false);
-  const [inputBoxTitle, setInputBoxTitle] = React.useState("");
-  const [groupData, setGroupData] = React.useState([]);
+  const [boxDatas, setboxDatas] = useState([]);
+  const [showInputBox, setShowInputBox] = useState(false);
+  const [inputBoxTitle, setInputBoxTitle] = useState("");
+  const [groupData, setGroupData] = useState([]);
 
-  React.useEffect(() => {
-    let tagBoxData = [];
+  useEffect(() => {
+    let data = [];
     async function getTagGroupData() {
-      try {
-        const tagGroupsDocs = await getDocs(tagGroupsRef);
-        const tagGroupIds = [];
-        const tagsInfo = [];
-        tagGroupsDocs.forEach((doc) => {
-          tagBoxData.push({
-            title: doc.data().title,
-            id: doc.data().id,
-            tags: [],
-          });
-          tagGroupIds.push(doc.data().id);
-        });
-
-        await Promise.all(
-          tagGroupIds.map(async (id) => {
-            const tagQuery = query(tagsRef, where("tagGroupID", "==", id));
-            const tagDocs = await getDocs(tagQuery);
-            tagDocs.forEach((item) => {
-              tagsInfo.push(item.data());
-            });
-          })
-        );
-        tagsInfo.forEach((tagItem) => {
-          tagBoxData.forEach((boxItem, index) => {
-            if (tagItem.tagGroupID === boxItem.id) {
-              tagBoxData[index].tags.push(tagItem.name);
-            }
-          });
-        });
-
-        setboxDatas(tagBoxData);
-      } catch (err) {
-        console.log("fetch failed", err);
-      }
+      const userDoc = await getDoc(userRef);
+      data.push(...userDoc.data().tagGroups);
+      setGroupData(data);
+      allGroupData = data;
+      console.log(allGroupData);
     }
     getTagGroupData();
-
-    async function x() {
-      const userDoc = await getDoc(userRef);
-      setGroupData(userDoc.data().tagGroups);
-    }
-    x();
-    console.log(groupData);
   }, []);
 
   function showBoxHandler() {
@@ -112,16 +68,13 @@ function Tags() {
     if (!inputBoxTitle) {
       alert("請輸入標籤櫃名稱");
     } else {
-      const setTagGroupsRef = doc(tagGroupsRef);
-      await setDoc(setTagGroupsRef, {
-        title: inputBoxTitle,
-        id: setTagGroupsRef.id,
+      allGroupData.push({ name: inputBoxTitle, tags: [] });
+      console.log(allGroupData);
+      await updateDoc(userRef, {
+        tagGroups: [...allGroupData],
       });
       setShowInputBox(false);
-      setboxDatas([
-        ...boxDatas,
-        { title: inputBoxTitle, tags: [], id: setTagGroupsRef.id },
-      ]);
+      setGroupData(allGroupData);
     }
   }
   function closeInputBoxHandler() {
@@ -157,3 +110,40 @@ function Tags() {
   );
 }
 export default Tags;
+
+// async function getTagGroupData() {
+//   try {
+//     const tagGroupsDocs = await getDocs(tagGroupsRef);
+//     const tagGroupIds = [];
+//     const tagsInfo = [];
+//     tagGroupsDocs.forEach((doc) => {
+//       tagBoxData.push({
+//         title: doc.data().title,
+//         id: doc.data().id,
+//         tags: [],
+//       });
+//       tagGroupIds.push(doc.data().id);
+//     });
+
+//     await Promise.all(
+//       tagGroupIds.map(async (id) => {
+//         const tagQuery = query(tagsRef, where("tagGroupID", "==", id));
+//         const tagDocs = await getDocs(tagQuery);
+//         tagDocs.forEach((item) => {
+//           tagsInfo.push(item.data());
+//         });
+//       })
+//     );
+//     tagsInfo.forEach((tagItem) => {
+//       tagBoxData.forEach((boxItem, index) => {
+//         if (tagItem.tagGroupID === boxItem.id) {
+//           tagBoxData[index].tags.push(tagItem.name);
+//         }
+//       });
+//     });
+
+//     setboxDatas(tagBoxData);
+//   } catch (err) {
+//     console.log("fetch failed", err);
+//   }
+// }

@@ -1,17 +1,7 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { initializeApp } from "firebase/app";
-import {
-  getFirestore,
-  getDocs,
-  collection,
-  doc,
-  getDoc,
-  query,
-  where,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { getDocs, getDoc, updateDoc } from "firebase/firestore";
 import { tagsRef, notesRef, userRef } from "../utils/fireBaseConfig";
 
 const TagBoxContainer = styled.div`
@@ -107,28 +97,29 @@ let allNotesData = [];
 let allTagBoxData = [];
 let boxName = "";
 function TagBox(props) {
-  const [showTagInput, setShowTagInput] = React.useState(false);
-  const [inputTagName, setInputTagName] = React.useState("");
-  // const [tagBoxId, getTagBoxId] = React.useState("");
-  const [notesBox, setNotesBoxData] = React.useState([]);
-  // const [changeTagStyle, setChagneTagStyle] = React.useState(false);
+  const [showTagInput, setShowTagInput] = useState(false);
+  const [inputTagName, setInputTagName] = useState("");
+  const [notesBox, setNotesBoxData] = useState([]);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
+    // 先把所有的筆記抓下來
     (await getDocs(notesRef)).forEach((note) => {
       allNotesData.push(note.data());
     });
     // console.log(allNotesData);
-    allTagBoxData = (await getDoc(userRef)).data().tagGroups;
+    allTagBoxData = props.groupData;
     // console.log(allTagBoxData);
   }, []);
 
   function showTagInputHandler(name) {
     boxName = name;
+    console.log(boxName);
     setShowTagInput(true);
   }
 
   function inputTagHandler(e) {
     setInputTagName(e);
+    console.log(inputTagName);
   }
   async function addTagHandler() {
     if (!inputTagName) {
@@ -141,18 +132,12 @@ function TagBox(props) {
             await updateDoc(userRef, {
               tagGroups: [...allTagBoxData],
             });
+            console.log("tagbox page");
           }
         })
       );
       setShowTagInput(false);
       props.setGroupData(allTagBoxData);
-
-      // updateDoc(userRef, {
-      //   tagGrouptwo: [
-      //     { name: "test", tags: ["嗚嗚", "j j "] },
-      //     { name: "test22", tags: ["阿嗚嗚", "ttt"] },
-      //   ],
-      // });
     }
   }
   function closeInputTagHandler() {
@@ -169,7 +154,7 @@ function TagBox(props) {
     } else {
       clickTagNameArray.push(tagName);
     }
-
+    console.log(clickTagNameArray);
     const noteIncludeTag = (tagArray, data) => {
       if (tagArray.length === 0) {
         return false;
@@ -182,6 +167,7 @@ function TagBox(props) {
 
     allNotesData.forEach((note) => {
       if (noteIncludeTag(clickTagNameArray, note)) {
+        console.log(note);
         currentNoteData.push(note);
       }
     });
