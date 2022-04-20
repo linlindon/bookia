@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getDoc, updateDoc } from "firebase/firestore";
 import { userRef } from "../utils/fireBaseConfig";
+
 import TagBox from "../components/TagBox";
 
 const Container = styled.div`

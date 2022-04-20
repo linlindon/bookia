@@ -1,7 +1,8 @@
-import { getDocs } from "firebase/firestore";
-import styled from "styled-components";
-import { booksRef } from "../utils/fireBaseConfig";
 import { useEffect, useState } from "react";
+import styled from "styled-components";
+import { getDocs } from "firebase/firestore";
+import { booksRef } from "../utils/fireBaseConfig";
+import uniqid from "uniqid";
 
 const Container = styled.div`
   display: flex;
@@ -70,18 +71,18 @@ function Notes() {
 
   return (
     <>
+      <Title>筆記櫃</Title>
       {bookDatas?.map((book) => (
-        <Container>
-          <Title>筆記櫃</Title>
-          <NoteBox>
-            <BookImg>
-              <Img src={book.img} alt="" />
+        <Container key={uniqid()}>
+          <NoteBox key={uniqid()}>
+            <BookImg key={uniqid()}>
+              <Img key={uniqid()} src={book.img} alt="" />
             </BookImg>
-            <ContentContainer>
-              <BookTitle>書名: {book.title}</BookTitle>
-              <TagsContainer>
+            <ContentContainer key={uniqid()}>
+              <BookTitle key={uniqid()}>書名: {book.title}</BookTitle>
+              <TagsContainer key={uniqid()}>
                 {book.tagNames.map((tag) => (
-                  <Tag>{tag}</Tag>
+                  <Tag key={uniqid()}>{tag}</Tag>
                 ))}
               </TagsContainer>
             </ContentContainer>

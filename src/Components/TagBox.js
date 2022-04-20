@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { initializeApp } from "firebase/app";
+
 import { getDocs, getDoc, updateDoc } from "firebase/firestore";
 import { tagsRef, notesRef, userRef } from "../utils/fireBaseConfig";
+import uniqid from "uniqid";
 
 const TagBoxContainer = styled.div`
   display: flex;
@@ -29,7 +30,7 @@ const TagsContainer = styled.div`
   width: 80%;
   gap: 1em;
 `;
-const Label = styled.label``;
+
 const Input = styled.input.attrs({ type: "checkbox" })`
   display: none;
 `;
@@ -95,12 +96,15 @@ const DeleteSign = styled.span``;
 let clickTagNameArray = [];
 let allNotesData = [];
 let boxName = "";
+
 function TagBox(props) {
   const [showTagInput, setShowTagInput] = useState(false);
   const [inputTagName, setInputTagName] = useState("");
   const [notesBox, setNotesBoxData] = useState([]);
 
   useEffect(async () => {
+    allNotesData = [];
+    clickTagNameArray = [];
     (await getDocs(notesRef)).forEach((note) => {
       allNotesData.push(note.data());
     });
@@ -159,7 +163,7 @@ function TagBox(props) {
         });
       }
     };
-
+    console.log(allNotesData);
     allNotesData.forEach((note) => {
       if (noteIncludeTag(clickTagNameArray, note)) {
         console.log(note);
@@ -172,20 +176,21 @@ function TagBox(props) {
   return (
     <>
       {props.groupData?.map((box) => (
-        <TagBoxContainer key={box.id}>
-          <BoxName>{box.name}</BoxName>
-          <TagsContainer key={box.id}>
-            {box.tags &&
-              box.tags.map((tag, index) => (
-                <Label name={tag}>
-                  <Input id={tag}></Input>
-                  <Tag onClick={() => choseTagHandler(tag)} key={index}>
-                    {tag}
-                  </Tag>
-                </Label>
-              ))}
+        <TagBoxContainer key={uniqid()}>
+          <BoxName key={uniqid()}>{box.name}</BoxName>
+          <TagsContainer key={uniqid()}>
+            {box.tags?.map((tag) => (
+              <label key={uniqid()} name={tag}>
+                <Input key={uniqid()} id={tag}></Input>
+                <Tag onClick={() => choseTagHandler(tag)} key={uniqid()}>
+                  {tag}
+                </Tag>
+              </label>
+            ))}
           </TagsContainer>
-          <AddSign onClick={() => showTagInputHandler(box.name)}>新增</AddSign>
+          <AddSign onClick={() => showTagInputHandler(box.name)} key={uniqid()}>
+            新增
+          </AddSign>
         </TagBoxContainer>
       ))}
       {showTagInput && (
@@ -201,18 +206,18 @@ function TagBox(props) {
         </Wrapper>
       )}
       {notesBox?.map((note) => (
-        <NoteBox>
-          <BoxName>書名: {note.bookTitle}</BoxName>
-          <BookName>{note.title}</BookName>
-          <TagsContainer>
+        <NoteBox key={uniqid()}>
+          <BoxName key={uniqid()}>書名: {note.bookTitle}</BoxName>
+          <BookName key={uniqid()}>{note.title}</BookName>
+          <TagsContainer key={uniqid()}>
             {note.tagNames.map((tag) => (
-              <Tag>
+              <Tag key={uniqid()}>
                 {tag}
-                <DeleteSign>x</DeleteSign>
+                <DeleteSign key={uniqid()}>x</DeleteSign>
               </Tag>
             ))}
-            <p>{note.content}</p>
-            <AddSign>修改</AddSign>
+            <p key={uniqid()}>{note.content}</p>
+            <AddSign key={uniqid()}>修改</AddSign>
           </TagsContainer>
         </NoteBox>
       ))}
