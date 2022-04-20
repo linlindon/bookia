@@ -12,7 +12,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Notes />} />
-          <Route path="newnote" element={<BookNote />} />
+          <Route path="search" element={<SearchBook />} />
           <Route path="alltags" element={<Tags />} />
         </Routes>
       </BrowserRouter>
