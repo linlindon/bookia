@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { getDocs } from "firebase/firestore";
 import { booksRef } from "../utils/fireBaseConfig";
 import uniqid from "uniqid";
@@ -59,6 +60,7 @@ const AddNoteSign = styled.div`
 
 function Notes() {
   const [bookDatas, setBookDatas] = useState([]);
+
   useEffect(async () => {
     let bookData = [];
     (await getDocs(booksRef)).forEach((book) => {
@@ -67,13 +69,18 @@ function Notes() {
     setBookDatas(bookData);
   }, []);
 
+  let navigate = useNavigate();
+  function redirectBookPage(id) {
+    console.log(id);
+    navigate(`/booknote/${id}`);
+  }
   // setBookDatas((prev) => [...prev, bookData]);
 
   return (
     <>
       <Title>筆記櫃</Title>
       {bookDatas?.map((book) => (
-        <Container key={uniqid()}>
+        <Container onClick={() => redirectBookPage(book.id)} key={uniqid()}>
           <NoteBox key={uniqid()}>
             <BookImg key={uniqid()}>
               <Img key={uniqid()} src={book.img} alt="" />

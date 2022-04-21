@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Search } from "@styled-icons/bootstrap/Search";
+import Card from "./Card";
 
 const SearchContainer = styled.div`
   display: flex;
@@ -28,43 +29,44 @@ const SearchIcon = styled(Search)`
   color: green;
 `;
 
+async function getSearchData(input) {
+  const key = "AIzaSyAFgX7hNUEGGTH7nWl-nbHL7fuDH9XIHco";
+  return fetch(
+    `https://www.googleapis.com/books/v1/volumes?q=${input}&key=${key}`
+  )
+    .then((res) => res.json())
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 function SearchBar() {
   const [searchInput, setSearchInput] = useState("");
+  const [bookList, setBookList] = useState([]);
 
-  async function searchData() {
-    console.log("hi");
-    const key = "AIzaSyAFgX7hNUEGGTH7nWl-nbHL7fuDH9XIHco";
-    fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${searchInput}&key=${key}`
-    )
-      .then((res) => res.json())
-      .then((data) => console.log(data.items))
-      .catch((err) => {
-        console.log(err);
+  function searchData(input) {
+    console.log(input);
+    getSearchData(input).then((data) => {
+      let bookData = [];
+      data.items.forEach((book) => {
+        bookData.push(book.volumeInfo);
       });
+      setBookList(bookData);
+    });
   }
+
   return (
     <>
       <SearchContainer>
         <SearchForm>
           <SearchInput
-            onChange={(e) => setSearchInput(e.target.value)}
+            onChange={(e) => searchData(e.target.value)}
             placeholder="請輸入關鍵字"
           />
           <SearchIcon onClick={searchData} />
         </SearchForm>
       </SearchContainer>
-      <div className="card-container">
-        <div className="book-img">
-          <img src="" alt="" />
-        </div>
-        <div className="book-info">
-          <button className="button">選擇此書筆記</button>
-          <h3 className="book-title">書名</h3>
-          <p>作者</p>
-          <p>出版年份</p>
-        </div>
-      </div>
+      <Card bookList={bookList} />
     </>
   );
 }
