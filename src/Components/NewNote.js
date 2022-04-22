@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { getDoc, setDoc, doc, serverTimestamp } from "firebase/firestore";
+import {
+  getDoc,
+  setDoc,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import {
   userRef,
   booksRef,
@@ -126,6 +132,24 @@ const NewNote = (props) => {
       };
       console.log("新筆記資料包===>", inputData);
       await setDoc(newNoteRef, inputData);
+
+      // 把標籤加到書本
+      const book = await getDoc(doc(booksRef, props.id));
+      //如果他選的標籤已經在data裡面，就不用加進去
+
+      book.data().tagNames.forEach((tag) => {
+        if (chosenTagArray.includes(tag)) {
+          console.log("重複的標籤===", tag);
+          return;
+        } else {
+          chosenTagArray.push(tag);
+        }
+      });
+
+      console.log(chosenTagArray);
+      await updateDoc(doc(booksRef, props.id), {
+        tagNames: chosenTagArray,
+      });
       props.setShowInput(false);
       chosenTagArray = [];
     }
