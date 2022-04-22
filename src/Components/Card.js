@@ -1,5 +1,7 @@
-import react from "react";
-import { useNavigate } from "react-router-dom";
+import { setDoc, serverTimestamp } from "firebase/firestore";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { newBookRef } from "../utils/fireBaseConfig";
 import styled from "styled-components";
 
 const AllCardsContainer = styled.div`
@@ -41,8 +43,19 @@ const BookPublish = styled.p``;
 
 function Card(props) {
   let navigate = useNavigate();
-  function routeChange() {
-    navigate("/booknote");
+  async function getBookData(title, author, date, img) {
+    let data = {
+      title: title,
+      author: author,
+      publish: date,
+      img: img,
+      id: newBookRef.id,
+      tagNames: [],
+      time: serverTimestamp(),
+    };
+
+    await setDoc(newBookRef, data);
+    navigate(`/booknote/${newBookRef.id}`, { state: data });
   }
 
   return (
@@ -56,7 +69,18 @@ function Card(props) {
                 src={img ? img.thumbnail : "https://picsum.photos/200/300"}
               />
             </BookImageContainer>
-            <AddButton onClick={routeChange}>選擇此書筆記</AddButton>
+            <AddButton
+              onClick={() =>
+                getBookData(
+                  book.title,
+                  book.authors,
+                  book.publishedDate,
+                  img ? img.thumbnail : "https://picsum.photos/200/300"
+                )
+              }
+            >
+              選擇此書筆記
+            </AddButton>
             <BookDetail>
               <BookName>{book.title}</BookName>
               <BookAuthor>{book.authors}</BookAuthor>

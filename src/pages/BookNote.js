@@ -1,14 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import {
-  setDoc,
-  doc,
-  serverTimestamp,
-  onSnapshot,
-  getDoc,
-} from "firebase/firestore";
-import { userRef, booksRef, notesRef } from "../utils/fireBaseConfig";
+import { doc, onSnapshot, getDoc } from "firebase/firestore";
+import { booksRef, notesRef } from "../utils/fireBaseConfig";
 import NewNote from "../components/NewNote";
 import NoteBox from "../components/NoteBox";
 
@@ -57,45 +51,38 @@ function BookNote() {
   const { id } = useParams();
 
   useEffect(() => {
-    let noteData = [];
-    onSnapshot(notesRef, (notes) => {
-      console.log("snapshot");
-      notes.forEach((note) => {
-        console.log("inside snapshot", id);
-        if (note.data().bookID === id) {
-          console.log(note.data());
-          noteData.push(note.data());
-        }
-      });
-      setBookNotesData(noteData);
-    });
-    // const info = await getDoc(doc(booksRef, id));
-    // setBookInfo(info.data());
-
     async function getBookInfo() {
-      console.log(id);
       const info = await getDoc(doc(booksRef, id));
+      console.log("檢查圖片URL", info.data());
       setBookInfo(info.data());
     }
     getBookInfo();
+    // 監聽是否有新增的筆記
+  }, []);
+
+  useEffect(() => {
+    let noteData = [];
+    console.log(noteData);
+    onSnapshot(notesRef, (notes) => {
+      let data = [];
+      notes.forEach((note) => {
+        console.log("inside snapshot", id);
+        if (note.data().bookID === id) {
+          console.log("筆記", note.data());
+          data.push(note.data());
+        }
+      });
+      noteData = data;
+      console.log(noteData);
+      setBookNotesData(noteData);
+    });
+    //當新增完筆記會無法render到畫面上
+    // setBookNotesData(noteData);
   }, []);
 
   const noteForm = () => {
     setShowInput((prev) => !prev);
   };
-  async function addNewBook() {
-    const newBookRef = doc(booksRef);
-    const fakeData = {
-      author: "the who",
-      id: newBookRef.id,
-      img: "https://picsum.photos/200/300",
-      publish: "2022",
-      tagNames: [],
-      time: serverTimestamp(),
-      title: "假資料",
-    };
-    await setDoc(newBookRef, fakeData);
-  }
 
   return (
     <>
@@ -109,12 +96,17 @@ function BookNote() {
             <BookTitle>書名: {bookInfo.title}</BookTitle>
             <p>作者: {bookInfo.author}</p>
             <p>出版年: {bookInfo.publish}</p>
-            <Button onClick={addNewBook}>建立書本資料按鈕</Button>
+            {/* <Button onClick={addNewBook}>建立書本資料按鈕</Button> */}
           </ContentContainer>
           <Button onClick={noteForm}>新增筆記</Button>
         </NoteBoxContainer>
         {showNoteInput ? (
-          <NewNote showNoteInput={showNoteInput} setShowInput={setShowInput} />
+          <NewNote
+            showNoteInput={showNoteInput}
+            setShowInput={setShowInput}
+            title={bookInfo.title}
+            id={id}
+          />
         ) : null}
         <NoteBox bookNotesData={bookNotesData} />
       </Container>

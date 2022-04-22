@@ -1,7 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { getDoc, setDoc, doc, serverTimestamp } from "firebase/firestore";
-import { userRef, booksRef, notesRef } from "../utils/fireBaseConfig";
+import {
+  userRef,
+  booksRef,
+  notesRef,
+  newBookRef,
+} from "../utils/fireBaseConfig";
 
 const Flex = styled.div`
   display: flex;
@@ -12,12 +17,22 @@ const TagBoxFlat = styled.div`
   align-items: center;
   padding: 20px;
   width: 60%;
-  height: 800px;
+  ${"" /* height: 600px; */}
   margin-bottom: 20px;
   background-color: white;
   border: 2px solid #ece6e6;
   border-radius: 10px;
   z-index: 99;
+`;
+const Background = styled.div`
+  width: 100%;
+  height: 500px;
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
 `;
 const BoxContent = styled(Flex)`
   width: 80%;
@@ -61,17 +76,6 @@ const ContentInput = styled.textarea`
 `;
 const Button = styled.button``;
 
-const Background = styled.div`
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
-`;
-
 let chosenTagArray = [];
 const NewNote = (props) => {
   const [groupData, setGroupData] = useState([]);
@@ -79,6 +83,7 @@ const NewNote = (props) => {
   const [pageInput, setPageInput] = useState("");
   const [noteInput, setNoteInput] = useState("");
   const inputRef = useRef();
+
   useEffect(() => {
     let data = [];
     async function getTagGroupData() {
@@ -90,7 +95,9 @@ const NewNote = (props) => {
   }, []);
 
   function choseTagHandler(tag) {
+    console.log("選擇的標籤", tag);
     if (chosenTagArray.includes(tag)) {
+      console.log("tag to delete===>", tag);
       chosenTagArray = chosenTagArray.filter((item) => {
         return item !== tag;
       });
@@ -103,35 +110,24 @@ const NewNote = (props) => {
   let inputData = {};
   async function submitHandler(e) {
     e.preventDefault();
+    console.log(chosenTagArray);
     if (chosenTagArray.length === 0) {
       alert("每個筆記需要至少一個標籤");
     } else {
-      // 建立新書資料
-      const newBookRef = doc(booksRef);
-      const fakeData = {
-        author: "the who",
-        id: newBookRef.id,
-        img: "https://picsum.photos/200/300",
-        publish: "2022",
-        tagNames: [],
-        time: serverTimestamp(),
-        title: "假資料",
-      };
-      await setDoc(newBookRef, fakeData);
-
       // 建立新筆記
       const newNoteRef = doc(notesRef);
       inputData = {
-        bookID: newBookRef.id,
-        bookTitle: "假資料",
+        bookID: props.id,
+        bookTitle: props.title,
         content: noteInput,
         page: pageInput,
         title: noteTitleInput,
         tagNames: chosenTagArray,
       };
-      console.log(inputData);
+      console.log("新筆記資料包===>", inputData);
       await setDoc(newNoteRef, inputData);
       props.setShowInput(false);
+      chosenTagArray = [];
     }
   }
 

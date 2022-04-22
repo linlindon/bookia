@@ -71,7 +71,6 @@ function Notes() {
 
   let navigate = useNavigate();
   function redirectBookPage(id) {
-    console.log(id);
     navigate(`/booknote/${id}`);
   }
   // setBookDatas((prev) => [...prev, bookData]);

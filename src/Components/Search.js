@@ -44,9 +44,9 @@ function SearchBar() {
   const [searchInput, setSearchInput] = useState("");
   const [bookList, setBookList] = useState([]);
 
-  function searchData(input) {
-    console.log(input);
-    getSearchData(input).then((data) => {
+  function searchData() {
+    console.log(searchInput);
+    getSearchData(searchInput).then((data) => {
       let bookData = [];
       data.items.forEach((book) => {
         bookData.push(book.volumeInfo);
@@ -60,7 +60,7 @@ function SearchBar() {
       <SearchContainer>
         <SearchForm>
           <SearchInput
-            onChange={(e) => searchData(e.target.value)}
+            onChange={(e) => setSearchInput(e.target.value)}
             placeholder="請輸入關鍵字"
           />
           <SearchIcon onClick={searchData} />

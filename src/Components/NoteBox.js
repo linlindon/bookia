@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import uniqid from "uniqid";
 
 const BoxName = styled.h4`
   width: 80%;
@@ -40,26 +41,29 @@ const TagBox = styled.div`
   border: 1px solid #ece6e6;
   border-radius: 10px;
 `;
+const DeleteSign = styled.span``;
 
 function NoteBox(props) {
   console.log("NoteBox");
+  console.log(props.bookNotesData);
+
   return (
     <>
       {props.bookNotesData?.map((item) => (
-        <TagBox>
+        <TagBox key={uniqid()}>
           <BoxName>{item.title}</BoxName>
           <BookName>書名：{item.bookTitle}</BookName>
           <BookName>頁數：{item.page}</BookName>
 
           <TagsContainer>
-            {item.tagNames.map((tag) => {
-              <Tag>
+            {item.tagNames.map((tag) => (
+              <Tag key={uniqid()}>
                 {tag}
-                <deleteSign>x</deleteSign>
-              </Tag>;
-            })}
+                <DeleteSign key={uniqid()}>x</DeleteSign>
+              </Tag>
+            ))}
             <p>{item.content}</p>
-            <AddSign>修改</AddSign>
+            <AddSign key={uniqid()}>修改</AddSign>
           </TagsContainer>
         </TagBox>
       ))}
