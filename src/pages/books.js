@@ -25,7 +25,7 @@ const NoteBox = styled.div`
 
 const BookImg = styled.div`
   width: 120px;
-  background-color: #66b2ff;
+  border: 1px solid #ece6e6;
 `;
 const Img = styled.img`
   width: 100%;
@@ -58,7 +58,7 @@ const AddNoteSign = styled.div`
   line-height: 2;
 `;
 
-function Notes() {
+function Books() {
   const [bookDatas, setBookDatas] = useState([]);
 
   useEffect(async () => {
@@ -77,7 +77,7 @@ function Notes() {
 
   return (
     <>
-      <Title>筆記櫃</Title>
+      <Title>筆記書櫃</Title>
       {bookDatas?.map((book) => (
         <Container onClick={() => redirectBookPage(book.id)} key={uniqid()}>
           <NoteBox key={uniqid()}>
@@ -100,7 +100,7 @@ function Notes() {
   );
 }
 
-export default Notes;
+export default Books;
 
 // React.useEffect(() => {
 //   let noteBookTagsIdArray = [];

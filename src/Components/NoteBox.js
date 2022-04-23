@@ -1,6 +1,7 @@
-import React from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import uniqid from "uniqid";
+import NewNote from "./modal/NewNote";
 
 const BoxName = styled.h4`
   width: 80%;
@@ -38,6 +39,7 @@ const TagBox = styled.div`
   flex-direction: column;
   align-items: center;
   width: 60%;
+  margin-bottom: 20px;
   border: 1px solid #ece6e6;
   border-radius: 10px;
 `;
@@ -46,6 +48,14 @@ const DeleteSign = styled.span``;
 function NoteBox(props) {
   console.log("NoteBox");
   console.log(props.bookNotesData);
+  const [showUpdate, setShowUpdate] = useState(false);
+
+  const [noteId, setNoteId] = useState("");
+
+  async function updateNote(id) {
+    setNoteId(id);
+    setShowUpdate(true);
+  }
 
   return (
     <>
@@ -63,10 +73,19 @@ function NoteBox(props) {
               </Tag>
             ))}
             <p>{item.content}</p>
-            <AddSign key={uniqid()}>修改</AddSign>
+            <AddSign onClick={() => updateNote(item.id)} key={uniqid()}>
+              修改
+            </AddSign>
           </TagsContainer>
         </TagBox>
       ))}
+      {showUpdate ? (
+        <NewNote
+          noteId={noteId}
+          showNoteInput={props.showNoteInput}
+          setShowNoteInput={props.setShowNoteInput}
+        />
+      ) : null}
     </>
   );
 }

@@ -180,8 +180,8 @@ function TagBox(props) {
           <BoxName key={uniqid()}>{box.name}</BoxName>
           <TagsContainer key={uniqid()}>
             {box.tags?.map((tag) => (
-              <label key={uniqid()} name={tag}>
-                <Input key={uniqid()} id={tag}></Input>
+              <label name={tag} key={uniqid()}>
+                <Input id={tag} key={uniqid()}></Input>
                 <Tag onClick={() => choseTagHandler(tag)} key={uniqid()}>
                   {tag}
                 </Tag>

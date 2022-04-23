@@ -1,45 +1,50 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
+import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
+import uniqid from "uniqid";
 import {
   getDoc,
   setDoc,
   doc,
-  serverTimestamp,
   updateDoc,
+  connectFirestoreEmulator,
 } from "firebase/firestore";
 import {
   userRef,
   booksRef,
   notesRef,
   newBookRef,
-} from "../utils/fireBaseConfig";
+} from "../../utils/fireBaseConfig";
 
 const Flex = styled.div`
   display: flex;
   align-items: center;
 `;
+const Background = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+`;
 const TagBoxFlat = styled.div`
   flex-direction: column;
   align-items: center;
+  overflow: scroll;
   padding: 20px;
   width: 60%;
-  ${"" /* height: 600px; */}
+  height: 600px;
   margin-bottom: 20px;
   background-color: white;
   border: 2px solid #ece6e6;
   border-radius: 10px;
-  z-index: 99;
+  ${"" /* z-index: 99; */}
 `;
-const Background = styled.div`
-  width: 100%;
-  height: 500px;
-  background: rgba(0, 0, 0, 0.5);
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
-`;
+
 const BoxContent = styled(Flex)`
   width: 80%;
   margin: 8px;
@@ -82,9 +87,18 @@ const ContentInput = styled.textarea`
 `;
 const Button = styled.button``;
 
+const AddTag = styled(AddCircle)`
+  width: 22px;
+  color: #df8907;
+`;
+
 let chosenTagArray = [];
+let currentGroups = [];
+let groupArray = [];
 const NewNote = (props) => {
   const [groupData, setGroupData] = useState([]);
+  const [inputArray, setInputArray] = useState([]);
+  const [tagInput, setTagInput] = useState("");
   const [noteTitleInput, setNoteTitleInput] = useState("");
   const [pageInput, setPageInput] = useState("");
   const [noteInput, setNoteInput] = useState("");
@@ -92,10 +106,17 @@ const NewNote = (props) => {
 
   useEffect(() => {
     let data = [];
+
     async function getTagGroupData() {
       const userDoc = await getDoc(userRef);
       data.push(...userDoc.data().tagGroups);
       setGroupData(data);
+      currentGroups = [...data];
+      console.log(currentGroups);
+      for (let i = 0; i < data.length; i++) {
+        groupArray.push(false);
+      }
+      setInputArray(groupArray);
     }
     getTagGroupData();
   }, []);
@@ -119,11 +140,16 @@ const NewNote = (props) => {
     console.log(chosenTagArray);
     if (chosenTagArray.length === 0) {
       alert("每個筆記需要至少一個標籤");
+    } else if (!noteTitleInput) {
+      alert("請輸入筆記標題");
+    } else if (!noteInput) {
+      alert("請輸入筆記內容");
     } else {
       // 建立新筆記
       const newNoteRef = doc(notesRef);
       inputData = {
         bookID: props.id,
+        id: newNoteRef.id,
         bookTitle: props.title,
         content: noteInput,
         page: pageInput,
@@ -135,7 +161,6 @@ const NewNote = (props) => {
 
       // 把標籤加到書本
       const book = await getDoc(doc(booksRef, props.id));
-      //如果他選的標籤已經在data裡面，就不用加進去
 
       book.data().tagNames.forEach((tag) => {
         if (chosenTagArray.includes(tag)) {
@@ -150,38 +175,90 @@ const NewNote = (props) => {
       await updateDoc(doc(booksRef, props.id), {
         tagNames: chosenTagArray,
       });
-      props.setShowInput(false);
+      props.setShowNoteInput(false);
       chosenTagArray = [];
     }
   }
 
   function closeInput(e) {
     if (inputRef.current == e.target) {
-      props.setShowInput(false);
+      props.setShowNoteInput(false);
     }
   }
+
+  function tagInputHandler(index) {
+    if (inputArray.includes(true)) {
+      groupArray.splice(index, 1, false);
+      setInputArray([...groupArray]);
+    } else {
+      groupArray.splice(index, 1, true);
+      setInputArray([...groupArray]);
+    }
+  }
+  async function updateTagGroup(datas) {
+    await updateDoc(userRef, {
+      tagGroups: datas,
+    });
+  }
+
+  function addTagHandler(name) {
+    if (!tagInput) {
+      alert("請輸入要新增的標籤");
+    } else {
+      currentGroups.forEach((item, index) => {
+        if (item.name === name) {
+          currentGroups[index].tags.push(tagInput);
+          setGroupData([...currentGroups]);
+          groupArray.splice(index, 1, false);
+          setInputArray([...groupArray]);
+          updateTagGroup(groupData);
+        } else {
+          console.log("no match");
+        }
+      });
+    }
+  }
+
   return (
     <>
       <Background ref={inputRef} onClick={closeInput}>
         <TagBoxFlat>
           <h3>選擇此筆記的書籤</h3>
-          <Button onClick={() => props.setShowInput((prev) => !prev)}>X</Button>
+          <Button onClick={() => props.setShowNoteInput((prev) => !prev)}>
+            X
+          </Button>
           {groupData?.map((data, index) => (
-            <BoxContent key={index}>
-              <SubTitle>{data.name}</SubTitle>
+            <BoxContent key={data.name}>
+              <SubTitle key={data.name}>{data.name}</SubTitle>
 
               <TagsContainer key={index}>
-                {data.tags.map((tag, index) => (
-                  <label name={tag}>
-                    <Input id={tag}></Input>
-                    <Tag onClick={() => choseTagHandler(tag)} key={index}>
+                {data.tags.map((tag, tagIndex) => (
+                  <label name={tag} key={tagIndex}>
+                    <Input id={tag} key={`${tag}${tagIndex}`}></Input>
+                    <Tag onClick={() => choseTagHandler(tag)} key={tag}>
                       {tag}
                     </Tag>
                   </label>
                 ))}
+                <AddTag onClick={() => tagInputHandler(index)} />
+                {inputArray[index] && (
+                  <div key={data.name}>
+                    <input
+                      onChange={(e) => setTagInput(e.target.value)}
+                      key={`${data.name}${index}`}
+                    />
+                    <button
+                      onClick={() => addTagHandler(data.name)}
+                      key={index}
+                    >
+                      確認
+                    </button>
+                  </div>
+                )}
               </TagsContainer>
             </BoxContent>
           ))}
+
           <Form onSubmit={submitHandler} as="form">
             <TagsContainer>
               <div>

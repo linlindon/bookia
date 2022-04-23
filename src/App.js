@@ -1,5 +1,5 @@
 import Tags from "./pages/tags";
-import Notes from "./pages/notes";
+import Books from "./pages/books";
 import BookNote from "./pages/booknote";
 import SearchBook from "./pages/searchBook";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Header />
         <Routes>
-          <Route path="/" element={<Notes />} />
+          <Route path="/" element={<Books />} />
           <Route path="search" element={<SearchBook />} />
           <Route path="alltags" element={<Tags />} />
           <Route path="booknote" element={<BookNote />} />

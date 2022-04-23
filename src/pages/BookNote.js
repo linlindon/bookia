@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { doc, onSnapshot, getDoc } from "firebase/firestore";
 import { booksRef, notesRef } from "../utils/fireBaseConfig";
-import NewNote from "../components/NewNote";
+import NewNote from "../components/modal/NewNote";
 import NoteBox from "../components/NoteBox";
 
 const Flex = styled.div`
@@ -47,7 +47,7 @@ const Button = styled.button``;
 function BookNote() {
   const [bookNotesData, setBookNotesData] = useState([]);
   const [bookInfo, setBookInfo] = useState([]);
-  const [showNoteInput, setShowInput] = useState(false);
+  const [showNoteInput, setShowNoteInput] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -80,10 +80,6 @@ function BookNote() {
     // setBookNotesData(noteData);
   }, []);
 
-  const noteForm = () => {
-    setShowInput((prev) => !prev);
-  };
-
   return (
     <>
       <Container>
@@ -96,19 +92,24 @@ function BookNote() {
             <BookTitle>書名: {bookInfo.title}</BookTitle>
             <p>作者: {bookInfo.author}</p>
             <p>出版年: {bookInfo.publish}</p>
-            {/* <Button onClick={addNewBook}>建立書本資料按鈕</Button> */}
           </ContentContainer>
-          <Button onClick={noteForm}>新增筆記</Button>
+          <Button onClick={() => setShowNoteInput((prev) => !prev)}>
+            新增筆記
+          </Button>
         </NoteBoxContainer>
         {showNoteInput ? (
           <NewNote
             showNoteInput={showNoteInput}
-            setShowInput={setShowInput}
+            setShowNoteInput={setShowNoteInput}
             title={bookInfo.title}
             id={id}
           />
         ) : null}
-        <NoteBox bookNotesData={bookNotesData} />
+        <NoteBox
+          bookNotesData={bookNotesData}
+          showNoteInput={showNoteInput}
+          setShowNoteInput={setShowNoteInput}
+        />
       </Container>
     </>
   );
