@@ -46,8 +46,6 @@ const TagBox = styled.div`
 const DeleteSign = styled.span``;
 
 function NoteBox(props) {
-  console.log("NoteBox");
-  console.log(props.bookNotesData);
   const [showUpdate, setShowUpdate] = useState(false);
 
   const [noteId, setNoteId] = useState("");
@@ -80,11 +78,7 @@ function NoteBox(props) {
         </TagBox>
       ))}
       {showUpdate ? (
-        <NewNote
-          noteId={noteId}
-          showNoteInput={props.showNoteInput}
-          setShowNoteInput={props.setShowNoteInput}
-        />
+        <NewNote noteId={noteId} setShowUpdate={setShowUpdate} />
       ) : null}
     </>
   );

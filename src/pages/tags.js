@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getDoc, updateDoc } from "firebase/firestore";
-import { userRef } from "../utils/fireBaseConfig";
+import { userRef } from "../utils/fireBaseRef";
 
 import TagBox from "../components/TagBox";
 

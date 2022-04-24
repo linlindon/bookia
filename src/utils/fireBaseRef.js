@@ -1,15 +1,5 @@
 import { initializeApp } from "firebase/app";
-import {
-  getFirestore,
-  getDocs,
-  doc,
-  collectionGroup,
-  query,
-  where,
-  setDoc,
-  collection,
-  addDoc,
-} from "firebase/firestore";
+import { getFirestore, doc, collection } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBM3IamCWyJi_8vyVPP34KUixJJKXlAwQ8",
@@ -28,6 +18,14 @@ const tagsRef = collection(db, "users", userID, "tags");
 const notesRef = collection(db, "users", userID, "notes");
 const booksRef = collection(db, "users", userID, "books");
 const newBookRef = doc(booksRef);
-// const docBooksRef = doc(db, "users", userID, "books");
 const userRef = doc(db, "users", userID);
-export { tagsRef, tagGroupsRef, notesRef, booksRef, userRef, newBookRef };
+const newUserRef = collection(db, "users");
+export {
+  tagsRef,
+  tagGroupsRef,
+  notesRef,
+  booksRef,
+  userRef,
+  newBookRef,
+  newUserRef,
+};

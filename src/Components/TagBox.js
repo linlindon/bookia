@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { getDocs, getDoc, updateDoc } from "firebase/firestore";
-import { tagsRef, notesRef, userRef } from "../utils/fireBaseConfig";
+import { tagsRef, notesRef, userRef } from "../utils/fireBaseRef";
 import uniqid from "uniqid";
 
 const TagBoxContainer = styled.div`

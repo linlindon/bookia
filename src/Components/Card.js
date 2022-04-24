@@ -1,7 +1,7 @@
 import { setDoc, serverTimestamp } from "firebase/firestore";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { newBookRef } from "../utils/fireBaseConfig";
+import { newBookRef } from "../utils/fireBaseRef";
 import styled from "styled-components";
 
 const AllCardsContainer = styled.div`

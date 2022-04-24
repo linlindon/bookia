@@ -1,19 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
-import {
-  getDoc,
-  setDoc,
-  doc,
-  updateDoc,
-  connectFirestoreEmulator,
-} from "firebase/firestore";
+import { getDoc, setDoc, doc, updateDoc } from "firebase/firestore";
 import {
   userRef,
   booksRef,
   notesRef,
   newBookRef,
-} from "../../utils/fireBaseConfig";
+} from "../../utils/fireBaseRef";
 
 const Flex = styled.div`
   display: flex;
@@ -136,7 +130,7 @@ const NewNote = (props) => {
   let inputData = {};
   async function submitHandler(e) {
     e.preventDefault();
-    console.log(chosenTagArray);
+
     if (chosenTagArray.length === 0) {
       alert("每個筆記需要至少一個標籤");
     } else if (!noteTitleInput) {
@@ -155,12 +149,11 @@ const NewNote = (props) => {
         title: noteTitleInput,
         tagNames: chosenTagArray,
       };
-      console.log("新筆記資料包===>", inputData);
+      // console.log("新筆記資料包===>", inputData);
       await setDoc(newNoteRef, inputData);
 
       // 把標籤加到書本
       const book = await getDoc(doc(booksRef, props.id));
-
       book.data().tagNames.forEach((tag) => {
         if (chosenTagArray.includes(tag)) {
           console.log("重複的標籤===", tag);
@@ -170,7 +163,6 @@ const NewNote = (props) => {
         }
       });
 
-      console.log(chosenTagArray);
       await updateDoc(doc(booksRef, props.id), {
         tagNames: chosenTagArray,
       });
@@ -181,6 +173,7 @@ const NewNote = (props) => {
 
   function closeInput(e) {
     if (inputRef.current == e.target) {
+      // props.setShowUpdate(false);
       props.setShowNoteInput(false);
     }
   }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { doc, onSnapshot, getDoc } from "firebase/firestore";
-import { booksRef, notesRef } from "../utils/fireBaseConfig";
+import { booksRef, notesRef } from "../utils/fireBaseRef";
 import NewNote from "../components/modal/NewNote";
 import NoteBox from "../components/NoteBox";
 
@@ -61,19 +61,16 @@ function BookNote() {
   }, []);
 
   useEffect(() => {
+    console.log("booknote render");
     let noteData = [];
-    console.log(noteData);
     onSnapshot(notesRef, (notes) => {
       let data = [];
       notes.forEach((note) => {
-        console.log("inside snapshot", id);
         if (note.data().bookID === id) {
-          console.log("筆記", note.data());
           data.push(note.data());
         }
       });
       noteData = data;
-      console.log(noteData);
       setBookNotesData(noteData);
     });
     //當新增完筆記會無法render到畫面上
@@ -107,8 +104,8 @@ function BookNote() {
         ) : null}
         <NoteBox
           bookNotesData={bookNotesData}
-          showNoteInput={showNoteInput}
-          setShowNoteInput={setShowNoteInput}
+          // showNoteInput={showNoteInput}
+          // setShowNoteInput={setShowNoteInput}
         />
       </Container>
     </>

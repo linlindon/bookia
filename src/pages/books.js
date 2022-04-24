@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { getDocs } from "firebase/firestore";
-import { booksRef } from "../utils/fireBaseConfig";
+import { booksRef } from "../utils/fireBaseRef";
 import uniqid from "uniqid";
 
 const Container = styled.div`

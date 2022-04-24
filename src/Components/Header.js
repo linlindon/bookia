@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import auth from "../utils/firebaseAuth";
 import { NavLink } from "react-router-dom";
 
 const Navbar = styled.div`
@@ -15,7 +16,7 @@ const Logo = styled.div`
 `;
 
 const BarContent = styled.div``;
-const Link = styled(NavLink)`
+const NavLinks = styled(NavLink)`
   text-decoration: none;
   padding: 4px 6px;
   margin-right: 5px;
@@ -24,16 +25,22 @@ const Link = styled(NavLink)`
   background-color: #ffffff;
   border-radius: 5px;
 `;
-function Header() {
+function Header(props) {
   return (
     <Navbar>
       <Logo>Bookia</Logo>
       <BarContent>
-        <Link to="/">筆記櫃</Link>
-        <Link to="/alltags">書籤櫃</Link>
-        <Link to="/search">新增筆記</Link>
-        <Link to="/">站內搜尋</Link>
-        <Link to="login">登入</Link>
+        <NavLinks to="/">筆記櫃</NavLinks>
+        <NavLinks to="/alltags">書籤櫃</NavLinks>
+        <NavLinks to="/search">新增筆記</NavLinks>
+        <NavLinks to="/">站內搜尋</NavLinks>
+        {props.loginState ? (
+          <NavLinks to="login" onClick={auth.LogoutHandler}>
+            登出
+          </NavLinks>
+        ) : (
+          <NavLinks to="login">登入</NavLinks>
+        )}
       </BarContent>
     </Navbar>
   );
