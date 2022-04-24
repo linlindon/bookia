@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
-import uniqid from "uniqid";
 import {
   getDoc,
   setDoc,

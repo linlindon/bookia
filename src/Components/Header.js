@@ -33,6 +33,7 @@ function Header() {
         <Link to="/alltags">書籤櫃</Link>
         <Link to="/search">新增筆記</Link>
         <Link to="/">站內搜尋</Link>
+        <Link to="login">登入</Link>
       </BarContent>
     </Navbar>
   );
