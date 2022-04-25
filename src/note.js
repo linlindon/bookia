@@ -78,3 +78,38 @@ const washingtonRef = doc(db, "cities", "DC");
 await updateDoc(washingtonRef, {
   capital: true,
 });
+
+////////////////////////////////////////////
+import Movie from "./Movie";
+const MovieList = () => {
+  const [movies, setMovies] = useState([
+    {
+      name: "Harry",
+      price: "$10",
+      id: 2134,
+    },
+    {
+      name: "Marry",
+      price: "$12",
+      id: 5789,
+    },
+  ]);
+  return (
+    <div>
+      {movies.map((movie) => (
+        <Movie name={movie.name} price={movie.price} key={movie.id} />
+      ))}
+    </div>
+  );
+};
+export default MovieList;
+
+//////////////// Movie Component /////////////////
+const Movie = ({ name, price }) => {
+  return (
+    <div>
+      <h3>{name}</h3>
+      <p>{price}</p>
+    </div>
+  );
+};

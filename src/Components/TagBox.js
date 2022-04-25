@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { getDocs, getDoc, updateDoc } from "firebase/firestore";
+import { getDocs, updateDoc } from "firebase/firestore";
 import { tagsRef, notesRef, userRef } from "../utils/fireBaseRef";
 import uniqid from "uniqid";
 
@@ -103,13 +103,14 @@ function TagBox(props) {
   const [notesBox, setNotesBoxData] = useState([]);
 
   useEffect(async () => {
-    allNotesData = [];
-    clickTagNameArray = [];
-    (await getDocs(notesRef)).forEach((note) => {
-      allNotesData.push(note.data());
-    });
-    // console.log(allNotesData);
-    // console.log(allTagBoxData);
+    async function getData() {
+      allNotesData = [];
+      clickTagNameArray = [];
+      (await getDocs(notesRef)).forEach((note) => {
+        allNotesData.push(note.data());
+      });
+    }
+    getData();
   }, []);
 
   function showTagInputHandler(name) {
@@ -163,10 +164,10 @@ function TagBox(props) {
         });
       }
     };
-    console.log(allNotesData);
+    // console.log(allNotesData);
     allNotesData.forEach((note) => {
       if (noteIncludeTag(clickTagNameArray, note)) {
-        console.log(note);
+        // console.log(note);
         currentNoteData.push(note);
       }
     });
@@ -175,14 +176,14 @@ function TagBox(props) {
 
   return (
     <>
-      {props.groupData?.map((box) => (
-        <TagBoxContainer key={uniqid()}>
-          <BoxName key={uniqid()}>{box.name}</BoxName>
-          <TagsContainer key={uniqid()}>
-            {box.tags?.map((tag) => (
-              <label name={tag} key={uniqid()}>
-                <Input id={tag} key={uniqid()}></Input>
-                <Tag onClick={() => choseTagHandler(tag)} key={uniqid()}>
+      {props.groupData?.map((box, index) => (
+        <TagBoxContainer key={index}>
+          <BoxName key={box.name}>{box.name}</BoxName>
+          <TagsContainer key={`${box.name}${index}`}>
+            {box.tags?.map((tag, index) => (
+              <label name={tag} key={index}>
+                <Input id={tag} key={`${tag}${index}`}></Input>
+                <Tag onClick={() => choseTagHandler(tag)} key={tag}>
                   {tag}
                 </Tag>
               </label>

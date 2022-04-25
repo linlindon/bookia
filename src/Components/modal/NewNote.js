@@ -2,12 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
 import { getDoc, setDoc, doc, updateDoc } from "firebase/firestore";
-import {
-  userRef,
-  booksRef,
-  notesRef,
-  newBookRef,
-} from "../../utils/fireBaseRef";
+import { userRef, booksRef, notesRef } from "../../utils/fireBaseRef";
 
 const Flex = styled.div`
   display: flex;
@@ -99,13 +94,11 @@ const NewNote = (props) => {
 
   useEffect(() => {
     let data = [];
-
     async function getTagGroupData() {
       const userDoc = await getDoc(userRef);
       data.push(...userDoc.data().tagGroups);
       setGroupData(data);
       currentGroups = [...data];
-      console.log(currentGroups);
       for (let i = 0; i < data.length; i++) {
         groupArray.push(false);
       }
@@ -166,15 +159,14 @@ const NewNote = (props) => {
       await updateDoc(doc(booksRef, props.id), {
         tagNames: chosenTagArray,
       });
-      props.setShowNoteInput(false);
+      props.show(false);
       chosenTagArray = [];
     }
   }
 
   function closeInput(e) {
-    if (inputRef.current == e.target) {
-      // props.setShowUpdate(false);
-      props.setShowNoteInput(false);
+    if (inputRef.current === e.target) {
+      props.show(false);
     }
   }
 
@@ -216,9 +208,7 @@ const NewNote = (props) => {
       <Background ref={inputRef} onClick={closeInput}>
         <TagBoxFlat>
           <h3>選擇此筆記的書籤</h3>
-          <Button onClick={() => props.setShowNoteInput((prev) => !prev)}>
-            X
-          </Button>
+          <Button onClick={() => props.show((prev) => !prev)}>X</Button>
           {groupData?.map((data, index) => (
             <BoxContent key={data.name}>
               <SubTitle key={data.name}>{data.name}</SubTitle>
@@ -256,7 +246,7 @@ const NewNote = (props) => {
               <div>
                 <h3>筆記標題</h3>
                 <TitleInput
-                  value={noteTitleInput}
+                  value={props.noteData.title}
                   onChange={(e) => setNoteTitleInput(e.target.value)}
                   placeholder={"ex.書摘"}
                 ></TitleInput>
@@ -264,7 +254,7 @@ const NewNote = (props) => {
               <div>
                 <h3>頁數</h3>
                 <PageInput
-                  value={pageInput}
+                  value={props.noteData ? props.noteData.page : pageInput}
                   onChange={(e) => setPageInput(e.target.value)}
                 ></PageInput>
               </div>
@@ -272,7 +262,7 @@ const NewNote = (props) => {
             <div>
               <h3>筆記內容</h3>
               <ContentInput
-                value={noteInput}
+                value={props.noteData ? props.noteData.content : noteInput}
                 onChange={(e) => setNoteInput(e.target.value)}
               ></ContentInput>
             </div>

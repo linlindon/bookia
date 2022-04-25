@@ -1,7 +1,10 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { doc, getDoc } from "firebase/firestore";
 import uniqid from "uniqid";
 import NewNote from "./modal/NewNote";
+import { userRef, booksRef, notesRef } from "../utils/fireBaseRef";
+import firebase from "../utils/firebaseTools";
 
 const BoxName = styled.h4`
   width: 80%;
@@ -47,11 +50,12 @@ const DeleteSign = styled.span``;
 
 function NoteBox(props) {
   const [showUpdate, setShowUpdate] = useState(false);
-
-  const [noteId, setNoteId] = useState("");
+  const [noteData, setNoteData] = useState({});
 
   async function updateNote(id) {
-    setNoteId(id);
+    await firebase.getNoteData(id).then((data) => {
+      setNoteData(data);
+    });
     setShowUpdate(true);
   }
 
@@ -77,9 +81,7 @@ function NoteBox(props) {
           </TagsContainer>
         </TagBox>
       ))}
-      {showUpdate ? (
-        <NewNote noteId={noteId} setShowUpdate={setShowUpdate} />
-      ) : null}
+      {showUpdate ? <NewNote noteData={noteData} show={setShowUpdate} /> : null}
     </>
   );
 }

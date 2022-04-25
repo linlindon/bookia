@@ -1,11 +1,12 @@
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
+  userCrendential,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { addDoc, setDoc, doc } from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore";
 import { newUserRef } from "./fireBaseRef";
 
 const firebaseConfig = {
@@ -31,8 +32,10 @@ const memberManage = {
   },
   LoginHandler(email, password) {
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
+      .then((res) => {
+        console.log(res.user);
         alert("登入成功");
+        return res.user;
       })
       .catch((error) => {
         alert(error);
@@ -47,7 +50,6 @@ const memberManage = {
     createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
         const ref = doc(newUserRef);
-        // console.log(ref.data());
         setDoc(ref, {
           name: name,
           id: ref.id,

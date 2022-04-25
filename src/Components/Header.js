@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import auth from "../utils/firebaseAuth";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Navbar = styled.div`
   display: flex;
@@ -26,6 +26,15 @@ const NavLinks = styled(NavLink)`
   border-radius: 5px;
 `;
 function Header(props) {
+  const navigate = useNavigate();
+  console.log("header render");
+  console.log(props.loginState);
+
+  function logout() {
+    auth.LogoutHandler();
+    navigate("/login");
+  }
+
   return (
     <Navbar>
       <Logo>Bookia</Logo>
@@ -35,7 +44,7 @@ function Header(props) {
         <NavLinks to="/search">新增筆記</NavLinks>
         <NavLinks to="/">站內搜尋</NavLinks>
         {props.loginState ? (
-          <NavLinks to="login" onClick={auth.LogoutHandler}>
+          <NavLinks to="login" onClick={logout}>
             登出
           </NavLinks>
         ) : (

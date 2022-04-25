@@ -1,4 +1,3 @@
-import { FieldValue } from "firebase/firestore";
 import { useState } from "react";
 import auth from "../utils/firebaseAuth";
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { doc, onSnapshot, getDoc } from "firebase/firestore";
 import { booksRef, notesRef } from "../utils/fireBaseRef";
@@ -73,8 +73,6 @@ function BookNote() {
       noteData = data;
       setBookNotesData(noteData);
     });
-    //當新增完筆記會無法render到畫面上
-    // setBookNotesData(noteData);
   }, []);
 
   return (
@@ -97,16 +95,12 @@ function BookNote() {
         {showNoteInput ? (
           <NewNote
             showNoteInput={showNoteInput}
-            setShowNoteInput={setShowNoteInput}
+            show={setShowNoteInput}
             title={bookInfo.title}
             id={id}
           />
         ) : null}
-        <NoteBox
-          bookNotesData={bookNotesData}
-          // showNoteInput={showNoteInput}
-          // setShowNoteInput={setShowNoteInput}
-        />
+        <NoteBox bookNotesData={bookNotesData} />
       </Container>
     </>
   );
