@@ -85,15 +85,7 @@ let chosenTagArray = [];
 let currentGroups = [];
 let groupArray = [];
 const NewNote = (props) => {
-  const [groupData, setGroupData] = useState([]);
-  const [inputArray, setInputArray] = useState([]);
-  const [tagInput, setTagInput] = useState("");
-  // const [noteTitleInput, setNoteTitleInput] = useState("");
-  // const [pageInput, setPageInput] = useState("");
-  // const [noteInput, setNoteInput] = useState("");
-  const inputRef = useRef();
-  console.log(props.bookInfo);
-  let currentNoteData = {
+  let inputData = {
     bookID: "",
     id: "",
     bookTitle: "",
@@ -102,6 +94,13 @@ const NewNote = (props) => {
     title: "",
     tagNames: [],
   };
+  const [groupData, setGroupData] = useState([]);
+  const [inputArray, setInputArray] = useState([]);
+  const [tagInput, setTagInput] = useState("");
+  const [noteTitleInput, setNoteTitleInput] = useState("");
+  const [pageInput, setPageInput] = useState("");
+  const [noteInput, setNoteInput] = useState("");
+  const inputRef = useRef();
 
   useEffect(() => {
     chosenTagArray = [];
@@ -114,28 +113,14 @@ const NewNote = (props) => {
         groupArray.push(false);
       }
     });
-    console.log(props.noteData);
+
     if (props.noteData) {
       chosenTagArray = [...props.noteData.tagNames];
-      currentNoteData = {
-        ...currentNoteData,
-        title: props.noteData.title,
-        page: props.noteData.page,
-        content: props.noteData.content,
-        id: props.bookInfo.noteId,
-        tagNames: chosenTagArray,
-      };
+      setNoteTitleInput(props.noteData.title);
+      setPageInput(props.noteData.page);
+      setNoteInput(props.noteData.content);
     }
-    console.log(currentNoteData);
   }, []);
-
-  const inputChangeHandler = (e) => {
-    const { name, value } = e.target;
-    currentNoteData = {
-      ...currentNoteData,
-      [name]: value,
-    };
-  };
 
   function choseTagHandler(tag) {
     if (chosenTagArray.includes(tag)) {
@@ -154,36 +139,45 @@ const NewNote = (props) => {
 
     if (chosenTagArray.length === 0) {
       alert("每個筆記需要至少一個標籤");
+    } else if (!noteTitleInput) {
+      alert("請輸入筆記標題");
+    } else if (!noteInput) {
+      alert("請輸入筆記內容");
     } else {
       // 建立新筆記
-
+      // newNoteRef.id
       const newNoteRef = doc(notesRef);
-      currentNoteData = {
-        ...currentNoteData,
+
+      inputData = {
         bookID: props.bookInfo.id,
         id: props.noteData ? props.bookInfo.noteId : newNoteRef.id,
-        tagNames: chosenTagArray,
         bookTitle: props.bookInfo.title,
+        content: noteInput,
+        page: pageInput,
+        title: noteTitleInput,
+        tagNames: chosenTagArray,
       };
-
-      console.log("新筆記資料包===>", currentNoteData);
-
+      console.log("新筆記資料包===>", inputData);
+      // console.log(props.bookInfo.id);
+      // 路徑錯誤。解決不了ID問題
       if (!props.noteData) {
-        await setDoc(newNoteRef, currentNoteData);
+        // console.log(props.noteId);
+        await setDoc(newNoteRef, inputData);
       } else {
-        firebase.updateNote(userID, props.bookInfo.noteId, currentNoteData);
+        await setDoc(doc(notesRef, props.bookInfo.noteId), inputData);
       }
 
       // 把標籤加到書本
-      firebase.getBookInfo(userID, props.bookInfo.id).then((data) => {
-        data.tagNames.forEach((tag) => {
-          if (!chosenTagArray.includes(tag)) {
-            chosenTagArray.push(tag);
-          }
-        });
+      const book = await getDoc(doc(booksRef, props.bookInfo.id));
+      book.data().tagNames.forEach((tag) => {
+        if (!chosenTagArray.includes(tag)) {
+          chosenTagArray.push(tag);
+        }
       });
-      firebase.updateBookTags(userID, props.bookInfo.id, chosenTagArray);
 
+      await updateDoc(doc(booksRef, props.bookInfo.id), {
+        tagNames: chosenTagArray,
+      });
       props.show(false);
       chosenTagArray = [];
     }
@@ -280,9 +274,10 @@ const NewNote = (props) => {
                 <h3>筆記標題</h3>
                 <TitleInput
                   name="title"
-                  defaultValue={props.noteData ? props.noteData.title : ""}
-                  onChange={inputChangeHandler}
-                  // onChange={(e) => setNoteTitleInput(e.target.value)}
+                  defaultValue={
+                    props.noteData ? props.noteData.title : noteTitleInput
+                  }
+                  onChange={(e) => setNoteTitleInput(e.target.value)}
                   placeholder={"ex.書摘"}
                 ></TitleInput>
               </div>
@@ -290,19 +285,20 @@ const NewNote = (props) => {
                 <h3>頁數</h3>
                 <PageInput
                   name="page"
-                  defaultValue={props.noteData ? props.noteData.page : ""}
-                  onChange={inputChangeHandler}
-                  // onChange={(e) => setPageInput(e.target.value)}
+                  defaultValue={
+                    props.noteData ? props.noteData.page : pageInput
+                  }
+                  onChange={(e) => setPageInput(e.target.value)}
                 ></PageInput>
               </div>
             </TagsContainer>
             <div>
               <h3>筆記內容</h3>
               <ContentInput
-                name="content"
-                defaultValue={props.noteData ? props.noteData.content : ""}
-                onChange={inputChangeHandler}
-                // onChange={(e) => setNoteInput(e.target.value)}
+                defaultValue={
+                  props.noteData ? props.noteData.content : noteInput
+                }
+                onChange={(e) => setNoteInput(e.target.value)}
               ></ContentInput>
             </div>
             <Button>新增</Button>
