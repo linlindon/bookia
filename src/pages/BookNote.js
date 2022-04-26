@@ -46,7 +46,7 @@ const Button = styled.button``;
 
 function BookNote() {
   const [bookNotesData, setBookNotesData] = useState([]);
-  const [bookInfo, setBookInfo] = useState([]);
+  const [bookInfo, setBookInfo] = useState({});
   const [showNoteInput, setShowNoteInput] = useState(false);
   const { id } = useParams();
 
@@ -54,7 +54,8 @@ function BookNote() {
     async function getBookInfo() {
       const info = await getDoc(doc(booksRef, id));
       console.log("檢查圖片URL", info.data());
-      setBookInfo(info.data());
+      // console.log(info.data());
+      setBookInfo({ ...info.data() });
     }
     getBookInfo();
     // 監聽是否有新增的筆記
@@ -96,8 +97,7 @@ function BookNote() {
           <NewNote
             showNoteInput={showNoteInput}
             show={setShowNoteInput}
-            title={bookInfo.title}
-            id={id}
+            bookInfo={bookInfo}
           />
         ) : null}
         <NoteBox bookNotesData={bookNotesData} />

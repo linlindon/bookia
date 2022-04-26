@@ -41,6 +41,7 @@ const BookName = styled.h3``;
 const BookAuthor = styled.p``;
 const BookPublish = styled.p``;
 
+const userId = "E5EiDYKVIUd0wuHie6N5";
 function Card(props) {
   let navigate = useNavigate();
   async function getBookData(title, author, date, img) {
@@ -53,7 +54,7 @@ function Card(props) {
       tagNames: [],
       time: serverTimestamp(),
     };
-
+    console.log(data);
     await setDoc(newBookRef, data);
     navigate(`/booknote/${newBookRef.id}`, { state: data });
   }

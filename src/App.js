@@ -29,7 +29,7 @@ function App() {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   onAuthStateChanged(auth, (user) => {
-    console.log("App component render");
+    console.log(user.uid);
     if (user) {
       setLoginState(true);
       console.log("login true");

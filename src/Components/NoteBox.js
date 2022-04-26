@@ -48,15 +48,23 @@ const TagBox = styled.div`
 `;
 const DeleteSign = styled.span``;
 
+const userId = "E5EiDYKVIUd0wuHie6N5";
+
 function NoteBox(props) {
   const [showUpdate, setShowUpdate] = useState(false);
   const [noteData, setNoteData] = useState({});
+  const [bookInfo, setBookInfo] = useState([]);
 
+  // setBookInfo要加入book id & book title，為了讓NewNote送出資料
   async function updateNote(id) {
-    await firebase.getNoteData(id).then((data) => {
+    let info = {};
+    await firebase.getNoteData(userId, id).then((data) => {
       setNoteData(data);
+      info = { id: data.bookID, title: data.bookTitle, noteId: id };
     });
     setShowUpdate(true);
+    setBookInfo(info);
+    // console.log("NoteBox bookInfo", info);
   }
 
   return (
@@ -81,7 +89,9 @@ function NoteBox(props) {
           </TagsContainer>
         </TagBox>
       ))}
-      {showUpdate ? <NewNote noteData={noteData} show={setShowUpdate} /> : null}
+      {showUpdate ? (
+        <NewNote noteData={noteData} show={setShowUpdate} bookInfo={bookInfo} />
+      ) : null}
     </>
   );
 }

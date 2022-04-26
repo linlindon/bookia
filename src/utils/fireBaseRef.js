@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, collection } from "firebase/firestore";
+import { getFirestore, doc, collection, setDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBM3IamCWyJi_8vyVPP34KUixJJKXlAwQ8",
@@ -11,6 +11,11 @@ const firebaseConfig = {
 };
 const userID = "E5EiDYKVIUd0wuHie6N5";
 
+function ref(id) {
+  return collection(db, "users", id, "tags");
+}
+// x = ref(id)
+// setDoc(x,...)
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const tagGroupsRef = collection(db, "users", userID, "tagGroups");
@@ -28,4 +33,11 @@ export {
   userRef,
   newBookRef,
   newUserRef,
+};
+
+const api = {
+  geData(userID, docId, data) {
+    const notesRef = collection(db, "users", userID, "notes");
+    setDoc(doc(notesRef, docId), data);
+  },
 };
