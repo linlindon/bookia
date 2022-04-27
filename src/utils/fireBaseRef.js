@@ -16,8 +16,8 @@ function ref(id) {
 }
 // x = ref(id)
 // setDoc(x,...)
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// const app = initializeApp(firebaseConfig);
+const db = getFirestore();
 const tagGroupsRef = collection(db, "users", userID, "tagGroups");
 const tagsRef = collection(db, "users", userID, "tags");
 const notesRef = collection(db, "users", userID, "notes");

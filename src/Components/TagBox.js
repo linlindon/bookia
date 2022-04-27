@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-
-import { getDocs, updateDoc } from "firebase/firestore";
-import { tagsRef, notesRef, userRef } from "../utils/fireBaseRef";
+import firebase from "../utils/firebaseTools";
+import { getAuth } from "firebase/auth";
 import uniqid from "uniqid";
 
 const TagBoxContainer = styled.div`
@@ -14,13 +13,24 @@ const TagBoxContainer = styled.div`
   border: 1px solid #ece6e6;
   border-radius: 10px;
 `;
-
-const BoxName = styled.h4`
-  width: 80%;
-  padding-bottom: 10px;
+const BoxNameDiv = styled.div`
+  displayL flex;
+  justify-content: center;
   text-align: center;
+  width: 80%;
+  margin-bottom: 16px;
   font-size: 16px;
+  font-weight: 600;
   border-bottom: 2px solid #ece6e6;
+`;
+const BoxName = styled.p``;
+const BoxNameInput = styled.input`
+  border: none;
+  margin-top: 12px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
 `;
 
 const TagsContainer = styled.div`
@@ -58,10 +68,10 @@ const Wrapper = styled.div`
 `;
 
 const AddTagBox = styled.div`
-  position: absolute;
+  ${"" /* position: absolute; */}
   top: -600px;
   width: 150px;
-  height: 60px;
+  height: 100px;
   border: solid black 1px;
   border-radius: 10px;
   background-color: #ffffff;
@@ -92,30 +102,34 @@ const BookName = styled.div`
   margin-bottom: 5px;
 `;
 const DeleteSign = styled.span``;
+const Form = styled.form``;
 
 let clickTagNameArray = [];
 let allNotesData = [];
-let boxName = "";
+let inputTagBoxName = "";
 
 function TagBox(props) {
   const [showTagInput, setShowTagInput] = useState(false);
   const [inputTagName, setInputTagName] = useState("");
+  const [isUpdateTagBoxName, setIsUpdateTagBoxName] = useState(false);
+  const [updateTagBoxName, setUpdateTagBoxName] = useState("");
   const [notesBox, setNotesBoxData] = useState([]);
+  const tagBoxNameInputRef = useRef();
+  const user = getAuth().currentUser;
+  const userId = user.uid;
 
   useEffect(async () => {
-    async function getData() {
-      allNotesData = [];
-      clickTagNameArray = [];
-      (await getDocs(notesRef)).forEach((note) => {
+    allNotesData = [];
+    clickTagNameArray = [];
+    await firebase.getAllNotesData(userId).then((datas) => {
+      datas.forEach((note) => {
         allNotesData.push(note.data());
       });
-    }
-    getData();
+    });
   }, []);
 
   function showTagInputHandler(name) {
-    boxName = name;
-    console.log(boxName);
+    inputTagBoxName = name;
     setShowTagInput(true);
   }
 
@@ -123,21 +137,19 @@ function TagBox(props) {
     if (!inputTagName) {
       alert("請輸入標籤名稱");
     } else {
-      let data = [...props.groupData];
-
-      data.forEach((tagBox) => {
-        if (tagBox.name === boxName) {
+      let currentGroupData = [...props.groupData];
+      currentGroupData.forEach((tagBox) => {
+        // console.log(tagBox);
+        if (tagBox.name === inputTagBoxName) {
           tagBox.tags.push(inputTagName);
         } else {
           console.log("no match box name");
         }
       });
+      await firebase.updateTagGroup(userId, currentGroupData);
 
-      await updateDoc(userRef, {
-        tagGroups: data,
-      });
       setShowTagInput(false);
-      props.setGroupData(data);
+      props.setGroupData(currentGroupData);
     }
   }
   function closeInputTagHandler() {
@@ -145,7 +157,6 @@ function TagBox(props) {
   }
 
   async function choseTagHandler(tagName) {
-    console.log(tagName);
     let currentNoteData = [];
     if (clickTagNameArray.includes(tagName)) {
       clickTagNameArray = clickTagNameArray.filter((item) => {
@@ -154,7 +165,7 @@ function TagBox(props) {
     } else {
       clickTagNameArray.push(tagName);
     }
-    console.log(clickTagNameArray);
+    // console.log(clickTagNameArray);
     const noteIncludeTag = (tagArray, data) => {
       if (tagArray.length === 0) {
         return false;
@@ -167,18 +178,70 @@ function TagBox(props) {
     // console.log(allNotesData);
     allNotesData.forEach((note) => {
       if (noteIncludeTag(clickTagNameArray, note)) {
-        // console.log(note);
         currentNoteData.push(note);
       }
     });
     setNotesBoxData(currentNoteData);
   }
 
+  function updateTagBoxNameHandler() {
+    setIsUpdateTagBoxName(true);
+  }
+  // function closeUpdateTagBoxNameHandler(e) {
+  //   console.log("active");
+  //   if (tagBoxNameInputRef.current === e.target) {
+  //     console.log("close");
+  //     setIsUpdateTagBoxName(false);
+  //   }
+  // }
+  function focusHandler() {
+    console.log("focus");
+  }
+  function formSubmit(e) {
+    e.preventDefault();
+  }
+
+  async function onBlurHandler(name, value) {
+    console.log("onblur");
+    console.log(name, value);
+    let groupsData = [];
+    await firebase.getTagGroupsData(userId).then((data) => {
+      groupsData.push(...data.tagGroups);
+      groupsData.forEach((group) => {
+        if (name === group.name) {
+          group.name = value;
+        }
+      });
+      // console.log(groupsData);
+    });
+    await firebase.updateTagGroup(userId, groupsData);
+    props.setGroupData(groupsData);
+    setIsUpdateTagBoxName(false);
+  }
   return (
     <>
       {props.groupData?.map((box, index) => (
-        <TagBoxContainer key={index}>
-          <BoxName key={box.name}>{box.name}</BoxName>
+        <TagBoxContainer
+          // ref={tagBoxNameInputRef}
+          // onClick={closeUpdateTagBoxNameHandler}
+          key={index}
+        >
+          <BoxNameDiv>
+            {isUpdateTagBoxName ? (
+              <Form onSubmit={(e) => formSubmit(e)}>
+                <BoxNameInput
+                  defaultValue={box.name}
+                  as="input"
+                  onFocus={focusHandler}
+                  onBlur={(e) => onBlurHandler(box.name, e.target.value)}
+                ></BoxNameInput>
+              </Form>
+            ) : (
+              <BoxName key={box.name} onClick={updateTagBoxNameHandler}>
+                {box.name}
+              </BoxName>
+            )}
+          </BoxNameDiv>
           <TagsContainer key={`${box.name}${index}`}>
             {box.tags?.map((tag, index) => (
               <label name={tag} key={index}>

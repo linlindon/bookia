@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -29,9 +23,9 @@ function App() {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   onAuthStateChanged(auth, (user) => {
-    console.log(user.uid);
     if (user) {
       setLoginState(true);
+      console.log(user);
       console.log("login true");
     } else {
       setLoginState(false);
@@ -43,7 +37,7 @@ function App() {
       <BrowserRouter>
         <Header loginState={loginState} />
         <Routes>
-          <Route path="/" element={<Books />} />
+          <Route path="/" element={loginState ? <Books /> : <Login />} />
           <Route path="search" element={<SearchBook />} />
           <Route path="alltags" element={<Tags />} />
           <Route path="booknote" element={<BookNote />} />

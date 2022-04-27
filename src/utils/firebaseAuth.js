@@ -48,11 +48,11 @@ const memberManage = {
   },
   SignUpHandler(email, password, name) {
     createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
+      .then((res) => {
         const ref = doc(newUserRef);
         setDoc(ref, {
           name: name,
-          id: ref.id,
+          id: res.user.uid,
           email: email,
           tagGroups: [],
         }).then(() => {

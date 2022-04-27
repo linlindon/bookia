@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import firebase from "../utils/firebaseTools";
 import { getDocs } from "firebase/firestore";
-import { booksRef } from "../utils/fireBaseRef";
+import { getAuth } from "firebase/auth";
+
 import uniqid from "uniqid";
 
 const Container = styled.div`
@@ -60,13 +62,19 @@ const AddNoteSign = styled.div`
 
 function Books() {
   const [bookDatas, setBookDatas] = useState([]);
-
+  const user = getAuth().currentUser;
+  const userId = user.uid;
+  console.log(userId);
   useEffect(async () => {
     let bookData = [];
-    (await getDocs(booksRef)).forEach((book) => {
-      bookData.push(book.data());
+
+    firebase.getBooksData(userId).then((data) => {
+      data.forEach((book) => {
+        bookData.push(book.data());
+      });
+      setBookDatas(bookData);
+      console.log(bookData);
     });
-    setBookDatas(bookData);
   }, []);
 
   let navigate = useNavigate();

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { Search } from "@styled-icons/bootstrap/Search";
 import Card from "./Card";

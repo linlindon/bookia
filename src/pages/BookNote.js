@@ -1,10 +1,21 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { doc, onSnapshot, getDoc } from "firebase/firestore";
-import { booksRef, notesRef } from "../utils/fireBaseRef";
+import firebase from "../utils/firebaseTools";
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { initializeApp } from "firebase/app";
 import NewNote from "../components/modal/NewNote";
 import NoteBox from "../components/NoteBox";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBM3IamCWyJi_8vyVPP34KUixJJKXlAwQ8",
+  authDomain: "bookia-280d8.firebaseapp.com",
+  projectId: "bookia-280d8",
+  storageBucket: "bookia-280d8.appspot.com",
+  messagingSenderId: "330107513484",
+  appId: "1:330107513484:web:b81b9e8f3748a595dd69a9",
+};
 
 const Flex = styled.div`
   display: flex;
@@ -49,22 +60,30 @@ function BookNote() {
   const [bookInfo, setBookInfo] = useState({});
   const [showNoteInput, setShowNoteInput] = useState(false);
   const { id } = useParams();
+  const user = getAuth().currentUser;
+  const userId = user.uid;
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const notesRef = collection(db, "users", userId, "notes");
 
   useEffect(() => {
-    async function getBookInfo() {
-      const info = await getDoc(doc(booksRef, id));
-      console.log("檢查圖片URL", info.data());
-      // console.log(info.data());
-      setBookInfo({ ...info.data() });
-    }
-    getBookInfo();
-    // 監聽是否有新增的筆記
+    console.log(userId, id);
+    firebase.getBookInfo(userId, id).then((res) => {
+      console.log(res);
+      setBookInfo({ ...res });
+    });
+    // async function getBookInfo() {
+    //   const info = await getDoc(doc(booksRef, id));
+    //   console.log("檢查圖片URL", info.data());
+    // }
+    // getBookInfo();
   }, []);
 
   useEffect(() => {
-    console.log("booknote render");
     let noteData = [];
     onSnapshot(notesRef, (notes) => {
+      console.log("in snap shot");
       let data = [];
       notes.forEach((note) => {
         if (note.data().bookID === id) {

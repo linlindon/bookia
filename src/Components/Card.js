@@ -1,8 +1,9 @@
-import { setDoc, serverTimestamp } from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { newBookRef } from "../utils/fireBaseRef";
+import { useNavigate } from "react-router-dom";
+import { getAuth } from "firebase/auth";
 import styled from "styled-components";
+import firebase from "../utils/firebaseTools";
 
 const AllCardsContainer = styled.div`
   display: flex;
@@ -41,22 +42,27 @@ const BookName = styled.h3``;
 const BookAuthor = styled.p``;
 const BookPublish = styled.p``;
 
-const userId = "E5EiDYKVIUd0wuHie6N5";
 function Card(props) {
   let navigate = useNavigate();
-  async function getBookData(title, author, date, img) {
+  const user = getAuth().currentUser;
+  const userId = user.uid;
+
+  async function getBookData(book, title, author, date, img) {
+    console.log(book);
     let data = {
       title: title,
       author: author,
       publish: date,
       img: img,
-      id: newBookRef.id,
+      id: "",
       tagNames: [],
       time: serverTimestamp(),
     };
-    console.log(data);
-    await setDoc(newBookRef, data);
-    navigate(`/booknote/${newBookRef.id}`, { state: data });
+
+    const refId = firebase.setNewBookRef(userId);
+
+    await firebase.addNewBook(userId, refId, data);
+    navigate(`/booknote/${refId}`, { state: data });
   }
 
   return (
@@ -73,6 +79,7 @@ function Card(props) {
             <AddButton
               onClick={() =>
                 getBookData(
+                  book,
                   book.title,
                   book.authors,
                   book.publishedDate,

@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getDoc, updateDoc } from "firebase/firestore";
-import { userRef } from "../utils/fireBaseRef";
-
+import firebase from "../utils/firebaseTools";
+import { getAuth } from "firebase/auth";
 import TagBox from "../components/TagBox";
 
 const Container = styled.div`
@@ -40,39 +39,43 @@ const CloseButton = styled.span`
   font-size: 16px;
 `;
 let allGroupData = [];
+let groupTitle = "";
 function Tags() {
   const [boxDatas, setboxDatas] = useState([]);
   const [showInputBox, setShowInputBox] = useState(false);
-  const [inputBoxTitle, setInputBoxTitle] = useState("");
+  // const [inputBoxTitle, setInputBoxTitle] = useState("");
   const [groupData, setGroupData] = useState([]);
+  const user = getAuth().currentUser;
+  const userId = user.uid;
 
   useEffect(() => {
     let data = [];
-    async function getTagGroupData() {
-      const userDoc = await getDoc(userRef);
-      data.push(...userDoc.data().tagGroups);
-      setGroupData(data);
-      allGroupData = data;
-      console.log(allGroupData);
+    async function getData() {
+      await firebase.getTagGroupsData(userId).then((res) => {
+        data.push(...res.tagGroups);
+        setGroupData(data);
+        allGroupData = data;
+      });
+      // const userDoc = await getDoc(userRef);
+      // data.push(...userDoc.data().tagGroups);
+      // console.log(allGroupData);
     }
-    getTagGroupData();
+    getData();
   }, []);
 
   function showBoxHandler() {
     setShowInputBox(true);
   }
   function inputBoxTitleHandler(e) {
-    setInputBoxTitle(e);
+    groupTitle = e;
   }
 
   async function addBoxHandler() {
-    if (!inputBoxTitle) {
+    if (!groupTitle) {
       alert("請輸入標籤櫃名稱");
     } else {
-      allGroupData.push({ name: inputBoxTitle, tags: [] });
-      await updateDoc(userRef, {
-        tagGroups: [...allGroupData],
-      });
+      allGroupData.push({ name: groupTitle, tags: [] });
+      await firebase.updateTagGroup(userId, allGroupData);
       setShowInputBox(false);
       setGroupData(allGroupData);
     }

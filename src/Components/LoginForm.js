@@ -1,3 +1,4 @@
+import { AuthErrorCodes } from "firebase/auth";
 import { useState } from "react";
 import auth from "../utils/firebaseAuth";
 
@@ -33,3 +34,15 @@ export const LoginForm = () => {
     // </form>
   );
 };
+
+// export const showLoginError = (error) => {
+//   if (error.code == AuthErrorCodes.INVALID_PASSWORD) {
+//     lblLoginErrorMessage.innerHTML = "Wrong password, try again.";
+//   } else {
+//     lblLoginErrorMessage.innerHTML = `Error: ${error.message}`;
+//   }
+// };
+
+// export const showLoginState = (user) => {
+//   lblAuthState.innerHTML = `you logged in as ${user.displayName} (${user.uid})`;
+// };
