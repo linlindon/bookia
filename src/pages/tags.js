@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import firebase from "../utils/firebaseTools";
-import { getAuth } from "firebase/auth";
 import TagBox from "../components/TagBox";
+import { UserProfile } from "../App";
 
 const Container = styled.div`
   display: flex;
@@ -43,10 +43,8 @@ let groupTitle = "";
 function Tags() {
   const [boxDatas, setboxDatas] = useState([]);
   const [showInputBox, setShowInputBox] = useState(false);
-  // const [inputBoxTitle, setInputBoxTitle] = useState("");
   const [groupData, setGroupData] = useState([]);
-  const user = getAuth().currentUser;
-  const userId = user.uid;
+  const userId = useContext(UserProfile);
 
   useEffect(() => {
     let data = [];
@@ -66,14 +64,13 @@ function Tags() {
   function showBoxHandler() {
     setShowInputBox(true);
   }
-  function inputBoxTitleHandler(e) {
-    groupTitle = e;
-  }
 
-  async function addBoxHandler() {
+  async function addBoxHandler(e) {
+    e.preventDefault();
     if (!groupTitle) {
       alert("請輸入標籤櫃名稱");
     } else {
+      console.log(groupTitle);
       allGroupData.push({ name: groupTitle, tags: [] });
       await firebase.updateTagGroup(userId, allGroupData);
       setShowInputBox(false);
@@ -101,11 +98,13 @@ function Tags() {
           <InputBox>
             <h3>請輸入要新增的書籤櫃名稱</h3>
             <CloseButton onClick={closeInputBoxHandler}>x</CloseButton>
-            <input
-              onChange={(e) => inputBoxTitleHandler(e.target.value)}
-              type="text"
-            />
-            <button onClick={addBoxHandler}>新增標籤櫃</button>
+            <form onSubmit={(e) => addBoxHandler(e)}>
+              <input
+                onChange={(e) => (groupTitle = e.target.value)}
+                type="text"
+              />
+              <button onSubmit={addBoxHandler}>新增標籤櫃</button>
+            </form>
           </InputBox>
         </Wrapper>
       )}

@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import styled from "styled-components";
-import { doc, getDoc } from "firebase/firestore";
 import uniqid from "uniqid";
-import NewNote from "./modal/NewNote";
-import { userRef, booksRef, notesRef } from "../utils/fireBaseRef";
 import firebase from "../utils/firebaseTools";
+import NewNote from "./modal/NewNote";
+import { UserProfile } from "../App";
 
 const BoxName = styled.h4`
   width: 80%;
@@ -48,18 +47,17 @@ const TagBox = styled.div`
 `;
 const DeleteSign = styled.span``;
 
-const userId = "E5EiDYKVIUd0wuHie6N5";
-
 function NoteBox(props) {
   const [showUpdate, setShowUpdate] = useState(false);
   const [noteData, setNoteData] = useState({});
   const [bookInfo, setBookInfo] = useState([]);
-
+  const userId = useContext(UserProfile);
   // setBookInfo要加入book id & book title，為了讓NewNote送出資料
   async function updateNote(id) {
     let info = {};
     await firebase.getNoteData(userId, id).then((data) => {
       setNoteData(data);
+      console.log(data);
       info = { id: data.bookID, title: data.bookTitle, noteId: id };
     });
     setShowUpdate(true);
@@ -79,7 +77,7 @@ function NoteBox(props) {
             {item.tagNames.map((tag) => (
               <Tag key={uniqid()}>
                 {tag}
-                <DeleteSign key={uniqid()}>x</DeleteSign>
+                <DeleteSign key={uniqid()} />
               </Tag>
             ))}
             <p>{item.content}</p>

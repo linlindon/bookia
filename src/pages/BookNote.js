@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import firebase from "../utils/firebaseTools";
-import { getFirestore, collection, onSnapshot } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
 import { initializeApp } from "firebase/app";
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
+import firebase from "../utils/firebaseTools";
 import NewNote from "../components/modal/NewNote";
 import NoteBox from "../components/NoteBox";
+import { UserProfile } from "../App";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBM3IamCWyJi_8vyVPP34KUixJJKXlAwQ8",
@@ -60,8 +60,7 @@ function BookNote() {
   const [bookInfo, setBookInfo] = useState({});
   const [showNoteInput, setShowNoteInput] = useState(false);
   const { id } = useParams();
-  const user = getAuth().currentUser;
-  const userId = user.uid;
+  const userId = useContext(UserProfile);
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
@@ -101,11 +100,12 @@ function BookNote() {
         <Title>新增筆記</Title>
         <NoteBoxContainer>
           <BookImg>
-            <Img src="https://picsum.photos/200/300" alt="" />
+            <Img src={bookInfo.img} alt="" />
           </BookImg>
           <ContentContainer>
             <BookTitle>書名: {bookInfo.title}</BookTitle>
-            <p>作者: {bookInfo.author}</p>
+            <p>作者:{bookInfo.authors && bookInfo.authors.join("、")}</p>
+
             <p>出版年: {bookInfo.publish}</p>
           </ContentContainer>
           <Button onClick={() => setShowNoteInput((prev) => !prev)}>

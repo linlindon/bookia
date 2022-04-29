@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import auth from "../utils/firebaseTools";
+import firebase from "../utils/firebaseTools";
 
 export const SignUpForm = () => {
   let navigate = useNavigate();
@@ -23,14 +23,17 @@ export const SignUpForm = () => {
     // }
   };
 
-  function submitHandler() {
-    console.log("submit");
-    auth.SignUpHandler(signUpInfo.email, signUpInfo.password, signUpInfo.name);
-    navigate(`/`);
+  async function submitHandler(e) {
+    e.preventDefault();
+    console.log("sign up ");
+    await firebase
+      .SignUpHandler(signUpInfo.email, signUpInfo.password, signUpInfo.name)
+      .then(() => {
+        navigate(`/books`);
+      });
   }
   return (
-    // <form>
-    <>
+    <form onSubmit={(e) => submitHandler(e)}>
       <div>
         <p>Name</p>
         <input name="name" onChange={inputHandler} />
@@ -41,8 +44,7 @@ export const SignUpForm = () => {
         <p>Confirm Password</p>
         <input name="confirmPassword" />
       </div>
-      <button onClick={submitHandler}>登入</button>
-    </>
-    // </form>
+      <button onSubmit={submitHandler}>登入</button>
+    </form>
   );
 };

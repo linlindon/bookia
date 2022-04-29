@@ -32,7 +32,7 @@ const SearchIcon = styled(Search)`
 async function getSearchData(input) {
   const key = "AIzaSyAFgX7hNUEGGTH7nWl-nbHL7fuDH9XIHco";
   return fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=${input}&key=${key}`
+    `https://www.googleapis.com/books/v1/volumes?q=${input}&key=${key}&maxResults=40`
   )
     .then((res) => res.json())
     .catch((err) => {
@@ -44,8 +44,8 @@ function SearchBar() {
   const [searchInput, setSearchInput] = useState("");
   const [bookList, setBookList] = useState([]);
 
-  function searchData() {
-    console.log(searchInput);
+  function searchData(e) {
+    e.preventDefault();
     getSearchData(searchInput).then((data) => {
       let bookData = [];
       data.items.forEach((book) => {
@@ -58,12 +58,12 @@ function SearchBar() {
   return (
     <>
       <SearchContainer>
-        <SearchForm>
+        <SearchForm onSubmit={(e) => searchData(e)}>
           <SearchInput
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="請輸入關鍵字"
           />
-          <SearchIcon onClick={searchData} />
+          <SearchIcon onSubmit={searchData} />
         </SearchForm>
       </SearchContainer>
       <Card bookList={bookList} />

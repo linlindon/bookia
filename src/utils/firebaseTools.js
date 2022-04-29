@@ -1,9 +1,14 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, collection, getDocs } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  collection,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 import { getDoc, updateDoc, setDoc } from "firebase/firestore";
 import {
   getAuth,
-  userCrendential,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -92,9 +97,21 @@ const firebase = {
     data = { ...data, id: bookId };
     await setDoc(doc(newBookRef, bookId), data);
   },
-
+  async deleteNote(userId, noteId) {
+    const noteRef = doc(collection(usersRef, userId, "notes"), noteId);
+    await deleteDoc(noteRef);
+  },
+  async deleteBook(userId, bookId) {
+    const booksRef = doc(db, "users", userId, "books", bookId);
+    await deleteDoc(booksRef);
+  },
+  async searchBookTitle(userId, keywords) {
+    const newBookRef = collection(db, "users", userId, "books");
+    // const q = query(newBookRef, where("title", "==", keywords));
+    // return await getDocs(q);
+  },
   SignUpHandler(email, password, name) {
-    createUserWithEmailAndPassword(auth, email, password)
+    return createUserWithEmailAndPassword(auth, email, password)
       .then((res) => {
         const ref = doc(usersRef, res.user.uid);
         setDoc(ref, {
@@ -105,6 +122,31 @@ const firebase = {
         }).then(() => {
           alert("註冊成功");
         });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+  LoginHandler(email, password) {
+    return signInWithEmailAndPassword(auth, email, password)
+      .then((res) => {
+        console.log(res.user);
+        alert("登入成功");
+        return res.user;
+      })
+      .catch((error) => {
+        alert(error);
+        // const errorCode = error.code;
+        // const errorMessageArray = Object.keys(errorMessageList);
+        // let message = errorMessageArray.filter((item) => item === errorCode);
+        // let x = message[0];
+        // alert(errorMessageList[x]);
+      });
+  },
+  LogoutHandler() {
+    return signOut(auth)
+      .then(() => {
+        alert("您已成功登出");
       })
       .catch((error) => {
         console.log(error);

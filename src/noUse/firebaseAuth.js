@@ -46,22 +46,22 @@ const memberManage = {
         // alert(errorMessageList[x]);
       });
   },
-  SignUpHandler(email, password, name) {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((res) => {
-        const ref = doc(newUserRef);
-        setDoc(ref, {
-          name: name,
-          id: res.user.uid,
-          email: email,
-          tagGroups: [],
-        }).then(() => {
-          alert("註冊成功");
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  },
+  // SignUpHandler(email, password, name) {
+  //   createUserWithEmailAndPassword(auth, email, password)
+  //     .then((res) => {
+  //       const ref = doc(newUserRef);
+  //       setDoc(ref, {
+  //         name: name,
+  //         id: res.user.uid,
+  //         email: email,
+  //         tagGroups: [],
+  //       }).then(() => {
+  //         alert("註冊成功");
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // },
 };
 export default memberManage;

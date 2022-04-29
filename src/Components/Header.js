@@ -1,6 +1,8 @@
+import { useContext } from "react";
 import styled from "styled-components";
-import auth from "../utils/firebaseAuth";
+import firebase from "../utils/firebaseTools";
 import { NavLink, useNavigate } from "react-router-dom";
+import { UserProfile } from "../App";
 
 const Navbar = styled.div`
   display: flex;
@@ -25,30 +27,31 @@ const NavLinks = styled(NavLink)`
   background-color: #ffffff;
   border-radius: 5px;
 `;
-function Header(props) {
+function Header() {
   const navigate = useNavigate();
+  const userId = useContext(UserProfile);
   console.log("header render");
-  console.log(props.loginState);
 
-  function logout() {
-    auth.LogoutHandler();
-    navigate("/login");
+  async function logout() {
+    await firebase.LogoutHandler().then(() => {
+      navigate("/login");
+    });
   }
 
   return (
     <Navbar>
       <Logo>Bookia</Logo>
       <BarContent>
-        <NavLinks to="/">筆記櫃</NavLinks>
+        <NavLinks to="/books">筆記櫃</NavLinks>
         <NavLinks to="/alltags">書籤櫃</NavLinks>
         <NavLinks to="/search">新增筆記</NavLinks>
-        <NavLinks to="/">站內搜尋</NavLinks>
-        {props.loginState ? (
-          <NavLinks to="login" onClick={logout}>
+        <NavLinks to="/site-search">站內搜尋</NavLinks>
+        {userId ? (
+          <NavLinks to="/login" onClick={logout}>
             登出
           </NavLinks>
         ) : (
-          <NavLinks to="login">登入</NavLinks>
+          <NavLinks to="/login">登入</NavLinks>
         )}
       </BarContent>
     </Navbar>

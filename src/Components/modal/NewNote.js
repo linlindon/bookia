@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import styled from "styled-components";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
 import firebase from "../../utils/firebaseTools";
-import { getAuth } from "firebase/auth";
+import { UserProfile } from "../../App";
 
 const Flex = styled.div`
   display: flex;
@@ -83,6 +83,7 @@ const AddTag = styled(AddCircle)`
 let chosenTagArray = [];
 let currentGroups = [];
 let groupArray = [];
+
 const NewNote = (props) => {
   const [groupData, setGroupData] = useState([]);
   const [inputArray, setInputArray] = useState([]);
@@ -93,8 +94,9 @@ const NewNote = (props) => {
     title: "",
   });
   const inputRef = useRef();
-  const user = getAuth().currentUser;
-  const userId = user.uid;
+  const userId = useContext(UserProfile);
+  // const user = getAuth().currentUser;
+  // const userId = user.uid;
 
   useEffect(() => {
     chosenTagArray = [];

@@ -1,10 +1,12 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import styled from "styled-components";
+import { DeleteBack2 } from "@styled-icons/remix-fill/DeleteBack2";
 import firebase from "../utils/firebaseTools";
-import { getAuth } from "firebase/auth";
+import { UserProfile } from "../App";
 import uniqid from "uniqid";
 
 const TagBoxContainer = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,6 +14,19 @@ const TagBoxContainer = styled.div`
   margin-bottom: 30px;
   border: 1px solid #ece6e6;
   border-radius: 10px;
+`;
+const BoxDeleteTag = styled(DeleteBack2)`
+  display: none;
+  position: absolute;
+  right: -5px;
+  width: 22px;
+  color: #dbad2c;
+  transform: rotate(0.92turn);
+
+  ${TagBoxContainer}:hover & {
+    display: inline;
+    z-index: 99;
+  }
 `;
 const BoxNameDiv = styled.div`
   displayL flex;
@@ -103,6 +118,20 @@ const BookName = styled.div`
 `;
 const DeleteSign = styled.span``;
 const Form = styled.form``;
+const TagContainer = styled.label`
+  display: flex;
+`;
+const DeleteTag = styled(DeleteBack2)`
+  display: none;
+  width: 18px;
+  margin-left: 6px;
+  color: #dbad2c;
+
+  ${TagContainer}:hover & {
+    display: inline;
+    z-index: 99;
+  }
+`;
 
 let clickTagNameArray = [];
 let allNotesData = [];
@@ -112,11 +141,12 @@ function TagBox(props) {
   const [showTagInput, setShowTagInput] = useState(false);
   const [inputTagName, setInputTagName] = useState("");
   const [isUpdateTagBoxName, setIsUpdateTagBoxName] = useState(false);
-  const [updateTagBoxName, setUpdateTagBoxName] = useState("");
   const [notesBox, setNotesBoxData] = useState([]);
   const tagBoxNameInputRef = useRef();
-  const user = getAuth().currentUser;
-  const userId = user.uid;
+  const userId = useContext(UserProfile);
+
+  // const user = getAuth().currentUser;
+  // const userId = user.uid;
 
   useEffect(async () => {
     allNotesData = [];
@@ -184,9 +214,9 @@ function TagBox(props) {
     setNotesBoxData(currentNoteData);
   }
 
-  function updateTagBoxNameHandler() {
-    setIsUpdateTagBoxName(true);
-  }
+  // function updateTagBoxNameHandler() {
+  //   ;
+  // }
   // function closeUpdateTagBoxNameHandler(e) {
   //   console.log("active");
   //   if (tagBoxNameInputRef.current === e.target) {
@@ -202,22 +232,41 @@ function TagBox(props) {
   }
 
   async function onBlurHandler(name, value) {
-    console.log("onblur");
-    console.log(name, value);
-    let groupsData = [];
-    await firebase.getTagGroupsData(userId).then((data) => {
-      groupsData.push(...data.tagGroups);
-      groupsData.forEach((group) => {
-        if (name === group.name) {
-          group.name = value;
-        }
-      });
-      // console.log(groupsData);
+    console.log("onblur", name, value);
+    let currentGroupData = [...props.groupData];
+    currentGroupData.forEach((tagBox) => {
+      if (name === tagBox.name) {
+        tagBox.name = value;
+      }
     });
-    await firebase.updateTagGroup(userId, groupsData);
-    props.setGroupData(groupsData);
+    // console.log(groupsData);
+    await firebase.updateTagGroup(userId, currentGroupData);
+    props.setGroupData(currentGroupData);
     setIsUpdateTagBoxName(false);
   }
+
+  async function deleteTagHandler(tag, index) {
+    let currentGroupData = [...props.groupData];
+    let changeTagArray = currentGroupData[index].tags.filter((name) => {
+      return name !== tag;
+    });
+    currentGroupData[index].tags = [...changeTagArray];
+    await firebase.updateTagGroup(userId, currentGroupData);
+    props.setGroupData(currentGroupData);
+  }
+
+  async function deleteTagGroupHandler(index) {
+    let currentGroupData = [...props.groupData];
+    if (currentGroupData.length !== 0) {
+      let tagsArray = currentGroupData[index].tags;
+    }
+
+    currentGroupData.splice(index, 1);
+    props.setGroupData(currentGroupData);
+    await firebase.updateTagGroup(userId, currentGroupData);
+    console.log(currentGroupData);
+  }
+
   return (
     <>
       {props.groupData?.map((box, index) => (
@@ -226,6 +275,7 @@ function TagBox(props) {
           // onClick={closeUpdateTagBoxNameHandler}
           key={index}
         >
+          <BoxDeleteTag onClick={() => deleteTagGroupHandler(index)} />
           <BoxNameDiv>
             {isUpdateTagBoxName ? (
               <Form onSubmit={(e) => formSubmit(e)}>
@@ -237,19 +287,25 @@ function TagBox(props) {
                 ></BoxNameInput>
               </Form>
             ) : (
-              <BoxName key={box.name} onClick={updateTagBoxNameHandler}>
+              <BoxName
+                key={box.name}
+                onClick={() => setIsUpdateTagBoxName(true)}
+              >
                 {box.name}
               </BoxName>
             )}
           </BoxNameDiv>
           <TagsContainer key={`${box.name}${index}`}>
-            {box.tags?.map((tag, index) => (
-              <label name={tag} key={index}>
-                <Input id={tag} key={`${tag}${index}`}></Input>
-                <Tag onClick={() => choseTagHandler(tag)} key={tag}>
-                  {tag}
-                </Tag>
-              </label>
+            {box.tags?.map((tag, tagIndex) => (
+              <>
+                <TagContainer name={tag} key={tagIndex}>
+                  <Input id={tag} key={`${tag}${tagIndex}`}></Input>
+                  <Tag onClick={() => choseTagHandler(tag)} key={tag}>
+                    {tag}
+                  </Tag>
+                  <DeleteTag onClick={() => deleteTagHandler(tag, index)} />
+                </TagContainer>
+              </>
             ))}
           </TagsContainer>
           <AddSign onClick={() => showTagInputHandler(box.name)} key={uniqid()}>

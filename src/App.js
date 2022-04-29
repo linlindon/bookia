@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, createContext, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { NavLink } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Tags from "./pages/tags";
@@ -9,9 +8,14 @@ import BookNote from "./pages/booknote";
 import SearchBook from "./pages/searchBook";
 import Header from "./components/Header";
 import Login from "./pages/login";
+import SiteSearch from "./pages/siteSearch";
+
+// import { UserProfile, UserProvider } from "./components/UserProfile";
+const UserProfile = createContext();
 
 function App() {
   const [loginState, setLoginState] = useState(false);
+  const [userId, setUserId] = useState();
   const firebaseConfig = {
     apiKey: "AIzaSyBM3IamCWyJi_8vyVPP34KUixJJKXlAwQ8",
     authDomain: "bookia-280d8.firebaseapp.com",
@@ -22,36 +26,91 @@ function App() {
   };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setLoginState(true);
-      console.log(user);
-      console.log("login true");
-    } else {
-      setLoginState(false);
-      console.log("not login");
-    }
-  });
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoginState(true);
+        console.log(user.uid);
+        setUserId(user.uid);
+        console.log("login true");
+      } else {
+        setLoginState(false);
+        console.log("not login");
+      }
+    });
+  }, []);
+
   return (
     <>
       <BrowserRouter>
-        <Header loginState={loginState} />
-        <Routes>
-          <Route path="/" element={loginState ? <Books /> : <Login />} />
-          <Route path="search" element={<SearchBook />} />
-          <Route path="alltags" element={<Tags />} />
-          <Route path="booknote" element={<BookNote />} />
-          <Route path="booknote/:id" element={<BookNote />} />
-          <Route
-            path="login"
-            // element={<Login />}
-
-            element={loginState ? <Navigate to="/" /> : <Login />}
-          />
-        </Routes>
+        <UserProfile.Provider value={userId}>
+          <Header loginState={loginState} />
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route
+              path="books"
+              element={
+                loginState ? <Books /> : <Navigate to="/login" replace={true} />
+              }
+            />
+            <Route
+              path="search"
+              element={
+                loginState ? (
+                  <SearchBook />
+                ) : (
+                  <Navigate to="/login" replace={true} />
+                )
+              }
+            />
+            <Route
+              path="site-search"
+              element={
+                loginState ? (
+                  <SiteSearch />
+                ) : (
+                  <Navigate to="/login" replace={true} />
+                )
+              }
+            />
+            <Route
+              path="alltags"
+              element={
+                loginState ? <Tags /> : <Navigate to="/login" replace={true} />
+              }
+            />
+            <Route
+              path="booknote"
+              element={
+                loginState ? (
+                  <BookNote />
+                ) : (
+                  <Navigate to="/login" replace={true} />
+                )
+              }
+            />
+            <Route
+              path="booknote/:id"
+              element={
+                loginState ? (
+                  <BookNote />
+                ) : (
+                  <Navigate to="/login" replace={true} />
+                )
+              }
+            />
+            <Route
+              path="login"
+              element={
+                loginState ? <Navigate to="/books" replace={true} /> : <Login />
+              }
+            />
+          </Routes>
+        </UserProfile.Provider>
       </BrowserRouter>
     </>
   );
 }
 
-export default App;
+export { App, UserProfile };

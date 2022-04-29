@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import firebase from "../utils/firebaseTools";
-import { getDocs } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { UserProfile } from "../App";
 
 import uniqid from "uniqid";
 
@@ -62,12 +61,12 @@ const AddNoteSign = styled.div`
 
 function Books() {
   const [bookDatas, setBookDatas] = useState([]);
-  const user = getAuth().currentUser;
-  const userId = user.uid;
+  const userId = useContext(UserProfile);
+
   console.log(userId);
   useEffect(async () => {
     let bookData = [];
-
+    console.log("inside");
     firebase.getBooksData(userId).then((data) => {
       data.forEach((book) => {
         bookData.push(book.data());

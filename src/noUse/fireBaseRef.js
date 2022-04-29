@@ -25,15 +25,15 @@ const booksRef = collection(db, "users", userID, "books");
 const newBookRef = doc(booksRef);
 const userRef = doc(db, "users", userID);
 const newUserRef = collection(db, "users");
-export {
-  tagsRef,
-  tagGroupsRef,
-  notesRef,
-  booksRef,
-  userRef,
-  newBookRef,
-  newUserRef,
-};
+// export {
+//   tagsRef,
+//   tagGroupsRef,
+//   notesRef,
+//   booksRef,
+//   userRef,
+//   newBookRef,
+//   newUserRef,
+// };
 
 const api = {
   geData(userID, docId, data) {
