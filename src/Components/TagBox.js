@@ -198,19 +198,10 @@ function TagBox(props) {
     } else {
       clickTagNameArray.push(tagName);
     }
-    // console.log(clickTagNameArray);
-    const noteIncludeTag = (tagArray, data) => {
-      if (tagArray.length === 0) {
-        return false;
-      } else {
-        return tagArray.every((i) => {
-          return data.tagNames.includes(i);
-        });
-      }
-    };
+
     // console.log(allNotesData);
     allNotesData.forEach((note) => {
-      if (noteIncludeTag(clickTagNameArray, note)) {
+      if (tools.isNoteIncludeTag(clickTagNameArray, note)) {
         currentNoteData.push(note);
       }
     });

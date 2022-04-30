@@ -10,6 +10,15 @@ const tools = {
     });
     return allTags;
   },
+  isNoteIncludeTag(tagsArray, noteData) {
+    if (tagsArray.length === 0) {
+      return false;
+    } else {
+      return tagsArray.every((i) => {
+        return noteData.tagNames.includes(i);
+      });
+    }
+  },
   async deleteNotesTag(userId, tag) {
     let changeNotesArray = [];
     let changeNotesTagArray = [];

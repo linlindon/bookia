@@ -72,11 +72,6 @@ function BookNote() {
       console.log(res);
       setBookInfo({ ...res });
     });
-    // async function getBookInfo() {
-    //   const info = await getDoc(doc(booksRef, id));
-    //   console.log("檢查圖片URL", info.data());
-    // }
-    // getBookInfo();
   }, []);
 
   useEffect(() => {

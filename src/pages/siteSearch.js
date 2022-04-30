@@ -4,6 +4,7 @@ import firebase from "../utils/firebaseTools";
 import { Search } from "@styled-icons/bootstrap/Search";
 import { UserProfile } from "../App";
 import Book from "../components/Book";
+import NoteBox from "../components/NoteBox";
 
 const SearchContainer = styled.div`
   display: flex;
@@ -44,62 +45,73 @@ const SearchIcon = styled(Search)`
   color: green;
 `;
 
-// let bookTitleArray = [];
-let bookData = [];
+let booksData = [];
+let notesData = [];
 function SiteSearch() {
   const [searchType, setSearchType] = useState("");
   const [change, setChange] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState([]);
   const [searchBookResults, setSearchBookResults] = useState([]);
   const [searchNoteResults, setSearchNoteResults] = useState([]);
   const [isData, setIsData] = useState(true);
   const userId = useContext(UserProfile);
-
+  console.log("inside func ===>", booksData, notesData);
   useEffect(() => {
-    // bookTitleArray = [];
-    bookData = [];
+    console.log("use effect");
+    booksData = [];
+    notesData = [];
     firebase.getBooksData(userId).then((data) => {
       data.forEach((book) => {
-        // bookTitleArray.push(book.data().title);
-        bookData.push(book.data());
+        booksData.push(book.data());
       });
-      // console.log(bookData);
+    });
+    firebase.getAllNotesData(userId).then((data) => {
+      data.forEach((note) => {
+        notesData.push(note.data());
+      });
     });
   }, []);
 
   function searchData(e) {
     e.preventDefault();
-
-    console.log(searchInput);
-
+    console.log("inside submit ===>", booksData, notesData);
+    console.log(searchType);
+    setIsData(true);
     if (!searchType) {
       alert("請先選擇要搜尋的項目");
     } else if (!searchInput) {
       return;
-    } else if (searchType === "book") {
-      bookData = bookData.filter((book) => {
-        return book.title.includes(searchInput);
-      });
-      setSearchBookResults(bookData);
-      console.log(bookData);
-      // bookData.forEach((book) => {
-      //   if (book.title.includes(searchInput)) {
-      //     setSearchBookResults()
-      //   }
-      // });
-    }
-    if (!searchBookResults) {
-      setIsData(false);
+    } else if (searchInput.replace(/\s*/g, "").length === 0) {
+      alert("請輸入要搜尋的文字");
+    } else {
+      let inputWordArray = searchInput.split(" ");
+      let filterData = [];
+      if (searchType === "book") {
+        inputWordArray.forEach((word) => {
+          filterData = booksData.filter((book) => {
+            return book.title.includes(word);
+          });
+        });
+        setSearchBookResults(filterData);
+      } else if (searchType === "note") {
+        inputWordArray.forEach((word) => {
+          filterData = notesData.filter((note) => {
+            return note.content.includes(word);
+          });
+        });
+        setSearchNoteResults(filterData);
+      }
+      if (filterData.length === 0) {
+        setIsData(false);
+      }
+      console.log("book", booksData);
+      console.log("note", notesData);
     }
   }
 
   function searchTypeHandler(type) {
     setSearchType(type);
     setChange(true);
-  }
-  function searchTypeHandler(e) {
-    console.log(e);
-    // (e) => searchTypeHandler(e.target.value)
   }
 
   return (
@@ -124,6 +136,9 @@ function SiteSearch() {
       </SearchContainer>
       {isData ? "" : <h3>無相關資料</h3>}
       {searchBookResults && <Book bookDatas={searchBookResults} />}
+      {searchNoteResults && (
+        <NoteBox bookNotesData={searchNoteResults} isData={isData} />
+      )}
     </>
   );
 }

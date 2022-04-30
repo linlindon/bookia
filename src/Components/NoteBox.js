@@ -81,9 +81,13 @@ function NoteBox(props) {
               </Tag>
             ))}
             <p>{item.content}</p>
-            <AddSign onClick={() => updateNote(item.id)} key={uniqid()}>
-              修改
-            </AddSign>
+            {props.isData ? (
+              ""
+            ) : (
+              <AddSign onClick={() => updateNote(item.id)} key={uniqid()}>
+                修改
+              </AddSign>
+            )}
           </TagsContainer>
         </TagBox>
       ))}

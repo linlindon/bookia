@@ -46,13 +46,19 @@ function SearchBar() {
 
   function searchData(e) {
     e.preventDefault();
-    getSearchData(searchInput).then((data) => {
-      let bookData = [];
-      data.items.forEach((book) => {
-        bookData.push(book.volumeInfo);
+    if (!searchInput) {
+      return;
+    } else if (searchInput.replace(/\s*/g, "").length === 0) {
+      alert("請輸入要搜尋的文字");
+    } else {
+      getSearchData(searchInput).then((data) => {
+        let bookData = [];
+        data.items.forEach((book) => {
+          bookData.push(book.volumeInfo);
+        });
+        setBookList(bookData);
       });
-      setBookList(bookData);
-    });
+    }
   }
 
   return (
