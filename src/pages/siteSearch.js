@@ -3,28 +3,25 @@ import styled from "styled-components";
 import firebase from "../utils/firebaseTools";
 import { Search } from "@styled-icons/bootstrap/Search";
 import { UserProfile } from "../App";
+import Book from "../components/Book";
 
 const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
-const RadioContainer = styled.div`
+const ButtonContainer = styled.div`
   display: flex;
   padding: 20px;
   margin: 10px;
 `;
-const Radio = styled.input.attrs({ type: "radio" })`
-  ${"" /* display: none; */}
-`;
-const Button = styled.label`
+
+const Button = styled.button`
   padding: 4px 6px;
   font-size: 14px;
   border: 1px solid #ffb226;
   border-radius: 5px;
-  ${Radio}:checked + && {
-    background-color: #ffb226;
-  }
+  ${"" /* background-color: ${(props) => props.activeOn}; */}
 `;
 
 const SearchForm = styled.form`
@@ -47,56 +44,76 @@ const SearchIcon = styled(Search)`
   color: green;
 `;
 
-let bookTitleArray = [];
+// let bookTitleArray = [];
+let bookData = [];
 function SiteSearch() {
   const [searchType, setSearchType] = useState("");
+  const [change, setChange] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [searchBookResults, setSearchBookResults] = useState([]);
+  const [searchNoteResults, setSearchNoteResults] = useState([]);
+  const [isData, setIsData] = useState(true);
   const userId = useContext(UserProfile);
+
   useEffect(() => {
-    bookTitleArray = [];
+    // bookTitleArray = [];
+    bookData = [];
     firebase.getBooksData(userId).then((data) => {
       data.forEach((book) => {
-        bookTitleArray.push(book.data().title);
+        // bookTitleArray.push(book.data().title);
+        bookData.push(book.data());
       });
-      console.log(bookTitleArray);
+      // console.log(bookData);
     });
   }, []);
 
   function searchData(e) {
     e.preventDefault();
-    let x;
+
+    console.log(searchInput);
+
     if (!searchType) {
       alert("請先選擇要搜尋的項目");
     } else if (!searchInput) {
       return;
-    } else {
-      x = bookTitleArray.filter((title) => {
-        title.match(/^金/g);
+    } else if (searchType === "book") {
+      bookData = bookData.filter((book) => {
+        return book.title.includes(searchInput);
       });
+      setSearchBookResults(bookData);
+      console.log(bookData);
+      // bookData.forEach((book) => {
+      //   if (book.title.includes(searchInput)) {
+      //     setSearchBookResults()
+      //   }
+      // });
     }
+    if (!searchBookResults) {
+      setIsData(false);
+    }
+  }
+
+  function searchTypeHandler(type) {
+    setSearchType(type);
+    setChange(true);
   }
   function searchTypeHandler(e) {
     console.log(e);
+    // (e) => searchTypeHandler(e.target.value)
   }
 
   return (
     <>
       <SearchContainer>
-        <RadioContainer>
-          <div>
-            <Radio id="book" name="radio"></Radio>
-            <Button onClick={(e) => searchTypeHandler(e.target.value)}>
-              搜尋站內書籍
-            </Button>
-          </div>
+        <ButtonContainer>
+          <Button onClick={() => setSearchType("book")} change={change}>
+            搜尋站內書籍
+          </Button>
 
-          <div>
-            <Radio id="note" name="radio"></Radio>
-            <Button onClick={(e) => setSearchType(e.target.value)}>
-              搜尋筆記
-            </Button>
-          </div>
-        </RadioContainer>
+          <Button onClick={() => setSearchType("note")} change={change}>
+            搜尋筆記
+          </Button>
+        </ButtonContainer>
         <SearchForm onSubmit={(e) => searchData(e)}>
           <SearchInput
             onChange={(e) => setSearchInput(e.target.value)}
@@ -105,7 +122,8 @@ function SiteSearch() {
           <SearchIcon onClick={searchData} />
         </SearchForm>
       </SearchContainer>
-      {/* <Card bookList={bookList} /> */}
+      {isData ? "" : <h3>無相關資料</h3>}
+      {searchBookResults && <Book bookDatas={searchBookResults} />}
     </>
   );
 }

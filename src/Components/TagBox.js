@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useContext } from "react";
 import styled from "styled-components";
 import { DeleteBack2 } from "@styled-icons/remix-fill/DeleteBack2";
 import firebase from "../utils/firebaseTools";
+import tools from "../utils/tools";
 import { UserProfile } from "../App";
 import uniqid from "uniqid";
 
@@ -142,17 +143,14 @@ function TagBox(props) {
   const [inputTagName, setInputTagName] = useState("");
   const [isUpdateTagBoxName, setIsUpdateTagBoxName] = useState(false);
   const [notesBox, setNotesBoxData] = useState([]);
-  const tagBoxNameInputRef = useRef();
+  // const tagBoxNameInputRef = useRef();
   const userId = useContext(UserProfile);
-
-  // const user = getAuth().currentUser;
-  // const userId = user.uid;
 
   useEffect(async () => {
     allNotesData = [];
     clickTagNameArray = [];
-    await firebase.getAllNotesData(userId).then((datas) => {
-      datas.forEach((note) => {
+    await firebase.getAllNotesData(userId).then((notes) => {
+      notes.forEach((note) => {
         allNotesData.push(note.data());
       });
     });
@@ -163,21 +161,26 @@ function TagBox(props) {
     setShowTagInput(true);
   }
 
-  async function addTagHandler() {
+  async function addTagHandler(e) {
+    e.preventDefault();
+    let currentGroupData = [...props.groupData];
+    let allTags = tools.allTagsArray(currentGroupData);
+
     if (!inputTagName) {
       alert("請輸入標籤名稱");
+    } else if (allTags.includes(inputTagName)) {
+      alert("此標籤已存在");
     } else {
-      let currentGroupData = [...props.groupData];
       currentGroupData.forEach((tagBox) => {
-        // console.log(tagBox);
+        console.log(tagBox);
         if (tagBox.name === inputTagBoxName) {
           tagBox.tags.push(inputTagName);
         } else {
           console.log("no match box name");
         }
       });
-      await firebase.updateTagGroup(userId, currentGroupData);
 
+      await firebase.updateTagGroup(userId, currentGroupData);
       setShowTagInput(false);
       props.setGroupData(currentGroupData);
     }
@@ -214,9 +217,7 @@ function TagBox(props) {
     setNotesBoxData(currentNoteData);
   }
 
-  // function updateTagBoxNameHandler() {
-  //   ;
-  // }
+  //
   // function closeUpdateTagBoxNameHandler(e) {
   //   console.log("active");
   //   if (tagBoxNameInputRef.current === e.target) {
@@ -226,9 +227,6 @@ function TagBox(props) {
   // }
   function focusHandler() {
     console.log("focus");
-  }
-  function formSubmit(e) {
-    e.preventDefault();
   }
 
   async function onBlurHandler(name, value) {
@@ -252,19 +250,31 @@ function TagBox(props) {
     });
     currentGroupData[index].tags = [...changeTagArray];
     await firebase.updateTagGroup(userId, currentGroupData);
+    await tools.deleteNotesTag(userId, tag);
+    await tools.deleteBooksTag(userId, tag);
     props.setGroupData(currentGroupData);
   }
 
   async function deleteTagGroupHandler(index) {
     let currentGroupData = [...props.groupData];
-    if (currentGroupData.length !== 0) {
-      let tagsArray = currentGroupData[index].tags;
-    }
-
+    let tagsArray = currentGroupData[index].tags;
     currentGroupData.splice(index, 1);
-    props.setGroupData(currentGroupData);
+    // console.log(tagsArray);
+    if (tagsArray !== 0) {
+      // 要加上警語
+      await Promise.all(
+        tagsArray.map(async (tag) => {
+          await tools.deleteNotesTag(userId, tag);
+        })
+      );
+      await Promise.all(
+        tagsArray.map(async (tag) => {
+          await tools.deleteBooksTag(userId, tag);
+        })
+      );
+    }
     await firebase.updateTagGroup(userId, currentGroupData);
-    console.log(currentGroupData);
+    props.setGroupData(currentGroupData);
   }
 
   return (
@@ -278,13 +288,13 @@ function TagBox(props) {
           <BoxDeleteTag onClick={() => deleteTagGroupHandler(index)} />
           <BoxNameDiv>
             {isUpdateTagBoxName ? (
-              <Form onSubmit={(e) => formSubmit(e)}>
+              <Form onSubmit={(e) => e.preventDefault()}>
                 <BoxNameInput
                   defaultValue={box.name}
                   as="input"
                   onFocus={focusHandler}
                   onBlur={(e) => onBlurHandler(box.name, e.target.value)}
-                ></BoxNameInput>
+                />
               </Form>
             ) : (
               <BoxName
@@ -316,12 +326,14 @@ function TagBox(props) {
       {showTagInput && (
         <Wrapper>
           <AddTagBox>
-            <TagInput
-              onChange={(e) => setInputTagName(e.target.value)}
-              placeholder="新增標籤"
-            ></TagInput>
-            <CloseTagInput onClick={closeInputTagHandler}>x</CloseTagInput>
-            <AddTagButton onClick={addTagHandler}>新增</AddTagButton>
+            <form onSubmit={(e) => addTagHandler(e)}>
+              <TagInput
+                onChange={(e) => setInputTagName(e.target.value)}
+                placeholder="新增標籤"
+              ></TagInput>
+              <CloseTagInput onClick={closeInputTagHandler}>x</CloseTagInput>
+              <AddTagButton>新增</AddTagButton>
+            </form>
           </AddTagBox>
         </Wrapper>
       )}
@@ -333,7 +345,7 @@ function TagBox(props) {
             {note.tagNames.map((tag) => (
               <Tag key={uniqid()}>
                 {tag}
-                <DeleteSign key={uniqid()}>x</DeleteSign>
+                <DeleteSign key={uniqid()} />
               </Tag>
             ))}
             <p key={uniqid()}>{note.content}</p>

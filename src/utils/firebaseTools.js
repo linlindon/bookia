@@ -5,6 +5,8 @@ import {
   collection,
   getDocs,
   deleteDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import { getDoc, updateDoc, setDoc } from "firebase/firestore";
 import {
@@ -23,15 +25,10 @@ const firebaseConfig = {
   appId: "1:330107513484:web:b81b9e8f3748a595dd69a9",
 };
 
-const userID = "E5EiDYKVIUd0wuHie6N5";
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const usersRef = collection(db, "users");
 const auth = getAuth();
-// const userId = auth.currentUser.uid;
-const notesRef = collection(db, "users", userID, "notes");
-const booksRef = collection(db, "users", userID, "books");
 
 const firebase = {
   getTagGroupsData(userId) {
@@ -74,10 +71,10 @@ const firebase = {
     const booksRef = collection(db, "users", userId, "books");
     await updateDoc(doc(booksRef, bookId), { tagNames: tagsArray });
   },
-  // async updateNote(userId, noteId, data) {
-  //   const notesRef = collection(usersRef, userId, "notes");
-  //   await setDoc(doc(notesRef, noteId), data);
-  // },
+  async updateNoteTag(userId, noteId, tagsArray) {
+    const notesRef = collection(usersRef, userId, "notes");
+    await updateDoc(doc(notesRef, noteId), { tagNames: tagsArray });
+  },
   async addNewNote(userId, data, noteId) {
     const notesRef = collection(usersRef, userId, "notes");
     const newNoteRef = doc(notesRef);
@@ -109,6 +106,26 @@ const firebase = {
     const newBookRef = collection(db, "users", userId, "books");
     // const q = query(newBookRef, where("title", "==", keywords));
     // return await getDocs(q);
+  },
+  queryNotesByTag(userId, tagName) {
+    const notesRef = collection(usersRef, userId, "notes");
+    const queryResults = query(
+      notesRef,
+      where("tagNames", "array-contains", tagName)
+    );
+    return getDocs(queryResults).then((res) => {
+      return res;
+    });
+  },
+  queryBooksByTag(userId, tagName) {
+    const bookRef = collection(db, "users", userId, "books");
+    const queryResults = query(
+      bookRef,
+      where("tagNames", "array-contains", tagName)
+    );
+    return getDocs(queryResults).then((res) => {
+      return res;
+    });
   },
   SignUpHandler(email, password, name) {
     return createUserWithEmailAndPassword(auth, email, password)

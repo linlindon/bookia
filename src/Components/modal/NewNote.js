@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useContext } from "react";
 import styled from "styled-components";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
 import firebase from "../../utils/firebaseTools";
+import tools from "../../utils/tools";
 import { UserProfile } from "../../App";
 
 const Flex = styled.div`
@@ -206,16 +207,22 @@ const NewNote = (props) => {
     }
   }
 
-  function addTagHandler(name) {
+  async function addTagHandler(name) {
+    let allTags = tools.allTagsArray(currentGroups);
+
     if (!tagInput) {
       alert("請輸入要新增的標籤");
+    } else if (allTags.includes(tagInput)) {
+      alert("此標籤已存在");
     } else {
       currentGroups.forEach((item, index) => {
         if (item.name === name) {
           currentGroups[index].tags.push(tagInput);
           setGroupData([...currentGroups]);
+
           groupArray.splice(index, 1, false);
           setInputArray([...groupArray]);
+          // 無法await
           firebase.updateTagGroup(userId, groupData);
         } else {
           console.log("no match");
