@@ -1,7 +1,9 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
+import { FolderAdd } from "@styled-icons/fluentui-system-filled/FolderAdd";
 import firebase from "../utils/firebaseTools";
 import TagBox from "../components/TagBox";
+import InputModal from "../components/modal/InputModal";
 import { UserProfile } from "../App";
 
 const Container = styled.div`
@@ -11,42 +13,25 @@ const Container = styled.div`
   margin-bottom: 30px;
 `;
 
-const Wrapper = styled.div`
-  position: relative;
-`;
-const AddBoxSign = styled.div`
+const AddBoxSign = styled(FolderAdd)`
+  position: absolute;
+  right: 10%;
   width: 50px;
   height: 50px;
+  color: #3fccdc;
   font-size: 26px;
-  border-radius: 25px;
-  border: solid 1px black;
-  line-height: 2;
-`;
-const InputBox = styled.div`
-  position: absolute;
-  top: -150px;
-  width: 50%;
-  height: 200px;
-  border: solid black 1px;
-  border-radius: 10px;
-  background-color: #ffffff;
-  z-index: 9;
 `;
 
-const CloseButton = styled.span`
-  display: block;
-  margin-left: 60%;
-  font-size: 16px;
-`;
 let allGroupData = [];
-let groupTitle = "";
+
 function Tags() {
   const [boxDatas, setboxDatas] = useState([]);
-  const [showInputBox, setShowInputBox] = useState(false);
+  const [showInputModal, setShowInputModal] = useState(false);
   const [groupData, setGroupData] = useState([]);
   const userId = useContext(UserProfile);
-
+  console.log("tags render");
   useEffect(() => {
+    console.log("tags render inside use effect");
     let data = [];
     async function getData() {
       await firebase.getTagGroupsData(userId).then((res) => {
@@ -54,32 +39,10 @@ function Tags() {
         setGroupData(data);
         allGroupData = data;
       });
-      // const userDoc = await getDoc(userRef);
-      // data.push(...userDoc.data().tagGroups);
-      // console.log(allGroupData);
     }
     getData();
+    console.log(groupData);
   }, []);
-
-  function showBoxHandler() {
-    setShowInputBox(true);
-  }
-
-  async function addBoxHandler(e) {
-    e.preventDefault();
-    if (!groupTitle) {
-      alert("請輸入標籤櫃名稱");
-    } else {
-      console.log(groupTitle);
-      allGroupData.push({ name: groupTitle, tags: [] });
-      await firebase.updateTagGroup(userId, allGroupData);
-      setShowInputBox(false);
-      setGroupData(allGroupData);
-    }
-  }
-  function closeInputBoxHandler() {
-    setShowInputBox(false);
-  }
 
   return (
     <>
@@ -92,21 +55,14 @@ function Tags() {
           setGroupData={setGroupData}
         />
       </Container>
-      <AddBoxSign onClick={showBoxHandler}>+</AddBoxSign>
-      {showInputBox && (
-        <Wrapper>
-          <InputBox>
-            <h3>請輸入要新增的書籤櫃名稱</h3>
-            <CloseButton onClick={closeInputBoxHandler}>x</CloseButton>
-            <form onSubmit={(e) => addBoxHandler(e)}>
-              <input
-                onChange={(e) => (groupTitle = e.target.value)}
-                type="text"
-              />
-              <button onSubmit={addBoxHandler}>新增標籤櫃</button>
-            </form>
-          </InputBox>
-        </Wrapper>
+      <AddBoxSign onClick={() => setShowInputModal(true)} />
+      {showInputModal && (
+        <InputModal
+          groupData={groupData}
+          setGroupData={setGroupData}
+          setShowInputModal={setShowInputModal}
+          modalTitle={"新書籤櫃名稱"}
+        />
       )}
     </>
   );

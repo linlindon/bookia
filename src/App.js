@@ -45,7 +45,7 @@ function App() {
     <>
       <BrowserRouter>
         <UserProfile.Provider value={userId}>
-          <Header loginState={loginState} />
+          {loginState && <Header loginState={loginState} />}
           <Routes>
             <Route path="/" element={<Login />} />
             <Route

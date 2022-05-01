@@ -19,14 +19,14 @@ const SearchInput = styled.input`
   font-size: 15px;
   border: none;
   width: 100%;
+  background-color: #faf9f7;
 
-  &::placeholder {
-    color: "red";
+  &:focus {
+    outline: none;
   }
 `;
 const SearchIcon = styled(Search)`
-  width: 6%;
-  color: green;
+  width: 8%;
 `;
 
 async function getSearchData(input) {

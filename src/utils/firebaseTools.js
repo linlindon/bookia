@@ -7,6 +7,7 @@ import {
   deleteDoc,
   query,
   where,
+  addDoc,
 } from "firebase/firestore";
 import { getDoc, updateDoc, setDoc } from "firebase/firestore";
 import {
@@ -92,6 +93,7 @@ const firebase = {
   async addNewBook(userId, bookId, data) {
     const newBookRef = collection(db, "users", userId, "books");
     data = { ...data, id: bookId };
+    console.log(data);
     await setDoc(doc(newBookRef, bookId), data);
   },
   async deleteNote(userId, noteId) {
@@ -128,21 +130,30 @@ const firebase = {
     });
   },
   SignUpHandler(email, password, name) {
-    return createUserWithEmailAndPassword(auth, email, password)
-      .then((res) => {
-        const ref = doc(usersRef, res.user.uid);
-        setDoc(ref, {
-          name: name,
-          id: res.user.uid,
-          email: email,
-          tagGroups: [],
-        }).then(() => {
+    return (
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((res) => {
+          // usersRef = collection(db, "users");
+          const ref = doc(usersRef, res.user.uid);
+          setDoc(ref, {
+            name: name,
+            id: res.user.uid,
+            email: email,
+            tagGroups: [{ name: "書籤櫃", tags: [] }],
+          });
+          return ref;
+        })
+        // .then((ref) => {
+        //   addDoc(collection(ref, "books"));
+        // })
+        .then(() => {
           alert("註冊成功");
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        })
+
+        .catch((error) => {
+          console.log(error);
+        })
+    );
   },
   LoginHandler(email, password) {
     return signInWithEmailAndPassword(auth, email, password)

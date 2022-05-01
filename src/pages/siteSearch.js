@@ -22,7 +22,7 @@ const Button = styled.button`
   font-size: 14px;
   border: 1px solid #ffb226;
   border-radius: 5px;
-  ${"" /* background-color: ${(props) => props.activeOn}; */}
+  background-color: ${(props) => (props.active ? "red" : "white")};
 `;
 
 const SearchForm = styled.form`
@@ -48,8 +48,7 @@ const SearchIcon = styled(Search)`
 let booksData = [];
 let notesData = [];
 function SiteSearch() {
-  const [searchType, setSearchType] = useState("");
-  const [change, setChange] = useState(false);
+  const [searchType, setSearchType] = useState("book");
   const [searchInput, setSearchInput] = useState([]);
   const [searchBookResults, setSearchBookResults] = useState([]);
   const [searchNoteResults, setSearchNoteResults] = useState([]);
@@ -94,8 +93,9 @@ function SiteSearch() {
         });
         setSearchBookResults(filterData);
       } else if (searchType === "note") {
-        inputWordArray.forEach((word) => {
-          filterData = notesData.filter((note) => {
+        // 如何做到同時包含array裡面的所有字
+        filterData = notesData.filter((note) => {
+          inputWordArray.forEach((word) => {
             return note.content.includes(word);
           });
         });
@@ -111,18 +111,23 @@ function SiteSearch() {
 
   function searchTypeHandler(type) {
     setSearchType(type);
-    setChange(true);
   }
 
   return (
     <>
       <SearchContainer>
         <ButtonContainer>
-          <Button onClick={() => setSearchType("book")} change={change}>
+          <Button
+            active={searchType === "book"}
+            onClick={() => setSearchType("book")}
+          >
             搜尋站內書籍
           </Button>
 
-          <Button onClick={() => setSearchType("note")} change={change}>
+          <Button
+            active={searchType === "note"}
+            onClick={() => setSearchType("note")}
+          >
             搜尋筆記
           </Button>
         </ButtonContainer>

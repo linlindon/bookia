@@ -1,27 +1,39 @@
 import { useEffect, useState, useRef, useContext } from "react";
 import styled from "styled-components";
 import { DeleteBack2 } from "@styled-icons/remix-fill/DeleteBack2";
+import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
 import { UserProfile } from "../App";
+import InputModal from "./modal/InputModal";
 import uniqid from "uniqid";
+
+const BoxWrapper = styled.div`
+  display: flex;
+  width: 80%;
+  flex-wrap: wrap;
+`;
 
 const TagBoxContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 60%;
-  margin-bottom: 30px;
+  min-width: 30%;
+  max-width: 50%;
+  min-height: 150px;
+  margin: 10px;
+  padding: 10px;
   border: 1px solid #ece6e6;
   border-radius: 10px;
+  background-color: #ffffff;
 `;
 const BoxDeleteTag = styled(DeleteBack2)`
   display: none;
   position: absolute;
   right: -5px;
   width: 22px;
-  color: #dbad2c;
+  color: #ff6972;
   transform: rotate(0.92turn);
 
   ${TagBoxContainer}:hover & {
@@ -39,7 +51,9 @@ const BoxNameDiv = styled.div`
   font-weight: 600;
   border-bottom: 2px solid #ece6e6;
 `;
-const BoxName = styled.p``;
+const BoxName = styled.p`
+  margin: 8px;
+`;
 const BoxNameInput = styled.input`
   border: none;
   margin-top: 12px;
@@ -64,45 +78,20 @@ const Input = styled.input.attrs({ type: "checkbox" })`
 const Tag = styled.div`
   padding: 4px 6px;
   font-size: 14px;
-  border: 1px solid #ffb226;
+  border: 1px solid #00d084;
   border-radius: 5px;
   ${Input}:checked + && {
-    background-color: #ffb226;
+    background-color: #00d084;
   }
 `;
 
-const AddSign = styled.div`
+const AddSign = styled(AddCircle)`
+  position: absolute;
+  right: 5px;
+  top: 110px;
   width: 30px;
   height: 30px;
-  border-radius: 15px;
-  border: solid 1px black;
-  line-height: 2.5;
-`;
-
-const Wrapper = styled.div`
-  position: relative;
-`;
-
-const AddTagBox = styled.div`
-  ${"" /* position: absolute; */}
-  top: -600px;
-  width: 150px;
-  height: 100px;
-  border: solid black 1px;
-  border-radius: 10px;
-  background-color: #ffffff;
-  z-index: 9;
-`;
-
-const TagInput = styled.input`
-  margin: 5%;
-`;
-
-const AddTagButton = styled.button`
-  margin-left: 70%;
-`;
-const CloseTagInput = styled.span`
-  font-size: 16px;
+  color: #00d084;
 `;
 const NoteBox = styled.div`
   display: flex;
@@ -126,7 +115,7 @@ const DeleteTag = styled(DeleteBack2)`
   display: none;
   width: 18px;
   margin-left: 6px;
-  color: #dbad2c;
+  color: #ff6972;
 
   ${TagContainer}:hover & {
     display: inline;
@@ -136,57 +125,33 @@ const DeleteTag = styled(DeleteBack2)`
 
 let clickTagNameArray = [];
 let allNotesData = [];
-let inputTagBoxName = "";
+let selectedTagBoxName = "";
 
 function TagBox(props) {
-  const [showTagInput, setShowTagInput] = useState(false);
-  const [inputTagName, setInputTagName] = useState("");
+  const [showInputModal, setShowInputModal] = useState(false);
   const [isUpdateTagBoxName, setIsUpdateTagBoxName] = useState(false);
   const [notesBox, setNotesBoxData] = useState([]);
   // const tagBoxNameInputRef = useRef();
   const userId = useContext(UserProfile);
 
-  useEffect(async () => {
+  useEffect(() => {
     allNotesData = [];
     clickTagNameArray = [];
-    await firebase.getAllNotesData(userId).then((notes) => {
-      notes.forEach((note) => {
-        allNotesData.push(note.data());
+
+    async function getData() {
+      await firebase.getAllNotesData(userId).then((notes) => {
+        notes.forEach((note) => {
+          allNotesData.push(note.data());
+        });
       });
-    });
+    }
+    getData();
   }, []);
 
   function showTagInputHandler(name) {
-    inputTagBoxName = name;
-    setShowTagInput(true);
-  }
-
-  async function addTagHandler(e) {
-    e.preventDefault();
-    let currentGroupData = [...props.groupData];
-    let allTags = tools.allTagsArray(currentGroupData);
-
-    if (!inputTagName) {
-      alert("請輸入標籤名稱");
-    } else if (allTags.includes(inputTagName)) {
-      alert("此標籤已存在");
-    } else {
-      currentGroupData.forEach((tagBox) => {
-        console.log(tagBox);
-        if (tagBox.name === inputTagBoxName) {
-          tagBox.tags.push(inputTagName);
-        } else {
-          console.log("no match box name");
-        }
-      });
-
-      await firebase.updateTagGroup(userId, currentGroupData);
-      setShowTagInput(false);
-      props.setGroupData(currentGroupData);
-    }
-  }
-  function closeInputTagHandler() {
-    setShowTagInput(false);
+    selectedTagBoxName = name;
+    console.log("show modal, group name", name);
+    setShowInputModal(true);
   }
 
   async function choseTagHandler(tagName) {
@@ -208,27 +173,14 @@ function TagBox(props) {
     setNotesBoxData(currentNoteData);
   }
 
-  //
-  // function closeUpdateTagBoxNameHandler(e) {
-  //   console.log("active");
-  //   if (tagBoxNameInputRef.current === e.target) {
-  //     console.log("close");
-  //     setIsUpdateTagBoxName(false);
-  //   }
-  // }
-  function focusHandler() {
-    console.log("focus");
-  }
-
   async function onBlurHandler(name, value) {
-    console.log("onblur", name, value);
     let currentGroupData = [...props.groupData];
     currentGroupData.forEach((tagBox) => {
       if (name === tagBox.name) {
         tagBox.name = value;
       }
     });
-    // console.log(groupsData);
+
     await firebase.updateTagGroup(userId, currentGroupData);
     props.setGroupData(currentGroupData);
     setIsUpdateTagBoxName(false);
@@ -270,64 +222,66 @@ function TagBox(props) {
 
   return (
     <>
-      {props.groupData?.map((box, index) => (
-        <TagBoxContainer
-          // ref={tagBoxNameInputRef}
-          // onClick={closeUpdateTagBoxNameHandler}
-          key={index}
-        >
-          <BoxDeleteTag onClick={() => deleteTagGroupHandler(index)} />
-          <BoxNameDiv>
-            {isUpdateTagBoxName ? (
-              <Form onSubmit={(e) => e.preventDefault()}>
-                <BoxNameInput
-                  defaultValue={box.name}
-                  as="input"
-                  onFocus={focusHandler}
-                  onBlur={(e) => onBlurHandler(box.name, e.target.value)}
-                />
-              </Form>
-            ) : (
-              <BoxName
-                key={box.name}
-                onClick={() => setIsUpdateTagBoxName(true)}
-              >
-                {box.name}
-              </BoxName>
-            )}
-          </BoxNameDiv>
-          <TagsContainer key={`${box.name}${index}`}>
-            {box.tags?.map((tag, tagIndex) => (
-              <>
-                <TagContainer name={tag} key={tagIndex}>
-                  <Input id={tag} key={`${tag}${tagIndex}`}></Input>
-                  <Tag onClick={() => choseTagHandler(tag)} key={tag}>
-                    {tag}
-                  </Tag>
-                  <DeleteTag onClick={() => deleteTagHandler(tag, index)} />
-                </TagContainer>
-              </>
-            ))}
-          </TagsContainer>
-          <AddSign onClick={() => showTagInputHandler(box.name)} key={uniqid()}>
-            新增
-          </AddSign>
-        </TagBoxContainer>
-      ))}
-      {showTagInput && (
-        <Wrapper>
-          <AddTagBox>
-            <form onSubmit={(e) => addTagHandler(e)}>
-              <TagInput
-                onChange={(e) => setInputTagName(e.target.value)}
-                placeholder="新增標籤"
-              ></TagInput>
-              <CloseTagInput onClick={closeInputTagHandler}>x</CloseTagInput>
-              <AddTagButton>新增</AddTagButton>
-            </form>
-          </AddTagBox>
-        </Wrapper>
+      <BoxWrapper>
+        {props.groupData?.map((box, index) => (
+          <TagBoxContainer key={index}>
+            <BoxDeleteTag
+              onClick={() => deleteTagGroupHandler(index)}
+              key={index}
+            />
+            <BoxNameDiv>
+              {isUpdateTagBoxName ? (
+                <Form
+                  onSubmit={(e) => e.preventDefault()}
+                  key={`${index}${box.name}`}
+                >
+                  <BoxNameInput
+                    defaultValue={box.name}
+                    as="input"
+                    onBlur={(e) => onBlurHandler(box.name, e.target.value)}
+                    key={box.name}
+                  />
+                </Form>
+              ) : (
+                <BoxName
+                  key={box.name}
+                  onClick={() => setIsUpdateTagBoxName(true)}
+                >
+                  {box.name}
+                </BoxName>
+              )}
+            </BoxNameDiv>
+            <TagsContainer key={`${box.name}${index}`}>
+              {box.tags?.map((tag, tagIndex) => (
+                <>
+                  <TagContainer name={tag} key={tagIndex}>
+                    <Input id={tag} key={`${tag}${tagIndex}`}></Input>
+                    <Tag onClick={() => choseTagHandler(tag)} key={tag}>
+                      {tag}
+                    </Tag>
+                    <DeleteTag onClick={() => deleteTagHandler(tag, index)} />
+                  </TagContainer>
+                </>
+              ))}
+              <AddSign
+                onClick={() => showTagInputHandler(box.name)}
+                key={uniqid()}
+              />
+            </TagsContainer>
+          </TagBoxContainer>
+        ))}
+      </BoxWrapper>
+
+      {showInputModal && (
+        <InputModal
+          modalTitle={"標籤名稱"}
+          setShowInputModal={setShowInputModal}
+          groupData={props.groupData}
+          setGroupData={props.setGroupData}
+          selectedTagBoxName={selectedTagBoxName}
+        />
       )}
+
       {notesBox?.map((note) => (
         <NoteBox key={uniqid()}>
           <BoxName key={uniqid()}>書名: {note.bookTitle}</BoxName>

@@ -4,7 +4,9 @@ import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
 import Book from "../components/Book";
 
-const Title = styled.h1``;
+const Title = styled.h1`
+  text-align: center;
+`;
 
 const AddNoteSign = styled.div`
   width: 50px;

@@ -10,6 +10,13 @@ const tools = {
     });
     return allTags;
   },
+  allGroupTitleArray(groupData) {
+    let allTitles = [];
+    groupData.forEach((tagBox) => {
+      allTitles.push(tagBox.name);
+    });
+    return allTitles;
+  },
   isNoteIncludeTag(tagsArray, noteData) {
     if (tagsArray.length === 0) {
       return false;

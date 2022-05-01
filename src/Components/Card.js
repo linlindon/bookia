@@ -16,31 +16,51 @@ const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 150px;
-  padding: 20px 10px;
+  width: 200px;
+  margin: 10px;
+  padding: 10px 10px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
+
+  &:hover {
+    transform: scale(1.1);
+    background-color: #3fccdc;
+  }
 `;
 
 const BookImageContainer = styled.div`
-  width: 130px;
-  height: 200px;
+  width: 150px;
+  height: 220px;
+  border: solid 1px #f2f1f0;
 `;
 const BookImage = styled.img`
   width: 100%;
   object-fit: cover;
 `;
+const AddButton = styled.button`
+  margin-top: 10px;
+  padding: 3px 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  background-color: #3fccdc;
 
+  ${CardContainer}:hover & {
+    background-color: #ffffff;
+  }
+`;
 const BookDetail = styled.div`
   text-align: center;
 `;
 
-const AddButton = styled.button`
-  font-size: 14px;
-  margin-top: 10px;
+const BookName = styled.h3`
+  margin: 6px;
+  font-size: 16px;
 `;
-
-const BookName = styled.h3``;
-const BookAuthor = styled.p``;
-const BookPublish = styled.p``;
+const BookAuthor = styled.p`
+  margin: 5px;
+`;
+const BookPublish = styled(BookAuthor)``;
 
 function Card(props) {
   let navigate = useNavigate();
@@ -49,6 +69,9 @@ function Card(props) {
   async function getBookData(book, title, authors, date, img) {
     console.log(book);
     console.log(authors);
+    if (date === undefined) {
+      date = "無資料";
+    }
     let data = {
       title: title,
       authors: authors,
@@ -60,7 +83,7 @@ function Card(props) {
     };
     console.log(data);
     const newBookId = firebase.setNewBookRef(userId);
-
+    console.log(newBookId);
     await firebase.addNewBook(userId, newBookId, data);
     navigate(`/booknote/${newBookId}`, { state: data });
   }

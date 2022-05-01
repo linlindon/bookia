@@ -63,7 +63,7 @@ function Book(props) {
             <ContentContainer key={uniqid()}>
               <BookTitle key={uniqid()}>書名: {book.title}</BookTitle>
               <TagsContainer key={uniqid()}>
-                {book.tagNames.map((tag) => (
+                {book.tagNames?.map((tag) => (
                   <Tag key={uniqid()}>{tag}</Tag>
                 ))}
               </TagsContainer>
