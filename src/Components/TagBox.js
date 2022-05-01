@@ -1,17 +1,34 @@
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { DeleteBack2 } from "@styled-icons/remix-fill/DeleteBack2";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
+import { MediaQuerySmall, MediaQueryLarge } from "../utils/globalStyle/styles";
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
 import { UserProfile } from "../App";
 import InputModal from "./modal/InputModal";
-import uniqid from "uniqid";
+import Note from "./Note";
 
 const BoxWrapper = styled.div`
   display: flex;
-  width: 80%;
+  justify-content: space-evenly;
   flex-wrap: wrap;
+  width: 80%;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #3fccdc;
+  border-radius: 5px;
+  ${"" /* background-color: #3fccdc; */}
+
+  @media only screen and (min-width: 1280px) {
+    width: 1200px;
+  }
+  @media only screen and (max-width: 786px) {
+    align-items: center;
+    flex-direction: column;
+    width: 90%;
+    padding: 5px;
+  }
 `;
 
 const TagBoxContainer = styled.div`
@@ -27,12 +44,19 @@ const TagBoxContainer = styled.div`
   border: 1px solid #ece6e6;
   border-radius: 10px;
   background-color: #ffffff;
+
+  @media only screen and (max-width: 786px) {
+    max-width: none;
+    width: 90%;
+    min-height: 120px;
+  }
 `;
 const BoxDeleteTag = styled(DeleteBack2)`
   display: none;
   position: absolute;
   right: -5px;
   width: 22px;
+  cursor: pointer;
   color: #ff6972;
   transform: rotate(0.92turn);
 
@@ -42,11 +66,12 @@ const BoxDeleteTag = styled(DeleteBack2)`
   }
 `;
 const BoxNameDiv = styled.div`
-  displayL flex;
+  display: flex;
   justify-content: center;
   text-align: center;
   width: 80%;
   margin-bottom: 16px;
+  cursor: pointer;
   font-size: 16px;
   font-weight: 600;
   border-bottom: 2px solid #ece6e6;
@@ -56,8 +81,8 @@ const BoxName = styled.p`
 `;
 const BoxNameInput = styled.input`
   border: none;
-  margin-top: 12px;
-  margin-bottom: 16px;
+  margin-top: 8px;
+  margin-bottom: 12px;
   font-size: 16px;
   font-weight: 600;
   text-align: center;
@@ -80,41 +105,34 @@ const Tag = styled.div`
   font-size: 14px;
   border: 1px solid #00d084;
   border-radius: 5px;
+  cursor: pointer;
   ${Input}:checked + && {
     background-color: #00d084;
   }
 `;
-
+const Form = styled.form``;
+const TagContainer = styled.label`
+  display: flex;
+`;
 const AddSign = styled(AddCircle)`
   position: absolute;
   right: 5px;
   top: 110px;
   width: 30px;
   height: 30px;
+  cursor: pointer;
   color: #00d084;
+
+  @media only screen and (max-width: 786px) {
+    top: 90px;
+  }
 `;
-const NoteBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 60%;
-  border: 1px solid #ece6e6;
-  border-radius: 10px;
-  margin-top: 30px;
-`;
-const BookName = styled.div`
-  display: block;
-  margin-bottom: 5px;
-`;
-const DeleteSign = styled.span``;
-const Form = styled.form``;
-const TagContainer = styled.label`
-  display: flex;
-`;
+
 const DeleteTag = styled(DeleteBack2)`
   display: none;
   width: 18px;
   margin-left: 6px;
+  cursor: pointer;
   color: #ff6972;
 
   ${TagContainer}:hover & {
@@ -130,8 +148,7 @@ let selectedTagBoxName = "";
 function TagBox(props) {
   const [showInputModal, setShowInputModal] = useState(false);
   const [isUpdateTagBoxName, setIsUpdateTagBoxName] = useState(false);
-  const [notesBox, setNotesBoxData] = useState([]);
-  // const tagBoxNameInputRef = useRef();
+  const [notesBoxData, setNotesBoxData] = useState([]);
   const userId = useContext(UserProfile);
 
   useEffect(() => {
@@ -227,6 +244,7 @@ function TagBox(props) {
           <TagBoxContainer key={index}>
             <BoxDeleteTag
               onClick={() => deleteTagGroupHandler(index)}
+              title="刪除書籤櫃"
               key={index}
             />
             <BoxNameDiv>
@@ -253,19 +271,18 @@ function TagBox(props) {
             </BoxNameDiv>
             <TagsContainer key={`${box.name}${index}`}>
               {box.tags?.map((tag, tagIndex) => (
-                <>
-                  <TagContainer name={tag} key={tagIndex}>
-                    <Input id={tag} key={`${tag}${tagIndex}`}></Input>
-                    <Tag onClick={() => choseTagHandler(tag)} key={tag}>
-                      {tag}
-                    </Tag>
-                    <DeleteTag onClick={() => deleteTagHandler(tag, index)} />
-                  </TagContainer>
-                </>
+                <TagContainer name={tag} key={tagIndex}>
+                  <Input id={tag} key={`${tag}${tagIndex}`}></Input>
+                  <Tag onClick={() => choseTagHandler(tag)} key={tag}>
+                    {tag}
+                  </Tag>
+                  <DeleteTag onClick={() => deleteTagHandler(tag, index)} />
+                </TagContainer>
               ))}
               <AddSign
                 onClick={() => showTagInputHandler(box.name)}
-                key={uniqid()}
+                title="新增標籤"
+                key={`add${box.name}${index}`}
               />
             </TagsContainer>
           </TagBoxContainer>
@@ -281,23 +298,24 @@ function TagBox(props) {
           selectedTagBoxName={selectedTagBoxName}
         />
       )}
+      {notesBoxData && <Note notesBoxData={notesBoxData} />}
 
-      {notesBox?.map((note) => (
-        <NoteBox key={uniqid()}>
-          <BoxName key={uniqid()}>書名: {note.bookTitle}</BoxName>
-          <BookName key={uniqid()}>{note.title}</BookName>
-          <TagsContainer key={uniqid()}>
-            {note.tagNames.map((tag) => (
-              <Tag key={uniqid()}>
+      {/* {notesBoxData?.map((note, index) => (
+        <NoteBox key={index}>
+          <BoxName key={note.bookTitle}>書名: {note.bookTitle}</BoxName>
+          <BookName key={note.title}>{note.title}</BookName>
+          <TagsContainer key={`${note.title}${index}`}>
+            {note.tagNames.map((tag, tagIndex) => (
+              <Tag key={tag}>
                 {tag}
-                <DeleteSign key={uniqid()} />
+                <DeleteSign key={tagIndex} />
               </Tag>
             ))}
-            <p key={uniqid()}>{note.content}</p>
-            <AddSign key={uniqid()}>修改</AddSign>
+            <p key={`${note.bookTitle}${index}`}>{note.content}</p>
+            <UpdateSign key={uniqid()}>修改</UpdateSign>
           </TagsContainer>
         </NoteBox>
-      ))}
+      ))} */}
     </>
   );
 }

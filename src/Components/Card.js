@@ -67,10 +67,10 @@ function Card(props) {
   const userId = useContext(UserProfile);
 
   async function getBookData(book, title, authors, date, img) {
-    console.log(book);
-    console.log(authors);
     if (date === undefined) {
       date = "無資料";
+    } else if (authors === undefined) {
+      authors = ["無資料"];
     }
     let data = {
       title: title,
@@ -83,7 +83,7 @@ function Card(props) {
     };
     console.log(data);
     const newBookId = firebase.setNewBookRef(userId);
-    console.log(newBookId);
+
     await firebase.addNewBook(userId, newBookId, data);
     navigate(`/booknote/${newBookId}`, { state: data });
   }

@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import styled from "styled-components";
 import uniqid from "uniqid";
 import firebase from "../utils/firebaseTools";
-import NewNote from "./modal/NewNote";
+import NewNote from "./modal/NewNoteModal";
 import { UserProfile } from "../App";
 
 const BoxName = styled.h4`

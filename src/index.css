@@ -15,5 +15,14 @@ body {
   border-bottom: solid 1px black;
   flex-wrap: wrap;
   display: flex;
-  flex-direction: row; */
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 14px;
+  font-weight: 500;
+  padding-bottom: 3px;
+  justify-content: space-between;
+  letter-spacing: 0.2rem;
+  margin-bottom: 3px;
+  border-bottom: 2px solid #3fccdc; */
 }

@@ -1,11 +1,17 @@
 import { createGlobalStyle } from "styled-components";
 
-const GlobalStyle = createGlobalStyle`
+export const GlobalStyle = createGlobalStyle`
 
     body {
         line-height: 1.5;
         background-color: #f2f1f0;
-        -webkit-appearance:none;
+        box-sizing: border-box;
+        letter-spacing: .1rem;
+        ${"" /* -webkit-appearance:none; */}
+
+        @media only screen and (max-width: 786px) {
+            font-size: 14px;
+        }
     }
 
     button {
@@ -23,4 +29,7 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-export default GlobalStyle;
+// export const MediaQuerySmall = `@media only screen and {max-width: 768px}`;
+// export const MediaQueryLarge = `@media only screen and {min-width: 1280px}`;
+
+// export { GlobalStyle };

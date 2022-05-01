@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, onSnapshot } from "firebase/firestore";
 import firebase from "../utils/firebaseTools";
-import NewNote from "../components/modal/NewNote";
+import NewNote from "../components/modal/NewNoteModal";
 import NoteBox from "../components/NoteBox";
 import { UserProfile } from "../App";
 

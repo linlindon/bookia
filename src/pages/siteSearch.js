@@ -73,8 +73,7 @@ function SiteSearch() {
 
   function searchData(e) {
     e.preventDefault();
-    console.log("inside submit ===>", booksData, notesData);
-    console.log(searchType);
+
     setIsData(true);
     if (!searchType) {
       alert("請先選擇要搜尋的項目");

@@ -1,25 +1,44 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { FolderAdd } from "@styled-icons/fluentui-system-filled/FolderAdd";
+import { MediaQuerySmall, MediaQueryLarge } from "../utils/globalStyle/styles";
 import firebase from "../utils/firebaseTools";
 import TagBox from "../components/TagBox";
 import InputModal from "../components/modal/InputModal";
 import { UserProfile } from "../App";
 
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 30px;
+  ${"" /* width: 100%; */}
+  margin-bottom: 20px;
+`;
+
+const PageTitle = styled.h1`
+  @media only screen and (max-width: 786px) {
+    margin: 5px;
+  }
 `;
 
 const AddBoxSign = styled(FolderAdd)`
-  position: absolute;
-  right: 10%;
+  position: fixed;
+  right: 6%;
+  bottom: 5%;
   width: 50px;
   height: 50px;
   color: #3fccdc;
   font-size: 26px;
+  cursor: pointer;
+
+  @media only screen and (max-width: 786px) {
+    width: 40px;
+  }
 `;
 
 let allGroupData = [];
@@ -29,9 +48,8 @@ function Tags() {
   const [showInputModal, setShowInputModal] = useState(false);
   const [groupData, setGroupData] = useState([]);
   const userId = useContext(UserProfile);
-  console.log("tags render");
+
   useEffect(() => {
-    console.log("tags render inside use effect");
     let data = [];
     async function getData() {
       await firebase.getTagGroupsData(userId).then((res) => {
@@ -41,21 +59,22 @@ function Tags() {
       });
     }
     getData();
-    console.log(groupData);
   }, []);
 
   return (
     <>
-      <Container>
-        <h1>書籤櫃</h1>
-        <TagBox
-          data={boxDatas}
-          setboxDatas={setboxDatas}
-          groupData={groupData}
-          setGroupData={setGroupData}
-        />
-      </Container>
-      <AddBoxSign onClick={() => setShowInputModal(true)} />
+      <Wrapper>
+        <Container>
+          <PageTitle>書籤櫃</PageTitle>
+          <TagBox
+            data={boxDatas}
+            setboxDatas={setboxDatas}
+            groupData={groupData}
+            setGroupData={setGroupData}
+          />
+        </Container>
+      </Wrapper>
+      <AddBoxSign onClick={() => setShowInputModal(true)} title="新增書籤櫃" />
       {showInputModal && (
         <InputModal
           groupData={groupData}
