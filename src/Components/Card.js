@@ -7,7 +7,8 @@ import { UserProfile } from "../App";
 
 const AllCardsContainer = styled.div`
   display: flex;
-  justify-content: center;
+  width: 100%;
+  ${"" /* justify-content: center; */}
   flex-wrap: wrap;
   margin: 30px 5% 40px 5%;
 `;
@@ -16,7 +17,7 @@ const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 230px;
+  width: calc((100%-120px) / 3);
   margin: 10px;
   padding: 10px 10px;
   border-radius: 10px;

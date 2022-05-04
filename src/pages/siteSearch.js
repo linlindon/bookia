@@ -5,6 +5,7 @@ import { UserProfile } from "../App";
 import SearchBar from "../components/Search";
 import Book from "../components/Book";
 import Note from "../components/Note";
+import Loading from "../components/Loading";
 
 const SearchContainer = styled.div`
   display: flex;
@@ -31,6 +32,9 @@ const Button = styled.button`
 const Title = styled.h3`
   font-size: 16px;
 `;
+const LoadingContainer = styled.div`
+  margin-top: 50px;
+`;
 
 let booksData = [];
 let notesData = [];
@@ -41,6 +45,7 @@ function SiteSearch() {
   const [searchNoteResults, setSearchNoteResults] = useState([]);
   const [isData, setIsData] = useState(true);
   const [isRender, setIsRender] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
   // console.log("inside func ===>", booksData, notesData);
   // console.log("outside", searchInput);
@@ -78,7 +83,7 @@ function SiteSearch() {
               return book.title.includes(word);
             });
           });
-
+          setIsLoading(false);
           setSearchBookResults(filterData);
         } else if (searchType === "note") {
           notesData.forEach((note) => {
@@ -100,6 +105,7 @@ function SiteSearch() {
             });
           });
           console.log(filterData);
+          setIsLoading(false);
           setSearchNoteResults(filterData);
         }
         if (filterData.length === 0) {
@@ -143,7 +149,14 @@ function SiteSearch() {
           searchType={searchType}
           setSearchInput={setSearchInput}
           setIsRender={setIsRender}
+          setIsLoading={setIsLoading}
+          isLoading={isLoading}
         />
+        {isLoading && (
+          <LoadingContainer>
+            <Loading />
+          </LoadingContainer>
+        )}
         {isData ? null : <Title>無相關資料</Title>}
         {searchBookResults.length !== 0 && (
           <Book bookDatas={searchBookResults} />

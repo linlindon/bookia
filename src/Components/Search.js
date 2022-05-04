@@ -69,6 +69,7 @@ function SearchBar(props) {
       alert("請輸入要搜尋的文字");
     } else if (props.searchType) {
       console.log("have search type");
+      props.setIsLoading(true);
       props.setSearchInput(searchInput);
     } else {
       console.log("last else");
@@ -79,8 +80,8 @@ function SearchBar(props) {
           bookData.push(book.volumeInfo);
         });
         setBookList(bookData);
+        setIsLoading(false);
       });
-      setIsLoading(false);
     }
   }
 
