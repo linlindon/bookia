@@ -27,6 +27,8 @@ export const GlobalStyle = createGlobalStyle`
         border: none;
         border-bottom: solid 1px black;
         font-size: 14px;
+        font-family: 'Noto Serif TC', serif;
+        color: #363434;
     }
     input:focus {
         outline: none;

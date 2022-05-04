@@ -5,12 +5,21 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 40px;
+`;
+const Title = styled.h1`
+  font-size: 22px;
+  margin-bottom: 50px;
+
+  @media only screen and (max-width: 786px) {
+    font-size: 18px;
+  }
 `;
 
 function SearchBook() {
   return (
     <Container>
-      <h1>搜尋要新增筆記的書籍</h1>
+      <Title>搜尋要筆記的書</Title>
       <SearchBar />
     </Container>
   );

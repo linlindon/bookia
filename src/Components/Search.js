@@ -1,17 +1,23 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { Search } from "@styled-icons/heroicons-solid/Search";
+import Loading from "./Loading";
 import Card from "./Card";
 
 const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 60%;
+
+  @media only screen and (min-width: 1280px) {
+    width: 1300px;
+  }
 `;
 
 const SearchForm = styled.form`
   display: flex;
-  width: 80%;
+  width: 100%;
   border-bottom: solid 1px black;
 `;
 
@@ -26,9 +32,11 @@ const SearchInput = styled.input`
   }
 `;
 const SearchIcon = styled(Search)`
-  width: 8%;
+  width: 30px;
 `;
-
+const LoadingContainer = styled.div`
+  margin-top: 100px;
+`;
 const DataContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -48,7 +56,8 @@ async function getSearchData(input) {
 function SearchBar(props) {
   const [searchInput, setSearchInput] = useState("");
   const [bookList, setBookList] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
+  console.log("search bar render");
   function searchData(e) {
     e.preventDefault();
     if (props.setIsRender) {
@@ -59,9 +68,11 @@ function SearchBar(props) {
     } else if (searchInput.replace(/\s*/g, "").length === 0) {
       alert("請輸入要搜尋的文字");
     } else if (props.searchType) {
+      console.log("have search type");
       props.setSearchInput(searchInput);
     } else {
-      console.log(searchInput);
+      console.log("last else");
+      setIsLoading(true);
       getSearchData(searchInput).then((data) => {
         let bookData = [];
         data.items.forEach((book) => {
@@ -69,6 +80,7 @@ function SearchBar(props) {
         });
         setBookList(bookData);
       });
+      setIsLoading(false);
     }
   }
 
@@ -83,6 +95,11 @@ function SearchBar(props) {
           <SearchIcon onClick={(e) => searchData(e)} />
         </SearchForm>
       </SearchContainer>
+      {isLoading && (
+        <LoadingContainer>
+          <Loading />
+        </LoadingContainer>
+      )}
       <DataContainer>
         <Card bookList={bookList} />
       </DataContainer>
