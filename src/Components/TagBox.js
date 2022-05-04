@@ -2,19 +2,24 @@ import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { DeleteBack2 } from "@styled-icons/remix-fill/DeleteBack2";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
-import { MediaQuerySmall, MediaQueryLarge } from "../utils/globalStyle/styles";
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
 import { UserProfile } from "../App";
 import InputModal from "./modal/InputModal";
 import Note from "./Note";
+import Loading from "../components/Loading";
 
 const Wrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: space-evenly;
   width: 100%;
 `;
-
+const LoadingContainer = styled.div`
+  position: absolute;
+  margin-top: 40px;
+`;
 const BoxWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -123,11 +128,12 @@ const Tag = styled.div`
 const Form = styled.form``;
 const TagContainer = styled.label`
   display: flex;
+  position: relative;
 `;
 const AddSign = styled(AddCircle)`
   position: absolute;
   right: 5px;
-  top: 110px;
+  top: 90px;
   width: 30px;
   height: 30px;
   cursor: pointer;
@@ -140,10 +146,14 @@ const AddSign = styled(AddCircle)`
 
 const DeleteTag = styled(DeleteBack2)`
   display: none;
+  position: absolute;
+  top: -5px;
+  right: -10px;
   width: 18px;
   margin-left: 6px;
   cursor: pointer;
   color: #ff6972;
+  transform: rotate(0.92turn);
 
   ${TagContainer}:hover & {
     display: inline;
@@ -159,6 +169,7 @@ function TagBox(props) {
   const [showInputModal, setShowInputModal] = useState(false);
   const [isUpdateTagBoxName, setIsUpdateTagBoxName] = useState(false);
   const [notesBoxData, setNotesBoxData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const userId = useContext(UserProfile);
 
   useEffect(() => {
@@ -207,9 +218,9 @@ function TagBox(props) {
         tagBox.name = value;
       }
     });
+    props.setGroupData(currentGroupData);
 
     await firebase.updateTagGroup(userId, currentGroupData);
-    props.setGroupData(currentGroupData);
     setIsUpdateTagBoxName(false);
   }
 
@@ -219,16 +230,18 @@ function TagBox(props) {
       return name !== tag;
     });
     currentGroupData[index].tags = [...changeTagArray];
+    props.setGroupData(currentGroupData);
     await firebase.updateTagGroup(userId, currentGroupData);
     await tools.deleteNotesTag(userId, tag);
     await tools.deleteBooksTag(userId, tag);
-    props.setGroupData(currentGroupData);
   }
 
   async function deleteTagGroupHandler(index) {
+    setIsLoading(true);
     let currentGroupData = [...props.groupData];
     let tagsArray = currentGroupData[index].tags;
     currentGroupData.splice(index, 1);
+    props.setGroupData(currentGroupData);
     // console.log(tagsArray);
     if (tagsArray !== 0) {
       // 要加上警語
@@ -244,12 +257,18 @@ function TagBox(props) {
       );
     }
     await firebase.updateTagGroup(userId, currentGroupData);
-    props.setGroupData(currentGroupData);
+
+    setIsLoading(false);
   }
 
   return (
     <>
       <Wrapper>
+        {isLoading && (
+          <LoadingContainer>
+            <Loading />
+          </LoadingContainer>
+        )}
         <BoxWrapper>
           {props.groupData?.map((box, index) => (
             <TagBoxContainer key={index}>

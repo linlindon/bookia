@@ -16,7 +16,7 @@ const AllCardsContainer = styled.div`
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  ${"" /* align-items: center; */}
   width: calc((100%-120px) / 3);
   margin: 10px;
   padding: 10px 10px;

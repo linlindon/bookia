@@ -4,6 +4,7 @@ import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOu
 import firebase from "../../utils/firebaseTools";
 import tools from "../../utils/tools";
 import { UserProfile } from "../../App";
+import Loading from "../Loading";
 
 const Background = styled.div`
   display: flex;
@@ -19,6 +20,7 @@ const Background = styled.div`
 const InputContainer = styled.form`
   position: relative;
   flex-direction: column;
+  justify-content: center;
   padding: 20px;
   width: 60%;
   height: 150px;
@@ -50,10 +52,14 @@ const Warning = styled.p`
   margin: 0;
   color: red;
 `;
+const LoadingContainer = styled.div`
+  margin-top: 20px;
+`;
 
 let inputValue = "";
 function InputModal(props) {
   const [isWarning, setIsWarning] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
   const inputRef = useRef();
   let allGroupData = [...props.groupData];
@@ -71,6 +77,7 @@ function InputModal(props) {
           setIsWarning(true);
         } else {
           setIsWarning(false);
+          setIsLoading(true);
           allGroupData.push({ name: inputValue, tags: [] });
 
           await firebase.updateTagGroup(userId, allGroupData);
@@ -78,12 +85,14 @@ function InputModal(props) {
           props.setGroupData(allGroupData);
           props.setShowInputModal(false);
           inputValue = "";
+          setIsLoading(false);
         }
       } else {
         if (allTags.includes(inputValue)) {
           setIsWarning(true);
         } else {
           setIsWarning(false);
+          setIsLoading(true);
           allGroupData.forEach((tagBox) => {
             if (tagBox.name === props.selectedTagBoxName) {
               tagBox.tags.push(inputValue);
@@ -94,6 +103,7 @@ function InputModal(props) {
 
           await firebase.updateTagGroup(userId, allGroupData);
           props.setGroupData([...allGroupData]);
+          setIsLoading(false);
           props.setShowInputModal(false);
         }
       }
@@ -119,6 +129,11 @@ function InputModal(props) {
           type="text"
         />
         {isWarning ? <Warning>此名稱已存在，請重新命名</Warning> : null}
+        {isLoading && (
+          <LoadingContainer>
+            <Loading />
+          </LoadingContainer>
+        )}
       </InputContainer>
     </Background>
   );

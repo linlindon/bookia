@@ -1,11 +1,11 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { FolderAdd } from "@styled-icons/fluentui-system-filled/FolderAdd";
-import { MediaQuerySmall, MediaQueryLarge } from "../utils/globalStyle/styles";
 import firebase from "../utils/firebaseTools";
 import TagBox from "../components/TagBox";
 import InputModal from "../components/modal/InputModal";
 import { UserProfile } from "../App";
+import Loading from "../components/Loading";
 
 const Wrapper = styled.div`
   ${"" /* display: flex; */}
@@ -24,7 +24,9 @@ const PageTitle = styled.h1`
     margin: 5px;
   }
 `;
-
+const LoadingContainer = styled.div`
+  margin-top: 100px;
+`;
 const AddBoxSign = styled(FolderAdd)`
   position: fixed;
   right: 6%;
@@ -45,10 +47,12 @@ function Tags() {
   const [boxDatas, setboxDatas] = useState([]);
   const [showInputModal, setShowInputModal] = useState(false);
   const [groupData, setGroupData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const userId = useContext(UserProfile);
 
   useEffect(() => {
     let data = [];
+    setIsLoading(true);
     async function getData() {
       await firebase.getTagGroupsData(userId).then((res) => {
         data.push(...res.tagGroups);
@@ -57,6 +61,7 @@ function Tags() {
       });
     }
     getData();
+    setIsLoading(false);
   }, []);
 
   return (
@@ -64,6 +69,11 @@ function Tags() {
       <Wrapper>
         <Container>
           <PageTitle>書籤櫃</PageTitle>
+          {isLoading && (
+            <LoadingContainer>
+              <Loading />
+            </LoadingContainer>
+          )}
           <TagBox
             data={boxDatas}
             setboxDatas={setboxDatas}

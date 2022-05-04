@@ -5,6 +5,7 @@ import { BookAdd } from "@styled-icons/fluentui-system-filled/BookAdd";
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
 import Book from "../components/Book";
+import Loading from "../components/Loading";
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,7 +27,9 @@ const SignContainer = styled.div`
   background-color: #ffffff;
   box-shadow: 2px 3px 7px rgb(0 0 0 / 15%);
 `;
-
+const LoadingContainer = styled.div`
+  margin-top: 100px;
+`;
 const AddNoteSign = styled(BookAdd)`
   position: fixed;
   right: 6%;
@@ -38,13 +41,13 @@ const AddNoteSign = styled(BookAdd)`
 
 function Books() {
   const [bookDatas, setBookDatas] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
   let navigate = useNavigate();
 
   useEffect(async () => {
     let bookData = [];
-
+    setIsLoading(true);
     firebase.getBooksData(userId).then((data) => {
       data.forEach((book) => {
         bookData.push(book.data());
@@ -52,6 +55,7 @@ function Books() {
       setBookDatas(bookData);
       console.log(bookData);
     });
+    setIsLoading(false);
   }, []);
 
   // setBookDatas((prev) => [...prev, bookData]);
@@ -59,7 +63,11 @@ function Books() {
   return (
     <Wrapper>
       <Title>筆記書櫃</Title>
-
+      {isLoading && (
+        <LoadingContainer>
+          <Loading />
+        </LoadingContainer>
+      )}
       <Book bookDatas={bookDatas} />
       <SignContainer>
         <AddNoteSign onClick={() => navigate(`/search`)} title="新增書籍" />
