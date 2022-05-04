@@ -1,10 +1,10 @@
 import { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import firebase from "../utils/firebaseTools";
-import { Search } from "@styled-icons/bootstrap/Search";
 import { UserProfile } from "../App";
+import SearchBar from "../components/Search";
 import Book from "../components/Book";
-import NoteBox from "../components/NoteBox";
+import Note from "../components/Note";
 
 const SearchContainer = styled.div`
   display: flex;
@@ -18,31 +18,18 @@ const ButtonContainer = styled.div`
 `;
 
 const Button = styled.button`
-  padding: 4px 6px;
-  font-size: 14px;
-  border: 1px solid #ffb226;
-  border-radius: 5px;
-  background-color: ${(props) => (props.active ? "red" : "white")};
-`;
-
-const SearchForm = styled.form`
-  display: flex;
-  width: 80%;
-  border-bottom: solid 2px black;
-`;
-
-const SearchInput = styled.input`
-  font-size: 15px;
   border: none;
-  width: 100%;
+  margin: 20px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 600;
 
-  &::placeholder {
-    color: "red";
-  }
+  border-radius: 5px;
+  background-color: ${(props) => (props.active ? "#3fccdc" : "white")};
 `;
-const SearchIcon = styled(Search)`
-  width: 6%;
-  color: green;
+
+const Title = styled.h3`
+  font-size: 16px;
 `;
 
 let booksData = [];
@@ -53,10 +40,12 @@ function SiteSearch() {
   const [searchBookResults, setSearchBookResults] = useState([]);
   const [searchNoteResults, setSearchNoteResults] = useState([]);
   const [isData, setIsData] = useState(true);
+  const [isRender, setIsRender] = useState(true);
   const userId = useContext(UserProfile);
-  console.log("inside func ===>", booksData, notesData);
+  // console.log("inside func ===>", booksData, notesData);
+  // console.log("outside", searchInput);
+
   useEffect(() => {
-    console.log("use effect");
     booksData = [];
     notesData = [];
     firebase.getBooksData(userId).then((data) => {
@@ -71,44 +60,63 @@ function SiteSearch() {
     });
   }, []);
 
-  function searchData(e) {
-    e.preventDefault();
-
-    setIsData(true);
-    if (!searchType) {
-      alert("請先選擇要搜尋的項目");
-    } else if (!searchInput) {
-      return;
-    } else if (searchInput.replace(/\s*/g, "").length === 0) {
-      alert("請輸入要搜尋的文字");
-    } else {
-      let inputWordArray = searchInput.split(" ");
-      let filterData = [];
-      if (searchType === "book") {
-        inputWordArray.forEach((word) => {
-          filterData = booksData.filter((book) => {
-            return book.title.includes(word);
-          });
-        });
-        setSearchBookResults(filterData);
-      } else if (searchType === "note") {
-        // 如何做到同時包含array裡面的所有字
-        filterData = notesData.filter((note) => {
+  useEffect(() => {
+    setSearchBookResults([]);
+    setSearchNoteResults([]);
+    function searchData() {
+      console.log("inside", searchInput);
+      if (searchInput.length === 0) {
+        // console.log("no input length");
+        return;
+      } else {
+        setIsData(true);
+        let inputWordArray = searchInput.split(" ");
+        let filterData = [];
+        if (searchType === "book") {
           inputWordArray.forEach((word) => {
-            return note.content.includes(word);
+            filterData = booksData.filter((book) => {
+              return book.title.includes(word);
+            });
           });
-        });
-        setSearchNoteResults(filterData);
+
+          setSearchBookResults(filterData);
+        } else if (searchType === "note") {
+          notesData.forEach((note) => {
+            inputWordArray.every((word) => {
+              if (note.content.includes(word)) {
+                filterData.push(note);
+              } else {
+                console.log("no match keyowrd content");
+              }
+            });
+          });
+
+          filterData = notesData.filter((note) => {
+            console.log(note.content);
+            return inputWordArray.every((word) => {
+              console.log(word);
+              console.log(note.content.includes(word));
+              return note.content.includes(word);
+            });
+          });
+          console.log(filterData);
+          setSearchNoteResults(filterData);
+        }
+        if (filterData.length === 0) {
+          setIsData(false);
+        }
+        console.log("book", booksData);
+        console.log("note", notesData);
       }
-      if (filterData.length === 0) {
-        setIsData(false);
-      }
-      console.log("book", booksData);
-      console.log("note", notesData);
     }
-  }
+    searchData();
+  }, [searchInput, isRender]);
 
   function searchTypeHandler(type) {
+    console.log("handler", searchInput);
+    setIsData(true);
+    setSearchBookResults([]);
+    setSearchNoteResults([]);
     setSearchType(type);
   }
 
@@ -118,31 +126,32 @@ function SiteSearch() {
         <ButtonContainer>
           <Button
             active={searchType === "book"}
-            onClick={() => setSearchType("book")}
+            onClick={() => searchTypeHandler("book")}
           >
             搜尋站內書籍
           </Button>
 
           <Button
             active={searchType === "note"}
-            onClick={() => setSearchType("note")}
+            onClick={() => searchTypeHandler("note")}
           >
             搜尋筆記
           </Button>
         </ButtonContainer>
-        <SearchForm onSubmit={(e) => searchData(e)}>
-          <SearchInput
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="請輸入關鍵字"
-          />
-          <SearchIcon onClick={searchData} />
-        </SearchForm>
+
+        <SearchBar
+          searchType={searchType}
+          setSearchInput={setSearchInput}
+          setIsRender={setIsRender}
+        />
+        {isData ? null : <Title>無相關資料</Title>}
+        {searchBookResults.length !== 0 && (
+          <Book bookDatas={searchBookResults} />
+        )}
+        {searchNoteResults.length !== 0 && (
+          <Note notesBoxData={searchNoteResults} />
+        )}
       </SearchContainer>
-      {isData ? "" : <h3>無相關資料</h3>}
-      {searchBookResults && <Book bookDatas={searchBookResults} />}
-      {searchNoteResults && (
-        <NoteBox bookNotesData={searchNoteResults} isData={isData} />
-      )}
     </>
   );
 }

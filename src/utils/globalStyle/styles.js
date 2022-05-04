@@ -7,7 +7,10 @@ export const GlobalStyle = createGlobalStyle`
         background-color: #f2f1f0;
         box-sizing: border-box;
         letter-spacing: .1rem;
-        ${"" /* -webkit-appearance:none; */}
+        color: #363434;
+        font-family: 'Noto Serif TC', serif;
+        ${"" /* font-family: 'Noto Sans TC', sans-serif; */}
+
 
         @media only screen and (max-width: 786px) {
             font-size: 14px;
@@ -20,6 +23,7 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     input {
+        -webkit-appearance:none; 
         border: none;
         border-bottom: solid 1px black;
         font-size: 14px;

@@ -1,25 +1,53 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import uniqid from "uniqid";
 
 const Container = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 30px;
+  justify-content: center;
+  width: 90%;
 `;
-const NoteBox = styled.div`
+const Wrapper = styled.div`
   display: flex;
-  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  width: 100%
+  padding: 0 5%;
+
+  @media only screen and (min-width: 1280px) {
+    width: 1280px; 
+    align-items: center;
+  }
+  @media only screen and (max-width: 786px) {
+    padding: 0 2%;
+  }
+`;
+
+const BookBox = styled.div`
+  display: flex;
   padding: 20px;
-  width: 60%;
-  margin-bottom: 20px;
-  border: 2px solid #ece6e6;
+  width: 48%;
+  margin: 1%;
   border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 2px 2px 7px rgb(0 0 0 / 20%);
+  cursor: pointer;
+  flex-direction: row-reverse;
+
+  &:hover {
+    transform: scale(1.05);
+    background-color: #3fccdc;
+  }
+  @media only screen and (min-width: 785px) {
+    ${"" /* width: 42%; */}
+  }
+  @media only screen and (max-width: 785px) {
+    width: 100%;
+  }
 `;
 
 const BookImg = styled.div`
-  width: 120px;
+  width: 140px;
+  margin-right: 10px;
   border: 1px solid #ece6e6;
 `;
 const Img = styled.img`
@@ -28,10 +56,12 @@ const Img = styled.img`
 `;
 const ContentContainer = styled.div`
   width: 80%;
-  padding: 20px;
 `;
 
-const BookTitle = styled.h3``;
+const BookTitle = styled.h3`
+  margin: 8px 0px 5px 0px;
+  font-size: 16px;
+`;
 
 const TagsContainer = styled.div`
   display: flex;
@@ -39,39 +69,47 @@ const TagsContainer = styled.div`
   gap: 1em;
 `;
 const Tag = styled.p`
-  padding: 4px 6px;
+  margin: 0;
+  padding: 2px 4px;
   font-size: 14px;
-  border: 1px solid #ffb226;
+  border: 2px solid #00d084;
   border-radius: 5px;
+
+  ${BookBox}:hover & {
+    background-color: #ffffff;
+  }
 `;
 
 function Book(props) {
   let navigate = useNavigate();
   console.log(props.bookDatas);
 
-  function redirectBookPage(id) {
-    navigate(`/booknote/${id}`);
-  }
   return (
-    <>
-      {props.bookDatas?.map((book) => (
-        <Container onClick={() => redirectBookPage(book.id)} key={uniqid()}>
-          <NoteBox key={uniqid()}>
-            <BookImg key={uniqid()}>
-              <Img key={uniqid()} src={book.img} alt="" />
-            </BookImg>
-            <ContentContainer key={uniqid()}>
-              <BookTitle key={uniqid()}>書名: {book.title}</BookTitle>
-              <TagsContainer key={uniqid()}>
-                {book.tagNames?.map((tag) => (
-                  <Tag key={uniqid()}>{tag}</Tag>
-                ))}
-              </TagsContainer>
-            </ContentContainer>
-          </NoteBox>
-        </Container>
-      ))}
-    </>
+    <Container>
+      <Wrapper>
+        {props.bookDatas?.map((book, index) => (
+          <>
+            <BookBox
+              onClick={() => navigate(`/booknote/${book.id}`)}
+              key={book.id}
+            >
+              <BookImg key={book.img}>
+                <Img src={book.img} alt="" />
+              </BookImg>
+              <ContentContainer key={book}>
+                <BookTitle key={book.title}>{book.title}</BookTitle>
+                <p>作者:{book.authors.join("、")}</p>
+                <TagsContainer key={index}>
+                  {book.tagNames?.map((tag) => (
+                    <Tag key={tag}>{tag}</Tag>
+                  ))}
+                </TagsContainer>
+              </ContentContainer>
+            </BookBox>
+          </>
+        ))}
+      </Wrapper>
+    </Container>
   );
 }
 

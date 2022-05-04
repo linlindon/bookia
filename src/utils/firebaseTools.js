@@ -90,6 +90,10 @@ const firebase = {
     const newBookRef = doc(collection(db, "users", userId, "books"));
     return newBookRef.id;
   },
+  getNotesRef(userId) {
+    let notesRef = collection(db, "users", userId, "notes");
+    return notesRef;
+  },
   async addNewBook(userId, bookId, data) {
     const newBookRef = collection(db, "users", userId, "books");
     data = { ...data, id: bookId };

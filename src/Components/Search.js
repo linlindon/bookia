@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Search } from "@styled-icons/bootstrap/Search";
+import { Search } from "@styled-icons/heroicons-solid/Search";
 import Card from "./Card";
 
 const SearchContainer = styled.div`
@@ -12,14 +12,14 @@ const SearchContainer = styled.div`
 const SearchForm = styled.form`
   display: flex;
   width: 80%;
-  border-bottom: solid 2px black;
+  border-bottom: solid 1px black;
 `;
 
 const SearchInput = styled.input`
   font-size: 15px;
   border: none;
   width: 100%;
-  background-color: #faf9f7;
+  background-color: #f2f1f0;
 
   &:focus {
     outline: none;
@@ -27,6 +27,11 @@ const SearchInput = styled.input`
 `;
 const SearchIcon = styled(Search)`
   width: 8%;
+`;
+
+const DataContainer = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 async function getSearchData(input) {
@@ -40,17 +45,23 @@ async function getSearchData(input) {
     });
 }
 
-function SearchBar() {
+function SearchBar(props) {
   const [searchInput, setSearchInput] = useState("");
   const [bookList, setBookList] = useState([]);
 
   function searchData(e) {
     e.preventDefault();
+    if (props.setIsRender) {
+      props.setIsRender((prevState) => !prevState);
+    }
     if (!searchInput) {
       return;
     } else if (searchInput.replace(/\s*/g, "").length === 0) {
       alert("請輸入要搜尋的文字");
+    } else if (props.searchType) {
+      props.setSearchInput(searchInput);
     } else {
+      console.log(searchInput);
       getSearchData(searchInput).then((data) => {
         let bookData = [];
         data.items.forEach((book) => {
@@ -69,10 +80,12 @@ function SearchBar() {
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="請輸入關鍵字"
           />
-          <SearchIcon onSubmit={searchData} />
+          <SearchIcon onClick={(e) => searchData(e)} />
         </SearchForm>
       </SearchContainer>
-      <Card bookList={bookList} />
+      <DataContainer>
+        <Card bookList={bookList} />
+      </DataContainer>
     </>
   );
 }

@@ -96,8 +96,6 @@ const NewNote = (props) => {
   });
   const inputRef = useRef();
   const userId = useContext(UserProfile);
-  // const user = getAuth().currentUser;
-  // const userId = user.uid;
 
   useEffect(() => {
     chosenTagArray = [];

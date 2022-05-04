@@ -16,7 +16,7 @@ const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 200px;
+  width: 230px;
   margin: 10px;
   padding: 10px 10px;
   border-radius: 10px;
@@ -36,9 +36,11 @@ const BookImageContainer = styled.div`
 `;
 const BookImage = styled.img`
   width: 100%;
+  height: 100%;
   object-fit: cover;
 `;
 const AddButton = styled.button`
+  border: none;
   margin-top: 10px;
   padding: 3px 8px;
   font-size: 14px;

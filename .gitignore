@@ -67,4 +67,4 @@ node_modules/
 
 .src/utils/fireBaseConfig.js
 
-src/note.js
+note.js

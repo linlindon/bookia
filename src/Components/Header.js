@@ -1,5 +1,7 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
+import { Search } from "@styled-icons/heroicons-solid/Search";
+import { Logout } from "@styled-icons/heroicons-outline/Logout";
 import firebase from "../utils/firebaseTools";
 import { NavLink, useNavigate } from "react-router-dom";
 import { UserProfile } from "../App";
@@ -9,25 +11,68 @@ const Navbar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  height: 60px;
-  background-color: #dedede;
+  margin: 1.5%;
+  align-items: baseline;
+
+  ${"" /* background-color: #dedede; */}
 `;
 const Logo = styled.div`
+  margin-right: 5%;
   font-size: 28px;
   font-weight: 700;
 `;
 
-const BarContent = styled.div``;
+const LinksContainer = styled.div`
+  width: 35%;
+  margin-right: auto;
+`;
 const NavLinks = styled(NavLink)`
   text-decoration: none;
   padding: 4px 6px;
-  margin-right: 5px;
+  ${"" /* margin-right: 5px; */}
   font-size: 14px;
-  color: black;
-  background-color: #ffffff;
+  color: #363434;
+  ${"" /* background-color: #ffffff; */}
   border-radius: 5px;
 `;
+const SignContainer = styled.div`
+  position: relative;
+  width: 10%;
+`;
+const SiteSearch = styled(Search)`
+  width: 22px;
+  margin-right: 25%;
+  color: #363434;
+`;
+const SearchHint = styled.div`
+  position: absolute;
+  left: -2vw;
+  top: 30px;
+  width: 80px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  text-align: center;
+  background-color: #ffffff;
+`;
+const LogoutSign = styled(Logout)`
+  posiiton: absolute;
+  width: 22px;
+  cursor: pointer;
+`;
+const LogoutHint = styled.div`
+  position: absolute;
+  left: 3vw;
+  top: 30px;
+  width: 50px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  text-align: center;
+  background-color: #ffffff;
+`;
+
 function Header() {
+  const [isShowSearchHint, setIsShowSearchHint] = useState(false);
+  const [isShowLogoutHint, setIsShowLogoutHint] = useState(false);
   const navigate = useNavigate();
   const userId = useContext(UserProfile);
   console.log("header render");
@@ -41,19 +86,29 @@ function Header() {
   return (
     <Navbar>
       <Logo>Bookia</Logo>
-      <BarContent>
+
+      <LinksContainer>
         <NavLinks to="/books">筆記櫃</NavLinks>
         <NavLinks to="/alltags">書籤櫃</NavLinks>
         <NavLinks to="/search">新增筆記</NavLinks>
-        <NavLinks to="/site-search">站內搜尋</NavLinks>
-        {userId ? (
-          <NavLinks to="/login" onClick={logout}>
-            登出
-          </NavLinks>
-        ) : (
-          <NavLinks to="/login">登入</NavLinks>
-        )}
-      </BarContent>
+      </LinksContainer>
+      <SignContainer>
+        <NavLink to="/site-search">
+          <SiteSearch
+            onMouseEnter={() => setIsShowSearchHint(true)}
+            onMouseLeave={() => setIsShowSearchHint(false)}
+          />
+          {isShowSearchHint && <SearchHint>站內搜尋</SearchHint>}
+        </NavLink>
+
+        <LogoutSign
+          to="/login"
+          onClick={logout}
+          onMouseEnter={() => setIsShowLogoutHint(true)}
+          onMouseLeave={() => setIsShowLogoutHint(false)}
+        />
+        {isShowLogoutHint && <LogoutHint>登出</LogoutHint>}
+      </SignContainer>
     </Navbar>
   );
 }

@@ -1,29 +1,50 @@
 import { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { BookAdd } from "@styled-icons/fluentui-system-filled/BookAdd";
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
 import Book from "../components/Book";
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+`;
+
 const Title = styled.h1`
   text-align: center;
 `;
+const SignContainer = styled.div`
+  position: fixed;
+  right: 5.5%;
+  bottom: 4%;
+  width: 65px;
+  height: 65px;
+  border-radius: 30px;
+  background-color: #ffffff;
+  box-shadow: 2px 3px 7px rgb(0 0 0 / 15%);
+`;
 
-const AddNoteSign = styled.div`
+const AddNoteSign = styled(BookAdd)`
+  position: fixed;
+  right: 6%;
+  bottom: 5%;
   width: 50px;
-  height: 50px;
-  font-size: 26px;
-  border-radius: 25px;
-  border: solid 1px black;
-  line-height: 2;
+  color: #3fccdc;
+  cursor: pointer;
 `;
 
 function Books() {
   const [bookDatas, setBookDatas] = useState([]);
+
   const userId = useContext(UserProfile);
+  let navigate = useNavigate();
 
   useEffect(async () => {
     let bookData = [];
-    console.log("inside");
+
     firebase.getBooksData(userId).then((data) => {
       data.forEach((book) => {
         bookData.push(book.data());
@@ -36,11 +57,14 @@ function Books() {
   // setBookDatas((prev) => [...prev, bookData]);
 
   return (
-    <>
+    <Wrapper>
       <Title>筆記書櫃</Title>
+
       <Book bookDatas={bookDatas} />
-      <AddNoteSign>+</AddNoteSign>
-    </>
+      <SignContainer>
+        <AddNoteSign onClick={() => navigate(`/search`)} title="新增書籍" />
+      </SignContainer>
+    </Wrapper>
   );
 }
 

@@ -1,16 +1,28 @@
 import { useState, useContext } from "react";
 import styled from "styled-components";
-import uniqid from "uniqid";
+import { Edit } from "@styled-icons/fa-regular/Edit";
 import firebase from "../utils/firebaseTools";
 import NewNote from "./modal/NewNoteModal";
 import { UserProfile } from "../App";
+
+const TagBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60%;
+  margin-bottom: 20px;
+  border: 1px solid #ece6e6;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 2px 2px 7px rgb(0 0 0 / 20%);
+`;
 
 const BoxName = styled.h4`
   width: 80%;
   padding-bottom: 10px;
   text-align: center;
   font-size: 16px;
-  border-bottom: 2px solid #ece6e6;
+  border-bottom: 2px solid #6a7fdb;
 `;
 const BookName = styled.div`
   display: block;
@@ -23,27 +35,18 @@ const TagsContainer = styled.div`
   width: 80%;
   gap: 1em;
 `;
-const AddSign = styled.div`
+const AddSign = styled(Edit)`
   width: 30px;
   height: 30px;
-  border-radius: 15px;
-  border: solid 1px black;
-  line-height: 2.5;
+  margin-bottom: 20px;
+  color: #6a7fdb;
+  cursor: pointer;
 `;
 const Tag = styled.p`
   padding: 4px 6px;
   font-size: 14px;
-  border: 1px solid #ffb226;
+  border: 1px solid #00d084;
   border-radius: 5px;
-`;
-const TagBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 60%;
-  margin-bottom: 20px;
-  border: 1px solid #ece6e6;
-  border-radius: 10px;
 `;
 const DeleteSign = styled.span``;
 
@@ -67,27 +70,26 @@ function NoteBox(props) {
 
   return (
     <>
-      {props.bookNotesData?.map((item) => (
-        <TagBox key={uniqid()}>
-          <BoxName>{item.title}</BoxName>
-          <BookName>書名：{item.bookTitle}</BookName>
-          <BookName>頁數：{item.page}</BookName>
+      {props.bookNotesData?.map((item, index) => (
+        <TagBox key={index}>
+          <BoxName key={item.title}>{item.title}</BoxName>
+          <BookName key={item.bookTitle}>書名：{item.bookTitle}</BookName>
+          <BookName key={item.page}>頁數：{item.page}</BookName>
 
-          <TagsContainer>
+          <TagsContainer key={`${item}`}>
             {item.tagNames.map((tag) => (
-              <Tag key={uniqid()}>
+              <Tag key={tag}>
                 {tag}
-                <DeleteSign key={uniqid()} />
+                <DeleteSign key={`delete${tag}`} />
               </Tag>
             ))}
-            <p>{item.content}</p>
-            {props.isData ? (
-              ""
-            ) : (
-              <AddSign onClick={() => updateNote(item.id)} key={uniqid()}>
-                修改
-              </AddSign>
-            )}
+            <p key={item.content}>{item.content}</p>
+
+            <AddSign
+              onClick={() => updateNote(item.id)}
+              title="修改"
+              key={`add${item}`}
+            />
           </TagsContainer>
         </TagBox>
       ))}

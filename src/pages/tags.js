@@ -8,15 +8,14 @@ import InputModal from "../components/modal/InputModal";
 import { UserProfile } from "../App";
 
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
+  ${"" /* display: flex; */}
 `;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  ${"" /* width: 100%; */}
+  width: 100%;
   margin-bottom: 20px;
 `;
 
@@ -33,7 +32,6 @@ const AddBoxSign = styled(FolderAdd)`
   width: 50px;
   height: 50px;
   color: #3fccdc;
-  font-size: 26px;
   cursor: pointer;
 
   @media only screen and (max-width: 786px) {

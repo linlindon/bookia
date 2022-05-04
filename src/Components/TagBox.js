@@ -9,10 +9,16 @@ import { UserProfile } from "../App";
 import InputModal from "./modal/InputModal";
 import Note from "./Note";
 
-const BoxWrapper = styled.div`
+const Wrapper = styled.div`
   display: flex;
   justify-content: space-evenly;
+  width: 100%;
+`;
+
+const BoxWrapper = styled.div`
+  display: flex;
   flex-wrap: wrap;
+
   width: 80%;
   padding: 20px;
   margin-bottom: 30px;
@@ -21,7 +27,7 @@ const BoxWrapper = styled.div`
   ${"" /* background-color: #3fccdc; */}
 
   @media only screen and (min-width: 1280px) {
-    width: 1200px;
+    width: 1180px;
   }
   @media only screen and (max-width: 786px) {
     align-items: center;
@@ -39,7 +45,7 @@ const TagBoxContainer = styled.div`
   min-width: 30%;
   max-width: 50%;
   min-height: 150px;
-  margin: 10px;
+  margin: 1%;
   padding: 10px;
   border: 1px solid #ece6e6;
   border-radius: 10px;
@@ -49,6 +55,10 @@ const TagBoxContainer = styled.div`
     max-width: none;
     width: 90%;
     min-height: 120px;
+  }
+  @media only screen and (min-width: 1200px) {
+    max-width: none;
+    width: 31.2%;
   }
 `;
 const BoxDeleteTag = styled(DeleteBack2)`
@@ -239,56 +249,60 @@ function TagBox(props) {
 
   return (
     <>
-      <BoxWrapper>
-        {props.groupData?.map((box, index) => (
-          <TagBoxContainer key={index}>
-            <BoxDeleteTag
-              onClick={() => deleteTagGroupHandler(index)}
-              title="刪除書籤櫃"
-              key={index}
-            />
-            <BoxNameDiv>
-              {isUpdateTagBoxName ? (
-                <Form
-                  onSubmit={(e) => e.preventDefault()}
-                  key={`${index}${box.name}`}
-                >
-                  <BoxNameInput
-                    defaultValue={box.name}
-                    as="input"
-                    onBlur={(e) => onBlurHandler(box.name, e.target.value)}
-                    key={box.name}
-                  />
-                </Form>
-              ) : (
-                <BoxName
-                  key={box.name}
-                  onClick={() => setIsUpdateTagBoxName(true)}
-                >
-                  {box.name}
-                </BoxName>
-              )}
-            </BoxNameDiv>
-            <TagsContainer key={`${box.name}${index}`}>
-              {box.tags?.map((tag, tagIndex) => (
-                <TagContainer name={tag} key={tagIndex}>
-                  <Input id={tag} key={`${tag}${tagIndex}`}></Input>
-                  <Tag onClick={() => choseTagHandler(tag)} key={tag}>
-                    {tag}
-                  </Tag>
-                  <DeleteTag onClick={() => deleteTagHandler(tag, index)} />
-                </TagContainer>
-              ))}
-              <AddSign
-                onClick={() => showTagInputHandler(box.name)}
-                title="新增標籤"
-                key={`add${box.name}${index}`}
+      <Wrapper>
+        <BoxWrapper>
+          {props.groupData?.map((box, index) => (
+            <TagBoxContainer key={index}>
+              <BoxDeleteTag
+                onClick={() => deleteTagGroupHandler(index)}
+                title="刪除書籤櫃"
+                key={index}
               />
-            </TagsContainer>
-          </TagBoxContainer>
-        ))}
-      </BoxWrapper>
-
+              <BoxNameDiv>
+                {isUpdateTagBoxName ? (
+                  <Form
+                    onSubmit={(e) => e.preventDefault()}
+                    key={`${index}${box.name}`}
+                  >
+                    <BoxNameInput
+                      defaultValue={box.name}
+                      as="input"
+                      onBlur={(e) => onBlurHandler(box.name, e.target.value)}
+                      key={box.name}
+                    />
+                  </Form>
+                ) : (
+                  <BoxName
+                    key={box.name}
+                    onClick={() => setIsUpdateTagBoxName(true)}
+                  >
+                    {box.name}
+                  </BoxName>
+                )}
+              </BoxNameDiv>
+              <TagsContainer key={`${box.name}${index}`}>
+                {box.tags?.map((tag, tagIndex) => (
+                  <TagContainer name={tag} key={tagIndex}>
+                    <Input id={tag} key={`${tag}${tagIndex}`}></Input>
+                    <Tag onClick={() => choseTagHandler(tag)} key={tag}>
+                      {tag}
+                    </Tag>
+                    <DeleteTag
+                      onClick={() => deleteTagHandler(tag, index)}
+                      key={`delete${tag}`}
+                    />
+                  </TagContainer>
+                ))}
+                <AddSign
+                  onClick={() => showTagInputHandler(box.name)}
+                  title="新增標籤"
+                  key={`add${box.name}${index}`}
+                />
+              </TagsContainer>
+            </TagBoxContainer>
+          ))}
+        </BoxWrapper>
+      </Wrapper>
       {showInputModal && (
         <InputModal
           modalTitle={"標籤名稱"}
@@ -299,23 +313,6 @@ function TagBox(props) {
         />
       )}
       {notesBoxData && <Note notesBoxData={notesBoxData} />}
-
-      {/* {notesBoxData?.map((note, index) => (
-        <NoteBox key={index}>
-          <BoxName key={note.bookTitle}>書名: {note.bookTitle}</BoxName>
-          <BookName key={note.title}>{note.title}</BookName>
-          <TagsContainer key={`${note.title}${index}`}>
-            {note.tagNames.map((tag, tagIndex) => (
-              <Tag key={tag}>
-                {tag}
-                <DeleteSign key={tagIndex} />
-              </Tag>
-            ))}
-            <p key={`${note.bookTitle}${index}`}>{note.content}</p>
-            <UpdateSign key={uniqid()}>修改</UpdateSign>
-          </TagsContainer>
-        </NoteBox>
-      ))} */}
     </>
   );
 }

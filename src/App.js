@@ -4,7 +4,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Tags from "./pages/tags";
 import Books from "./pages/books";
-import BookNote from "./pages/booknote";
+import BookNote from "./pages/bookNote";
 import SearchBook from "./pages/searchBook";
 import Header from "./components/Header";
 import Login from "./pages/login";
