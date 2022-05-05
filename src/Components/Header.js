@@ -3,9 +3,8 @@ import styled from "styled-components";
 import { Search } from "@styled-icons/heroicons-solid/Search";
 import { Logout } from "@styled-icons/heroicons-outline/Logout";
 import { Menu } from "@styled-icons/heroicons-outline/Menu";
-
 import firebase from "../utils/firebaseTools";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink, Link } from "react-router-dom";
 import { UserProfile } from "../App";
 
 const PlaceHolder = styled.div`
@@ -21,7 +20,6 @@ const NavbarWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 20px 40px;
-
   align-items: baseline;
 
   @media screen and (max-width: 786px) {
@@ -45,8 +43,7 @@ const NavLinks = styled.div`
     margin-top: 20%;
   }
 `;
-const Link = styled.a`
-  text-decoration: none;
+const Nav = styled(NavLink)`
   padding: 4px 6px;
   margin-right: 2%;
   font-size: 14px;
@@ -64,6 +61,18 @@ const Link = styled.a`
     margin: 0 30px 20px;
   }
 `;
+const MobileLink = styled.p`
+  @media screen and (max-width: 786px) {
+    padding: 4px 6px;
+    margin-right: 2%;
+    font-weight: 500;
+    line-height: 27px;
+    margin: 0 30px 20px;
+    color: #363434;
+    cursor: pointer;
+  }
+`;
+
 const SignContainer = styled.div`
   position: relative;
   width: 80px;
@@ -174,6 +183,10 @@ function Header() {
   const userId = useContext(UserProfile);
   console.log("header render");
 
+  function closeToggleHandler(link) {
+    setToggle(false);
+    navigate(link);
+  }
   async function logout() {
     if (toggle) {
       setToggle(false);
@@ -196,35 +209,47 @@ function Header() {
         <>
           <MobileMenuOverlay />
           <MobileNavWrapper>
-            <CloseButton onClick={() => setToggle(false)}>×</CloseButton>
+            <CloseButton onClick={closeToggleHandler}>×</CloseButton>
             <NavLinks>
-              <Link onClick={() => setToggle(false)} href="books">
+              <MobileLink
+                href="/books"
+                onClick={() => closeToggleHandler("/books")}
+              >
                 筆記櫃
-              </Link>
-              <Link onClick={() => setToggle(false)} href="alltags">
+              </MobileLink>
+              <MobileLink
+                to="/alltags"
+                onClick={() => closeToggleHandler("/alltags")}
+              >
                 書籤櫃
-              </Link>
-              <Link onClick={() => setToggle(false)} href="search">
+              </MobileLink>
+              <MobileLink
+                to="/search"
+                onClick={() => closeToggleHandler("/search")}
+              >
                 新增筆記
-              </Link>
-              <Link onClick={() => setToggle(false)} href="site-search">
+              </MobileLink>
+              <MobileLink
+                to="/site-search"
+                onClick={() => closeToggleHandler("/site-search")}
+              >
                 站內搜尋
-              </Link>
-              <Link onClick={logout}>登出</Link>
+              </MobileLink>
+              <MobileLink onClick={logout}>登出</MobileLink>
             </NavLinks>
           </MobileNavWrapper>
         </>
       )}
 
       <NavbarWrapper>
-        <Logo href="/books">Bookia</Logo>
+        <Logo to="/books">Bookia</Logo>
         <NavLinks>
-          <Link href="books">筆記櫃</Link>
-          <Link href="alltags">書籤櫃</Link>
-          <Link href="search">新增筆記</Link>
+          <Nav to="/books">筆記櫃</Nav>
+          <Nav to="/alltags">書籤櫃</Nav>
+          <Nav to="/search">新增筆記</Nav>
         </NavLinks>
         <SignContainer>
-          <Link href="site-search">
+          <Link to="/site-search">
             <SiteSearch
               onMouseEnter={() => setIsShowSearchHint(true)}
               onMouseLeave={() => setIsShowSearchHint(false)}
@@ -233,7 +258,7 @@ function Header() {
           </Link>
 
           <LogoutSign
-            href="login"
+            to="/login"
             onClick={logout}
             onMouseEnter={() => setIsShowLogoutHint(true)}
             onMouseLeave={() => setIsShowLogoutHint(false)}

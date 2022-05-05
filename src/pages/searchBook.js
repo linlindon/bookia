@@ -5,7 +5,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 40px;
+  margin: 5% 15%; ;
 `;
 const Title = styled.h1`
   font-size: 22px;

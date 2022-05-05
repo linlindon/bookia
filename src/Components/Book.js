@@ -47,7 +47,7 @@ const BookBox = styled.div`
 
 const BookImg = styled.div`
   width: 150px;
-  height: 220px;
+  height: 200px;
   margin-right: 10px;
   border: 1px solid #ece6e6;
 `;
@@ -95,7 +95,7 @@ function Book(props) {
               key={book.id}
             >
               <BookImg key={book.img}>
-                <Img src={book.img} alt="" />
+                <Img src={book.img} key={`${book}${index}`} alt="book photo" />
               </BookImg>
               <ContentContainer key={book}>
                 <BookTitle key={book.title}>{book.title}</BookTitle>

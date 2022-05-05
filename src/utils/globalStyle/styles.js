@@ -9,6 +9,7 @@ export const GlobalStyle = createGlobalStyle`
         letter-spacing: .1rem;
         color: #404040;
         font-family: 'Noto Serif TC', serif;
+        font-size: 14px;
         ${"" /* font-family: 'Noto Sans TC', sans-serif; */}
 
 
@@ -29,6 +30,11 @@ export const GlobalStyle = createGlobalStyle`
         font-size: 14px;
         font-family: 'Noto Serif TC', serif;
         color: #404040;
+    }
+
+    textarea {
+        font-size: 14px;
+        padding: 8px;
     }
     input:focus {
         outline: none;

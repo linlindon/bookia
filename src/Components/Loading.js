@@ -6,10 +6,12 @@ const BounceAnimation = keyframes`
   100% { margin-bottom: 0 }
 `;
 const DotWrapper = styled.div`
+  position: absolute;
   display: flex;
   width: 60px;
   margin: 0 auto;
   align-items: flex-end;
+  z-index: 999;
 `;
 
 const Dot = styled.div`

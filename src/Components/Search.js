@@ -42,14 +42,20 @@ const LoadingContainer = styled.div`
   margin-top: 100px;
 `;
 const DataContainer = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
+  align-items: center;
   justify-content: center;
+  margin: 5% 15%;
 `;
 
 async function getSearchData(input) {
   const key = "AIzaSyAFgX7hNUEGGTH7nWl-nbHL7fuDH9XIHco";
+  const type = "orderBy=newest";
+  const type2 = "maxResults=40";
   return fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=${input}&key=${key}&maxResults=40`
+    `https://www.googleapis.com/books/v1/volumes?q=${input}&key=${key}&${type2}`
   )
     .then((res) => res.json())
     .catch((err) => {
@@ -60,10 +66,12 @@ async function getSearchData(input) {
 function SearchBar(props) {
   const [searchInput, setSearchInput] = useState("");
   const [bookList, setBookList] = useState([]);
+  const [noDataHint, setNoDataHint] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   function searchData(e) {
     e.preventDefault();
+    setNoDataHint(false);
     if (props.setIsRender) {
       props.setIsRender((prevState) => !prevState);
     }
@@ -81,15 +89,22 @@ function SearchBar(props) {
       setIsLoading(true);
       getSearchData(searchInput).then((data) => {
         let bookData = [];
-        data.items.forEach((book) => {
-          bookData.push(book.volumeInfo);
-        });
-        setBookList(bookData);
-        setIsLoading(false);
-        window.scrollTo({
-          top: 300,
-          behavior: "smooth",
-        });
+
+        if (data.totalItems === 0) {
+          setIsLoading(false);
+          setNoDataHint(true);
+          return;
+        } else {
+          data.items.forEach((book) => {
+            bookData.push(book.volumeInfo);
+          });
+          setBookList(bookData);
+          setIsLoading(false);
+          window.scrollTo({
+            top: 300,
+            behavior: "smooth",
+          });
+        }
       });
     }
   }
@@ -110,6 +125,7 @@ function SearchBar(props) {
           <Loading />
         </LoadingContainer>
       )}
+      {noDataHint && <h2>搜尋不到此書</h2>}
       <DataContainer>
         <Card bookList={bookList} />
       </DataContainer>

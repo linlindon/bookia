@@ -81,7 +81,7 @@ function App() {
         console.log("not login");
       }
     });
-  }, [loginState]);
+  }, []);
 
   return (
     <>
