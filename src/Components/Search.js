@@ -17,8 +17,12 @@ const SearchContainer = styled.div`
 
 const SearchForm = styled.form`
   display: flex;
-  width: 100%;
+
+  margin-bottom: 50px;
   border-bottom: solid 1px black;
+  @media only screen and (min-width: 1280px) {
+    ${"" /* width: 1130px; */}
+  }
 `;
 
 const SearchInput = styled.input`
@@ -57,7 +61,7 @@ function SearchBar(props) {
   const [searchInput, setSearchInput] = useState("");
   const [bookList, setBookList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  console.log("search bar render");
+
   function searchData(e) {
     e.preventDefault();
     if (props.setIsRender) {
@@ -72,6 +76,7 @@ function SearchBar(props) {
       props.setIsLoading(true);
       props.setSearchInput(searchInput);
     } else {
+      setBookList([]);
       console.log("last else");
       setIsLoading(true);
       getSearchData(searchInput).then((data) => {
@@ -81,6 +86,10 @@ function SearchBar(props) {
         });
         setBookList(bookData);
         setIsLoading(false);
+        window.scrollTo({
+          top: 300,
+          behavior: "smooth",
+        });
       });
     }
   }

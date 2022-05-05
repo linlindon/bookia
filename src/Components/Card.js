@@ -4,28 +4,41 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
+import image from "../img/book.png";
 
 const AllCardsContainer = styled.div`
   display: flex;
   width: 100%;
-  ${"" /* justify-content: center; */}
   flex-wrap: wrap;
   margin: 30px 5% 40px 5%;
+  @media only screen and (min-width: 1280px) {
+    width: 1280px;
+  }
 `;
 
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  ${"" /* align-items: center; */}
-  width: calc((100%-120px) / 3);
+  align-items: center;
+  width: calc((100% - 120px) / 3);
   margin: 10px;
   padding: 10px 10px;
   border-radius: 10px;
   background-color: #ffffff;
   box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
 
+  @media only screen and (min-width: 1280px) {
+    width: calc((100% - 160px) / 4);
+  }
+  @media only screen and (max-width: 786px) {
+    width: calc((100% - 80px) / 2);
+  }
+  @media only screen and (max-width: 600px) {
+    width: 80%;
+  }
+
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
     background-color: #3fccdc;
   }
 `;
@@ -93,32 +106,35 @@ function Card(props) {
 
   return (
     <AllCardsContainer>
-      {props.bookList?.map((book) => {
+      {props.bookList?.map((book, index) => {
         let img = book.imageLinks;
         return (
-          <CardContainer>
-            <BookImageContainer>
-              <BookImage
-                src={img ? img.thumbnail : "https://picsum.photos/200/300"}
-              />
+          <CardContainer key={book}>
+            <BookImageContainer key={book.imageLinks}>
+              <BookImage src={img ? img.thumbnail : image} />
             </BookImageContainer>
             <AddButton
+              key={`book${index}`}
               onClick={() =>
                 getBookData(
                   book,
                   book.title,
                   book.authors,
                   book.publishedDate,
-                  img ? img.thumbnail : "https://picsum.photos/200/300"
+                  img ? img.thumbnail : image
                 )
               }
             >
               選擇此書筆記
             </AddButton>
-            <BookDetail>
-              <BookName>{book.title}</BookName>
-              <BookAuthor>{book.authors && book.authors.join("、")}</BookAuthor>
-              <BookPublish>{book.publishedDate}</BookPublish>
+            <BookDetail key={`${index}book`}>
+              <BookName key={book.title}>{book.title}</BookName>
+              <BookAuthor key={book.authors}>
+                {book.authors && book.authors.join("、")}
+              </BookAuthor>
+              <BookPublish key={book.publishedDate}>
+                {book.publishedDate}
+              </BookPublish>
             </BookDetail>
           </CardContainer>
         );

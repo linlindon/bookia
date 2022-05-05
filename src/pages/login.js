@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import image from "../img/book.jpg";
+import image from "../img/login-book.jpg";
 import { LoginForm } from "../components/LoginForm";
 import { SignUpForm } from "../components/SignUpForm";
 
@@ -9,11 +9,12 @@ const Container = styled.div`
 `;
 const ImageContainer = styled.div`
   width: 50%;
-  height: 100%;
+  height: 100vh;
 `;
 const Image = styled.img`
   object-fit: cover;
   width: 100%;
+  height: 100%;
 `;
 const LoginContainer = styled.div`
   display: flex;

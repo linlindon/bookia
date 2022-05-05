@@ -7,7 +7,7 @@ export const GlobalStyle = createGlobalStyle`
         background-color: #f2f1f0;
         box-sizing: border-box;
         letter-spacing: .1rem;
-        color: #363434;
+        color: #404040;
         font-family: 'Noto Serif TC', serif;
         ${"" /* font-family: 'Noto Sans TC', sans-serif; */}
 
@@ -28,11 +28,15 @@ export const GlobalStyle = createGlobalStyle`
         border-bottom: solid 1px black;
         font-size: 14px;
         font-family: 'Noto Serif TC', serif;
-        color: #363434;
+        color: #404040;
     }
     input:focus {
         outline: none;
     }
+    a, a:hover, a:focus, a:active {
+      text-decoration: none;
+      color: inherit;
+ }
 `;
 
 // export const MediaQuerySmall = `@media only screen and {max-width: 768px}`;

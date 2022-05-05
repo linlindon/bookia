@@ -58,10 +58,10 @@ function Tags() {
         data.push(...res.tagGroups);
         setGroupData(data);
         allGroupData = data;
+        setIsLoading(false);
       });
     }
     getData();
-    setIsLoading(false);
   }, []);
 
   return (

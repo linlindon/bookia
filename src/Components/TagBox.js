@@ -169,7 +169,7 @@ function TagBox(props) {
   const [showInputModal, setShowInputModal] = useState(false);
   const [isUpdateTagBoxName, setIsUpdateTagBoxName] = useState(false);
   const [notesBoxData, setNotesBoxData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
 
   useEffect(() => {

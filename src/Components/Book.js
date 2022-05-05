@@ -46,7 +46,8 @@ const BookBox = styled.div`
 `;
 
 const BookImg = styled.div`
-  width: 140px;
+  width: 150px;
+  height: 220px;
   margin-right: 10px;
   border: 1px solid #ece6e6;
 `;
