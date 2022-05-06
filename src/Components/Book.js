@@ -1,20 +1,36 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
+// const Container = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   width: 90%;
+// `;
+
+// 原本的wrapper
+// const Container = styled.div`
+//   display: flex;
+//   justify-content: flex-start;
+//   flex-wrap: wrap;
+//   width: 100%
+//   padding: 0 5%;
+
+//   @media only screen and (min-width: 1280px) {
+//     width: 1280px;
+//     align-items: center;
+//   }
+//   @media only screen and (max-width: 786px) {
+//     padding: 0 2%;
+//   }
+// `;
+
 const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 90%;
-`;
-const Wrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
-  width: 100%
-  padding: 0 5%;
 
   @media only screen and (min-width: 1280px) {
-    width: 1280px; 
+    width: 1280px;
     align-items: center;
   }
   @media only screen and (max-width: 786px) {
@@ -24,39 +40,62 @@ const Wrapper = styled.div`
 
 const BookBox = styled.div`
   display: flex;
-  padding: 20px;
-  width: 48%;
-  margin: 1%;
+  justify-content: center;
+  flex-direction: row-reverse;
+  width: calc((100% - 84px) / 2);
+  margin: 30px 20px;
   border-radius: 10px;
   background-color: #ffffff;
-  box-shadow: 2px 2px 7px rgb(0 0 0 / 20%);
   cursor: pointer;
-  flex-direction: row-reverse;
+  transition: background 0.5s, border-color 0.5s, box-shadow 0.5s, outline 0.5s;
 
   &:hover {
-    transform: scale(1.05);
-    background-color: #3fccdc;
-  }
-  @media only screen and (min-width: 785px) {
-    ${"" /* width: 42%; */}
-  }
-  @media only screen and (max-width: 785px) {
-    width: 100%;
+    box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
+    background-color: #eeeded;
   }
 `;
 
+// const BookBox = styled.div`
+//   display: flex;
+//   padding: 20px;
+//   width: 48%;
+//   margin: 1%;
+//   border-radius: 10px;
+//   background-color: #ffffff;
+//   box-shadow: 2px 2px 7px rgb(0 0 0 / 20%);
+//   cursor: pointer;
+//   flex-direction: row-reverse;
+
+//   &:hover {
+//     transform: scale(1.05);
+//     background-color: #3fccdc;
+//   }
+//   @media only screen and (min-width: 785px) {
+//     ${"" /* width: 42%; */}
+//   }
+//   @media only screen and (max-width: 785px) {
+//     width: 100%;
+//   }
+// `;
+
 const BookImg = styled.div`
-  width: 150px;
-  height: 200px;
-  margin-right: 10px;
-  border: 1px solid #ece6e6;
+  width: 185px;
+  height: 250px;
+  margin: 32px 15px;
 `;
 const Img = styled.img`
   width: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  border: solid 1px #eeeded;
 `;
 const ContentContainer = styled.div`
-  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 230px;
+  margin: 23px 10px;
+  font-size: 16px;
+  font-weight: 500;
 `;
 
 const BookTitle = styled.h3`
@@ -71,11 +110,10 @@ const TagsContainer = styled.div`
 `;
 const Tag = styled.p`
   margin: 0;
-  padding: 2px 4px;
+  padding: 5px 10px;
   font-size: 14px;
-  border: 2px solid #00d084;
-  border-radius: 5px;
-
+  border-radius: 15px;
+  background-color: #e4d36d;
   ${BookBox}:hover & {
     background-color: #ffffff;
   }
@@ -87,29 +125,29 @@ function Book(props) {
 
   return (
     <Container>
-      <Wrapper>
-        {props.bookDatas?.map((book, index) => (
-          <>
-            <BookBox
-              onClick={() => navigate(`/booknote/${book.id}`)}
-              key={book.id}
-            >
-              <BookImg key={book.img}>
-                <Img src={book.img} key={`${book}${index}`} alt="book photo" />
-              </BookImg>
-              <ContentContainer key={book}>
+      {props.bookDatas?.map((book, index) => (
+        <>
+          <BookBox
+            onClick={() => navigate(`/booknote/${book.id}`)}
+            key={book.id}
+          >
+            <BookImg key={book.img}>
+              <Img src={book.img} key={`${book}${index}`} alt="book photo" />
+            </BookImg>
+            <ContentContainer key={book}>
+              <div>
                 <BookTitle key={book.title}>{book.title}</BookTitle>
                 <p>作者:{book.authors.join("、")}</p>
-                <TagsContainer key={index}>
-                  {book.tagNames?.map((tag) => (
-                    <Tag key={tag}>{tag}</Tag>
-                  ))}
-                </TagsContainer>
-              </ContentContainer>
-            </BookBox>
-          </>
-        ))}
-      </Wrapper>
+              </div>
+              <TagsContainer key={`${book}${book.id}`}>
+                {book.tagNames?.map((tag) => (
+                  <Tag key={tag}>{tag}</Tag>
+                ))}
+              </TagsContainer>
+            </ContentContainer>
+          </BookBox>
+        </>
+      ))}
     </Container>
   );
 }

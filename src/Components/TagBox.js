@@ -10,53 +10,99 @@ import Note from "./Note";
 import Loading from "../components/Loading";
 
 const Wrapper = styled.div`
-  display: flex;
+  ${
+    "" /* display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
-  width: 100%;
+  justify-content: space-evenly; */
+  }
+  ${
+    "" /* width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5% 15%; */
+  }
 `;
-const LoadingContainer = styled.div`
-  position: absolute;
-  margin-top: 40px;
-`;
+
+// const BoxWrapper = styled.div`
+//   display: flex;
+//   flex-wrap: wrap;
+
+//   width: 80%;
+//   padding: 20px;
+//   margin-bottom: 30px;
+//   border-bottom: 2px solid #3fccdc;
+//   border-radius: 5px;
+//   ${"" /* background-color: #3fccdc; */}
+
+//   @media only screen and (min-width: 1280px) {
+//     width: 1180px;
+//   }
+//   @media only screen and (max-width: 786px) {
+//     align-items: center;
+//     flex-direction: column;
+//     width: 90%;
+//     padding: 5px;
+//   }
+// `;
+
+// const TagBoxContainer = styled.div`
+//   position: relative;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   min-width: 30%;
+//   max-width: 50%;
+//   min-height: 150px;
+//   margin: 1%;
+//   padding: 10px;
+//   border: 1px solid #ece6e6;
+//   border-radius: 10px;
+//   background-color: #ffffff;
+
+//   @media only screen and (max-width: 786px) {
+//     max-width: none;
+//     width: 90%;
+//     min-height: 120px;
+//   }
+//   @media only screen and (min-width: 1200px) {
+//     max-width: none;
+//     width: 31.2%;
+//   }
+// `;
+
 const BoxWrapper = styled.div`
   display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
   flex-wrap: wrap;
-
-  width: 80%;
-  padding: 20px;
-  margin-bottom: 30px;
-  border-bottom: 2px solid #3fccdc;
-  border-radius: 5px;
-  ${"" /* background-color: #3fccdc; */}
-
-  @media only screen and (min-width: 1280px) {
-    width: 1180px;
-  }
-  @media only screen and (max-width: 786px) {
-    align-items: center;
-    flex-direction: column;
-    width: 90%;
-    padding: 5px;
-  }
+  width: 100%;
 `;
 
 const TagBoxContainer = styled.div`
   position: relative;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  min-width: 30%;
-  max-width: 50%;
-  min-height: 150px;
-  margin: 1%;
+  flex-direction: column;
+  width: calc((100% - 108px) / 2);
+  margin: 15px;
   padding: 10px;
-  border: 1px solid #ece6e6;
   border-radius: 10px;
+  border: solid 0.5px #e4e4e4;
   background-color: #ffffff;
+  ${"" /* outline: 1px none transparent; */}
+  transition: 0.5s ease;
 
-  @media only screen and (max-width: 786px) {
+  &:hover {
+    box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
+    ${"" /* background-color: #f7f7f7; */}
+  }
+
+  ${
+    "" /* @media only screen and (max-width: 786px) {
     max-width: none;
     width: 90%;
     min-height: 120px;
@@ -64,12 +110,14 @@ const TagBoxContainer = styled.div`
   @media only screen and (min-width: 1200px) {
     max-width: none;
     width: 31.2%;
+  } */
   }
 `;
 const BoxDeleteTag = styled(DeleteBack2)`
   display: none;
   position: absolute;
   right: -5px;
+  top: 0px;
   width: 22px;
   cursor: pointer;
   color: #ff6972;
@@ -84,7 +132,7 @@ const BoxNameDiv = styled.div`
   display: flex;
   justify-content: center;
   text-align: center;
-  width: 80%;
+  ${"" /* width: 80%; */}
   margin-bottom: 16px;
   cursor: pointer;
   font-size: 16px;
@@ -105,10 +153,12 @@ const BoxNameInput = styled.input`
 
 const TagsContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: flex-start;
   flex-wrap: wrap;
   width: 80%;
   gap: 1em;
+  flex-grow: 1;
+  margin-bottom: 20px;
 `;
 
 const Input = styled.input.attrs({ type: "checkbox" })`
@@ -116,28 +166,44 @@ const Input = styled.input.attrs({ type: "checkbox" })`
 `;
 
 const Tag = styled.div`
-  padding: 4px 6px;
+  margin: 0;
+  padding: 5px 10px;
   font-size: 14px;
-  border: 1px solid #00d084;
-  border-radius: 5px;
+  border-radius: 15px;
+  border: solid 2px #e6c88b;
+
   cursor: pointer;
   ${Input}:checked + && {
-    background-color: #00d084;
+    background-color: #dca246;
   }
 `;
 const Form = styled.form``;
 const TagContainer = styled.label`
   display: flex;
   position: relative;
+  align-items: flex-start;
 `;
+const AddSignContainer = styled.div`
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 31px;
+  height: 31px;
+  border-radius: 16px;
+  background-color: white;
+
+  &:hover {
+    box-shadow: 3px 3px 3px rgba(0 0 0 / 30%);
+  }
+`;
+
 const AddSign = styled(AddCircle)`
   position: absolute;
-  right: 5px;
-  top: 90px;
+
   width: 30px;
   height: 30px;
   cursor: pointer;
-  color: #00d084;
+  color: #dca246;
 
   @media only screen and (max-width: 786px) {
     top: 90px;
@@ -159,6 +225,11 @@ const DeleteTag = styled(DeleteBack2)`
     display: inline;
     z-index: 99;
   }
+`;
+
+const LoadingContainer = styled.div`
+  position: absolute;
+  margin-top: 40px;
 `;
 
 let clickTagNameArray = [];
@@ -263,65 +334,68 @@ function TagBox(props) {
 
   return (
     <>
-      <Wrapper>
-        {isLoading && (
-          <LoadingContainer>
-            <Loading />
-          </LoadingContainer>
-        )}
-        <BoxWrapper>
-          {props.groupData?.map((box, index) => (
-            <TagBoxContainer key={index}>
-              <BoxDeleteTag
-                onClick={() => deleteTagGroupHandler(index)}
-                title="刪除書籤櫃"
-                key={index}
-              />
-              <BoxNameDiv>
-                {isUpdateTagBoxName ? (
-                  <Form
-                    onSubmit={(e) => e.preventDefault()}
-                    key={`${index}${box.name}`}
-                  >
-                    <BoxNameInput
-                      defaultValue={box.name}
-                      as="input"
-                      onBlur={(e) => onBlurHandler(box.name, e.target.value)}
-                      key={box.name}
-                    />
-                  </Form>
-                ) : (
-                  <BoxName
+      {/* <Wrapper> */}
+      {isLoading && (
+        <LoadingContainer>
+          <Loading />
+        </LoadingContainer>
+      )}
+      <BoxWrapper>
+        {props.groupData?.map((box, index) => (
+          <TagBoxContainer key={box}>
+            <BoxDeleteTag
+              onClick={() => deleteTagGroupHandler(index)}
+              title="刪除書籤櫃"
+              key={`delete${box}`}
+            />
+            <BoxNameDiv>
+              {isUpdateTagBoxName ? (
+                <Form
+                  onSubmit={(e) => e.preventDefault()}
+                  key={`${index}${box.name}`}
+                >
+                  <BoxNameInput
+                    defaultValue={box.name}
+                    as="input"
+                    onBlur={(e) => onBlurHandler(box.name, e.target.value)}
                     key={box.name}
-                    onClick={() => setIsUpdateTagBoxName(true)}
-                  >
-                    {box.name}
-                  </BoxName>
-                )}
-              </BoxNameDiv>
-              <TagsContainer key={`${box.name}${index}`}>
-                {box.tags?.map((tag, tagIndex) => (
-                  <TagContainer name={tag} key={tagIndex}>
-                    <Input id={tag} key={`${tag}${tagIndex}`}></Input>
-                    <Tag onClick={() => choseTagHandler(tag)} key={tag}>
-                      {tag}
-                    </Tag>
-                    <DeleteTag
-                      onClick={() => deleteTagHandler(tag, index)}
-                      key={`delete${tag}`}
-                    />
-                  </TagContainer>
-                ))}
+                  />
+                </Form>
+              ) : (
+                <BoxName
+                  key={box.name}
+                  onClick={() => setIsUpdateTagBoxName(true)}
+                >
+                  {box.name}
+                </BoxName>
+              )}
+            </BoxNameDiv>
+            <TagsContainer key={`${box.name}${index}`}>
+              {box.tags?.map((tag, tagIndex) => (
+                <TagContainer name={tag} key={tagIndex}>
+                  <Input id={tag} key={`${tag}${tagIndex}`}></Input>
+                  <Tag onClick={() => choseTagHandler(tag)} key={tag}>
+                    {tag}
+                  </Tag>
+                  <DeleteTag
+                    onClick={() => deleteTagHandler(tag, index)}
+                    key={`delete${tag}`}
+                  />
+                </TagContainer>
+              ))}
+
+              <AddSignContainer>
                 <AddSign
                   onClick={() => showTagInputHandler(box.name)}
                   title="新增標籤"
                   key={`add${box.name}${index}`}
                 />
-              </TagsContainer>
-            </TagBoxContainer>
-          ))}
-        </BoxWrapper>
-      </Wrapper>
+              </AddSignContainer>
+            </TagsContainer>
+          </TagBoxContainer>
+        ))}
+      </BoxWrapper>
+      {/* </Wrapper> */}
       {showInputModal && (
         <InputModal
           modalTitle={"標籤名稱"}
@@ -331,7 +405,7 @@ function TagBox(props) {
           selectedTagBoxName={selectedTagBoxName}
         />
       )}
-      {notesBoxData && <Note notesBoxData={notesBoxData} />}
+      {notesBoxData.length > 0 && <Note notesBoxData={notesBoxData} />}
     </>
   );
 }

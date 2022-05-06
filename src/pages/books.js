@@ -19,23 +19,36 @@ const Title = styled.h1`
 `;
 const SignContainer = styled.div`
   position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   right: 5.5%;
-  bottom: 4%;
+  bottom: 5%;
   width: 65px;
   height: 65px;
   border-radius: 30px;
   background-color: #ffffff;
+
   box-shadow: 2px 3px 7px rgb(0 0 0 / 15%);
+  transition: 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 2px 10px rgba(0 0 0 / 30%);
+  }
 `;
 const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+
   margin-top: 100px;
 `;
 const AddNoteSign = styled(BookAdd)`
-  position: fixed;
-  right: 6%;
-  bottom: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 50px;
-  color: #3fccdc;
+  color: #dca246;
   cursor: pointer;
 `;
 
@@ -45,7 +58,7 @@ function Books() {
   const userId = useContext(UserProfile);
   let navigate = useNavigate();
 
-  useEffect(async () => {
+  useEffect(() => {
     let bookData = [];
     setIsLoading(true);
     firebase.getBooksData(userId).then((data) => {
@@ -54,8 +67,8 @@ function Books() {
       });
       setBookDatas(bookData);
       console.log(bookData);
+      setIsLoading(false);
     });
-    setIsLoading(false);
   }, []);
 
   // setBookDatas((prev) => [...prev, bookData]);

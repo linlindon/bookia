@@ -18,13 +18,6 @@ const AllCardsContainer = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   flex-wrap: wrap;
-
-  ${
-    "" /* margin: 30px 5% 40px 5%;
-  @media only screen and (min-width: 1280px) {
-    width: 1280px;
-  } */
-  }
 `;
 
 const CardContainer = styled.div`
@@ -35,62 +28,24 @@ const CardContainer = styled.div`
   margin: 30px 20px;
   border-radius: 10px;
   border: solid 0.5px #e4e4e4;
-  outline: 1px none transparent;
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease,
-    outline 0.3s ease;
+  background-color: #ffffff;
+  ${"" /* outline: 1px none transparent; */}
+  transition: 0.5s ease;
 
   &:hover {
-    box-shadow: 2px 2px 7px rgb(0 0 0 / 20%);
-    background-color: #e4e4e4;
+    box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
+    background-color: #eeeded;
   }
 `;
 
-// const CardContainer = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   width: calc((100% - 120px) / 3);
-//   margin: 10px;
-//   padding: 10px 10px;
-//   border-radius: 10px;
-//   background-color: #ffffff;
-//   box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
-
-//   @media only screen and (min-width: 1280px) {
-//     width: calc((100% - 160px) / 4);
-//   }
-//   @media only screen and (max-width: 786px) {
-//     width: calc((100% - 80px) / 2);
-//   }
-//   @media only screen and (max-width: 600px) {
-//     width: 80%;
-//   }
-
-//   &:hover {
-//     transform: scale(1.05);
-//     background-color: #3fccdc;
-//   }
-// `;
-
 const BookImageContainer = styled.div`
-  flex: none;
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-basis: auto;
   width: 185px;
-  margin: 22px 15px;
-  background-color: white;
-
-  ${
-    "" /* width: 150px;
-  height: 200px;
-  border: solid 1px #f2f1f0; */
-  }
+  margin: 32px 15px;
 `;
 const BookImage = styled.img`
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  border: solid 1px #eeeded;
 `;
 const AddButton = styled.button`
   border: none;
@@ -114,17 +69,13 @@ const BookDetail = styled.div`
   flex-direction: column;
   justify-content: space-between;
   width: 230px;
-  margin: 30px 0px;
-  ${
-    "" /* flex-basis: 0;
-  flex-grow: 1;
-  max-width: 100%; */
-  }
+  margin: 23px 0px;
+  font-size: 16px;
+  font-weight: 500;
 `;
 
 const BookName = styled.h3`
   margin: 6px;
-  font-size: 16px;
 `;
 const BookAuthor = styled.p`
   margin: 5px;
@@ -169,19 +120,19 @@ function Card(props) {
         return (
           <CardContainer key={book}>
             <BookImageContainer key={book.imageLinks}>
-              <BookImage key={image} src={img ? img.thumbnail : image} />
+              <BookImage key={image} src={img ? img.smallThumbnail : image} />
             </BookImageContainer>
 
-            <BookDetail key={`${index}book`}>
+            <BookDetail key={`${index}${book}`}>
               <div>
                 <BookName key={book.title}>{book.title}</BookName>
                 <BookAuthor key={book.authors}>
                   {book.authors && book.authors.join("、")}
                 </BookAuthor>
-                <BookPublish key={book.publisher}>{book.publisher}</BookPublish>
                 <BookPublish key={book.publishedDate}>
                   {book.publishedDate}
                 </BookPublish>
+                <BookPublish key={book.publisher}>{book.publisher}</BookPublish>
               </div>
 
               <AddButton

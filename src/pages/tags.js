@@ -7,10 +7,6 @@ import InputModal from "../components/modal/InputModal";
 import { UserProfile } from "../App";
 import Loading from "../components/Loading";
 
-const Wrapper = styled.div`
-  ${"" /* display: flex; */}
-`;
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -19,26 +15,52 @@ const Container = styled.div`
   margin-bottom: 20px;
 `;
 
+const TagBoxContainer = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 5% 15%;
+`;
+
 const PageTitle = styled.h1`
   @media only screen and (max-width: 786px) {
     margin: 5px;
   }
 `;
 const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
   margin-top: 100px;
 `;
-const AddBoxSign = styled(FolderAdd)`
+const SignContainer = styled.div`
   position: fixed;
-  right: 6%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: 5.5%;
   bottom: 5%;
-  width: 50px;
-  height: 50px;
-  color: #3fccdc;
-  cursor: pointer;
+  width: 65px;
+  height: 65px;
+  border-radius: 30px;
+  background-color: #ffffff;
 
-  @media only screen and (max-width: 786px) {
-    width: 40px;
+  box-shadow: 2px 3px 7px rgb(0 0 0 / 15%);
+  transition: 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 2px 10px rgba(0 0 0 / 30%);
   }
+`;
+const AddBoxSign = styled(FolderAdd)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  color: #dca246;
+  cursor: pointer;
 `;
 
 let allGroupData = [];
@@ -47,7 +69,7 @@ function Tags() {
   const [boxDatas, setboxDatas] = useState([]);
   const [showInputModal, setShowInputModal] = useState(false);
   const [groupData, setGroupData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
 
   useEffect(() => {
@@ -66,23 +88,30 @@ function Tags() {
 
   return (
     <>
-      <Wrapper>
-        <Container>
-          <PageTitle>書籤櫃</PageTitle>
-          {isLoading && (
-            <LoadingContainer>
-              <Loading />
-            </LoadingContainer>
-          )}
-          <TagBox
-            data={boxDatas}
-            setboxDatas={setboxDatas}
-            groupData={groupData}
-            setGroupData={setGroupData}
-          />
-        </Container>
-      </Wrapper>
-      <AddBoxSign onClick={() => setShowInputModal(true)} title="新增書籤櫃" />
+      {/* <Wrapper> */}
+      <Container>
+        <PageTitle>書籤櫃</PageTitle>
+        {isLoading && (
+          <LoadingContainer>
+            <Loading />
+          </LoadingContainer>
+        )}
+      </Container>
+      <TagBoxContainer>
+        <TagBox
+          data={boxDatas}
+          setboxDatas={setboxDatas}
+          groupData={groupData}
+          setGroupData={setGroupData}
+        />
+      </TagBoxContainer>
+      {/* </Wrapper> */}
+      <SignContainer>
+        <AddBoxSign
+          onClick={() => setShowInputModal(true)}
+          title="新增書籤櫃"
+        />
+      </SignContainer>
       {showInputModal && (
         <InputModal
           groupData={groupData}

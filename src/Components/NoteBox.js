@@ -71,7 +71,7 @@ function NoteBox(props) {
   return (
     <>
       {props.bookNotesData?.map((item, index) => (
-        <TagBox key={index}>
+        <TagBox key={`${item}${index}`}>
           <BoxName key={item.title}>{item.title}</BoxName>
           <BookName key={item.bookTitle}>書名：{item.bookTitle}</BookName>
           <BookName key={item.page}>頁數：{item.page}</BookName>
@@ -88,7 +88,7 @@ function NoteBox(props) {
             <AddSign
               onClick={() => updateNote(item.id)}
               title="修改"
-              key={`add${item}`}
+              key={item.id}
             />
           </TagsContainer>
         </TagBox>

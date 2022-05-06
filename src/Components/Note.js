@@ -1,18 +1,19 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
+// const Wrapper = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   margin: 5% 15%;
+// `;
+
 const Container = styled.div`
   display: flex;
-  justify-content: center;
-`;
-
-const Wrapper = styled.div`
-  display: flex;
   flex-wrap: wrap;
-  width: 78%;
+  ${"" /* width: 78%; */}
 
   @media only screen and (min-width: 1280px) {
-    width: 1140px;
+    ${"" /* width: 1140px; */}
   }
   @media only screen and (max-width: 786px) {
     align-items: center;
@@ -35,7 +36,7 @@ const NoteBox = styled.div`
   cursor: pointer;
 
   &:hover {
-    transform: scale(1.05);
+    ${"" /* transform: scale(1.05); */}
     ${"" /* background-color: #6a7fdb; */}
   }
 
@@ -80,32 +81,31 @@ const DeleteSign = styled.span``;
 function Note(props) {
   let navigate = useNavigate();
   return (
+    // <Wrapper>
     <Container>
-      <Wrapper>
-        {props.notesBoxData?.map((note, index) => (
-          <NoteBox
-            onClick={() => navigate(`/booknote/${note.bookID}`)}
-            key={index}
-          >
-            <BoxName key={note.bookTitle}>書名: {note.bookTitle}</BoxName>
-            <InfoContainer>
-              <NoteName key={note.title}>{note.title}</NoteName>
-              <Page>頁數: {note.page}</Page>
-            </InfoContainer>
-            <TagsContainer key={`${note.title}${index}`}>
-              {note.tagNames.map((tag, tagIndex) => (
-                <Tag key={tag}>
-                  {tag}
-                  <DeleteSign key={tagIndex} />
-                </Tag>
-              ))}
-            </TagsContainer>
-            <Content key={`${note.bookTitle}${index}`}>{note.content}</Content>
-            {/* <UpdateSign key={uniqid()}>修改</UpdateSign> */}
-          </NoteBox>
-        ))}
-      </Wrapper>
+      {props.notesBoxData?.map((note, index) => (
+        <NoteBox
+          onClick={() => navigate(`/booknote/${note.bookID}`)}
+          key={note}
+        >
+          <BoxName key={note.bookTitle}>書名: {note.bookTitle}</BoxName>
+          <InfoContainer>
+            <NoteName key={note.title}>{note.title}</NoteName>
+            <Page key={note.page}>頁數: {note.page}</Page>
+          </InfoContainer>
+          <TagsContainer key={`${note.title}${index}`}>
+            {note.tagNames.map((tag, tagIndex) => (
+              <Tag key={tag}>
+                {tag}
+                <DeleteSign key={tagIndex} />
+              </Tag>
+            ))}
+          </TagsContainer>
+          <Content key={`${note.bookTitle}${index}`}>{note.content}</Content>
+        </NoteBox>
+      ))}
     </Container>
+    // </Wrapper>
   );
 }
 

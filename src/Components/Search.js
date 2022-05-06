@@ -39,6 +39,8 @@ const SearchIcon = styled(Search)`
   width: 30px;
 `;
 const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
   margin-top: 100px;
 `;
 const DataContainer = styled.div`

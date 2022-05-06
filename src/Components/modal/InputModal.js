@@ -19,14 +19,15 @@ const Background = styled.div`
 `;
 const InputContainer = styled.form`
   position: relative;
+  display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding: 20px;
   width: 60%;
   height: 150px;
   background-color: white;
   border-radius: 10px;
-  text-align: center;
 
   @media only screen and (min-width: 860px) {
     width: 600px;
@@ -54,6 +55,25 @@ const Warning = styled.p`
 `;
 const LoadingContainer = styled.div`
   margin-top: 20px;
+  display: flex;
+  justify-content: center;
+`;
+
+const ConfirmButton = styled.button`
+  width: 120px;
+  height: 35px;
+  letter-spacing: 2px;
+  text-align: center;
+  margin-top: 20px;
+  padding: 3px 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  background-color: #e6c88b;
+  color: #fff;
+
+  &:hover {
+    background-color: #dca246;
+  }
 `;
 
 let inputValue = "";
@@ -129,6 +149,7 @@ function InputModal(props) {
           type="text"
         />
         {isWarning ? <Warning>此名稱已存在，請重新命名</Warning> : null}
+        <ConfirmButton onClick={addTagGroupHandler}>確認</ConfirmButton>
         {isLoading && (
           <LoadingContainer>
             <Loading />
