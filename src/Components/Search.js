@@ -44,12 +44,13 @@ const LoadingContainer = styled.div`
   margin-top: 100px;
 `;
 const DataContainer = styled.div`
-  width: 100%;
-  height: 100%;
+  ${
+    "" /* width: 100%;
+  height: 100%; */
+  }
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 5% 15%;
 `;
 
 async function getSearchData(input) {

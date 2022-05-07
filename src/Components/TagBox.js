@@ -175,6 +175,7 @@ const Tag = styled.div`
   cursor: pointer;
   ${Input}:checked + && {
     background-color: #dca246;
+    color: #fff;
   }
 `;
 const Form = styled.form``;

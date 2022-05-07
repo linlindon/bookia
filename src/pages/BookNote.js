@@ -14,33 +14,33 @@ const Flex = styled.div`
 `;
 const Container = styled(Flex)`
   flex-direction: column;
-  align-items: center
-  margin-bottom: 30px;
+  align-items: center;
 `;
 const Title = styled.h1`
   width: 70%;
   text-align: center;
-  border-bottom: 1px solid black;
 `;
-const TitleBookContainer = styled(Flex)`
+const TitleContainer = styled(Flex)`
   flex-direction: column;
   width: 100%;
-  margin-bottom: 30px;
-  ${"" /* background-color: #3fccdc; */}
 `;
-const NoteBoxContainer = styled(Flex)`
-  align-items: center;
-  padding: 20px;
-  width: 60%;
-  margin-bottom: 30px;
-  border: 2px solid #ece6e6;
-  border-radius: 10px;
 
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 5% 15%;
+`;
+const BookInfoContainer = styled(Flex)`
+  align-items: flex-start;
+  align-self: flex-start;
+  padding: 15px;
+  width: 90%;
+  border-radius: 10px;
   background-color: #ffffff;
 `;
 
 const BookImg = styled.div`
-  width: 120px;
+  width: 100%;
   border: solid 1px #f2f1f0;
 `;
 const Img = styled.img`
@@ -48,18 +48,38 @@ const Img = styled.img`
   object-fit: cover;
 `;
 const ContentContainer = styled.div`
-  width: 80%;
-  padding: 20px;
+  width: 100%;
+  padding-left: 10px;
 `;
-const BookTitle = styled.h3``;
-
-const Button = styled(NoteAdd)`
+const BookTitle = styled.h3`
+  margin: 0;
+`;
+const SignContainer = styled.div`
   position: fixed;
-  right: 6%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: 5.5%;
   bottom: 5%;
+  width: 65px;
+  height: 65px;
+  border-radius: 30px;
+  background-color: #ffffff;
+
+  box-shadow: 2px 3px 7px rgb(0 0 0 / 15%);
+  transition: 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 2px 10px rgba(0 0 0 / 30%);
+  }
+`;
+const AddButton = styled(NoteAdd)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 50px;
-  height: 50px;
-  color: #3fccdc;
+  color: #dca246;
   cursor: pointer;
 
   @media only screen and (max-width: 786px) {
@@ -99,24 +119,31 @@ function BookNote() {
   return (
     <>
       <Container>
-        <TitleBookContainer>
+        <TitleContainer>
           <Title>新增筆記</Title>
-          <NoteBoxContainer>
+        </TitleContainer>
+        <SignContainer>
+          <AddButton
+            onClick={() => setShowNoteInput((prev) => !prev)}
+            title={"新增筆記"}
+          />
+        </SignContainer>
+
+        <Wrapper>
+          <BookInfoContainer>
             <BookImg>
               <Img src={bookInfo.img} alt="" />
             </BookImg>
             <ContentContainer>
-              <BookTitle>書名: {bookInfo.title}</BookTitle>
+              <BookTitle>{bookInfo.title}</BookTitle>
               <p>作者:{bookInfo.authors && bookInfo.authors.join("、")}</p>
 
               <p>出版年: {bookInfo.publish}</p>
             </ContentContainer>
-          </NoteBoxContainer>
-        </TitleBookContainer>
-        <Button
-          onClick={() => setShowNoteInput((prev) => !prev)}
-          title={"新增筆記"}
-        />
+          </BookInfoContainer>
+          <NoteBox bookNotesData={bookNotesData} />
+        </Wrapper>
+
         {showNoteInput ? (
           <NewNote
             showNoteInput={showNoteInput}
@@ -124,7 +151,6 @@ function BookNote() {
             bookInfo={bookInfo}
           />
         ) : null}
-        <NoteBox bookNotesData={bookNotesData} />
       </Container>
     </>
   );

@@ -50,6 +50,9 @@ const AddNoteSign = styled(BookAdd)`
   width: 50px;
   color: #dca246;
   cursor: pointer;
+  @media only screen and (max-width: 786px) {
+    width: 40px;
+  }
 `;
 
 function Books() {
