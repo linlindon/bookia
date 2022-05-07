@@ -1,9 +1,12 @@
 import { useEffect, useState, useRef, useContext } from "react";
 import styled from "styled-components";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
+import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
 import firebase from "../../utils/firebaseTools";
 import tools from "../../utils/tools";
 import { UserProfile } from "../../App";
+import InputModal from "./InputModal";
+import AddTagSign from "../AddTagSign";
 
 const Flex = styled.div`
   display: flex;
@@ -21,37 +24,54 @@ const Background = styled.div`
   z-index: 99;
 `;
 const TagBoxFlat = styled.div`
+  position: relative;
   flex-direction: column;
   align-items: center;
-  overflow: scroll;
-  padding: 20px;
+  overflow-y: scroll;
+  padding: 20px 40px;
   width: 60%;
   height: 600px;
   margin-bottom: 20px;
   background-color: white;
-  border: 2px solid #ece6e6;
-  border-radius: 10px;
-  ${"" /* z-index: 99; */}
 `;
 
-const BoxContent = styled(Flex)`
-  width: 80%;
-  margin: 8px;
-  padding: 8px;
-  border-radius: 10px;
-  background-color: #d8d7d7;
+const Title = styled.h3`
+  margin: 18px 0 5px 0;
+`;
+const TitleInput = styled.input`
+  width: 99%;
+  height: 25px;
+  padding: 3px;
+  border-radius: 5px;
+  border: 2px solid #d3d2d1;
+`;
+
+const CloseButton = styled(CloseSquareOutline)`
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  width: 20px;
+  color: #ff6972;
+  cursor: pointer;
+`;
+const TagContentBox = styled(Flex)`
+  position: relative;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 2px solid #d3d2d1;
+  margin-bottom: 20px;
 `;
 const TagsContainer = styled(Flex)`
   flex-direction: row;
   flex-wrap: wrap;
-  padding: 10px;
-  width: 80%;
   gap: 1em;
 `;
 const SubTitle = styled.h3`
-  width: 20%;
-  font-size: 14px;
-  margin-right: 10px;
+  margin: 0;
+  padding: 5px 0 15px 0;
+  font-size: 16px;
 `;
 
 const Input = styled.input.attrs({ type: "checkbox" })`
@@ -59,41 +79,72 @@ const Input = styled.input.attrs({ type: "checkbox" })`
 `;
 const Tag = styled.p`
   margin: 0;
-  padding: 4px 6px;
-  font-size: 12px;
-  background-color: #f6f6f6;
-  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 15px;
+  background-color: #eeeded;
   ${Input}:checked + && {
-    background-color: #ffb226;
+    background-color: #e4d36d;
+    color: #fff;
   }
 `;
-const Form = styled.form``;
-const TitleInput = styled.input``;
-const PageInput = styled.input``;
 const ContentInput = styled.textarea`
-  width: 40vw;
+  width: 98.9%;
   height: 25vh;
+  border: 2px solid #d3d2d1;
 `;
-const Button = styled.button``;
 
-const AddTag = styled(AddCircle)`
-  width: 22px;
-  color: #df8907;
+const AddSignContainer = styled.div`
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 31px;
+  height: 31px;
+  border-radius: 16px;
+  background-color: white;
+
+  &:hover {
+    box-shadow: 3px 3px 3px rgba(0 0 0 / 30%);
+  }
+`;
+const AddSign = styled(AddCircle)`
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  color: #dca246;
+`;
+
+const SubmitButton = styled.button`
+  border: none;
+  width: 120px;
+  height: 35px;
+  letter-spacing: 2px;
+  text-align: center;
+  margin-top: 10px;
+  padding: 3px 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  background-color: #e6c88b;
+  color: #fff;
+
+  &:hover {
+    background-color: #dca246;
+  }
 `;
 
 let chosenTagArray = [];
 let currentGroups = [];
 let groupArray = [];
-
+let selectedTagBox;
 const NewNote = (props) => {
   const [groupData, setGroupData] = useState([]);
-  const [inputArray, setInputArray] = useState([]);
-  const [tagInput, setTagInput] = useState("");
   const [inputDatas, setInputDatas] = useState({
     content: "",
     page: "",
     title: "",
   });
+  const [showInputModal, setShowInputModal] = useState(false);
   const inputRef = useRef();
   const userId = useContext(UserProfile);
 
@@ -196,47 +247,36 @@ const NewNote = (props) => {
   }
 
   function tagInputHandler(index) {
-    if (inputArray.includes(true)) {
-      groupArray.splice(index, 1, false);
-      setInputArray([...groupArray]);
-    } else {
-      groupArray.splice(index, 1, true);
-      setInputArray([...groupArray]);
-    }
-  }
-
-  async function addTagHandler(name) {
-    let allTags = tools.allTagsArray(currentGroups);
-
-    if (!tagInput) {
-      alert("請輸入要新增的標籤");
-    } else if (allTags.includes(tagInput)) {
-      alert("此標籤已存在");
-    } else {
-      currentGroups.forEach((item, index) => {
-        if (item.name === name) {
-          currentGroups[index].tags.push(tagInput);
-          setGroupData([...currentGroups]);
-
-          groupArray.splice(index, 1, false);
-          setInputArray([...groupArray]);
-          // 無法await
-          firebase.updateTagGroup(userId, groupData);
-        } else {
-          console.log("no match");
-        }
-      });
-    }
+    setShowInputModal(true);
+    selectedTagBox = index;
   }
 
   return (
     <>
       <Background ref={inputRef} onClick={closeInput}>
-        <TagBoxFlat>
-          <h3>選擇此筆記的書籤</h3>
-          <Button onClick={() => props.show((prev) => !prev)}>X</Button>
+        <TagBoxFlat onSubmit={submitHandler} as="form">
+          <CloseButton onClick={() => props.show((prev) => !prev)}>
+            X
+          </CloseButton>
+
+          <Title>筆記標題</Title>
+          <TitleInput
+            name="title"
+            defaultValue={props.noteData ? props.noteData.title : ""}
+            onChange={inputChangeHandler}
+            placeholder={"ex.書摘"}
+          ></TitleInput>
+
+          <Title>頁數</Title>
+          <TitleInput
+            name="page"
+            defaultValue={props.noteData ? props.noteData.page : ""}
+            onChange={inputChangeHandler}
+          ></TitleInput>
+
+          <Title>選擇此筆記的書籤</Title>
           {groupData?.map((data, index) => (
-            <BoxContent key={data.name}>
+            <TagContentBox key={data.name}>
               <SubTitle key={data.name}>{data.name}</SubTitle>
 
               <TagsContainer key={index}>
@@ -256,56 +296,40 @@ const NewNote = (props) => {
                     </Tag>
                   </label>
                 ))}
-                <AddTag onClick={() => tagInputHandler(index)} />
-                {inputArray[index] && (
-                  <div key={data.name}>
-                    <input
-                      onChange={(e) => setTagInput(e.target.value)}
-                      key={`${data.name}${index}`}
-                    />
-                    <button
-                      onClick={() => addTagHandler(data.name)}
-                      key={index}
-                    >
-                      確認
-                    </button>
-                  </div>
-                )}
+                {/* <AddTagSign
+                  onClick={() => tagInputHandler(index)}
+                  title="新增標籤"
+                /> */}
+
+                <AddSignContainer>
+                  <AddSign
+                    onClick={() => tagInputHandler(index)}
+                    title="新增標籤"
+                  />
+                </AddSignContainer>
               </TagsContainer>
-            </BoxContent>
+            </TagContentBox>
           ))}
 
-          <Form onSubmit={submitHandler} as="form">
-            <TagsContainer>
-              <div>
-                <h3>筆記標題</h3>
-                <TitleInput
-                  name="title"
-                  defaultValue={props.noteData ? props.noteData.title : ""}
-                  onChange={inputChangeHandler}
-                  placeholder={"ex.書摘"}
-                ></TitleInput>
-              </div>
-              <div>
-                <h3>頁數</h3>
-                <PageInput
-                  name="page"
-                  defaultValue={props.noteData ? props.noteData.page : ""}
-                  onChange={inputChangeHandler}
-                ></PageInput>
-              </div>
-            </TagsContainer>
-            <div>
-              <h3>筆記內容</h3>
-              <ContentInput
-                defaultValue={props.noteData ? props.noteData.content : ""}
-                name="content"
-                onChange={inputChangeHandler}
-              ></ContentInput>
-            </div>
-            <Button>新增</Button>
-          </Form>
+          <div>
+            <Title>筆記內容</Title>
+            <ContentInput
+              defaultValue={props.noteData ? props.noteData.content : ""}
+              name="content"
+              onChange={inputChangeHandler}
+            ></ContentInput>
+          </div>
+          <SubmitButton>{props.noteData ? "修改" : "新增"}</SubmitButton>
         </TagBoxFlat>
+        {showInputModal && (
+          <InputModal
+            groupData={currentGroups}
+            setGroupData={setGroupData}
+            setShowInputModal={setShowInputModal}
+            modalTitle={"標籤名稱"}
+            selectedBoxIndex={selectedTagBox}
+          />
+        )}
       </Background>
     </>
   );

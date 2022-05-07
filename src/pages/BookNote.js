@@ -143,15 +143,14 @@ function BookNote() {
           </BookInfoContainer>
           <NoteBox bookNotesData={bookNotesData} />
         </Wrapper>
-
-        {showNoteInput ? (
-          <NewNote
-            showNoteInput={showNoteInput}
-            show={setShowNoteInput}
-            bookInfo={bookInfo}
-          />
-        ) : null}
       </Container>
+      {showNoteInput ? (
+        <NewNote
+          showNoteInput={showNoteInput}
+          show={setShowNoteInput}
+          bookInfo={bookInfo}
+        />
+      ) : null}
     </>
   );
 }

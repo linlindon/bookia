@@ -170,11 +170,10 @@ const Tag = styled.div`
   padding: 5px 10px;
   font-size: 14px;
   border-radius: 15px;
-  border: solid 2px #e6c88b;
-
+  background-color: #eeeded;
   cursor: pointer;
   ${Input}:checked + && {
-    background-color: #dca246;
+    background-color: #e4d36d;
     color: #fff;
   }
 `;
@@ -200,7 +199,6 @@ const AddSignContainer = styled.div`
 
 const AddSign = styled(AddCircle)`
   position: absolute;
-
   width: 30px;
   height: 30px;
   cursor: pointer;
@@ -235,7 +233,7 @@ const LoadingContainer = styled.div`
 
 let clickTagNameArray = [];
 let allNotesData = [];
-let selectedTagBoxName = "";
+let selectedBoxIndex;
 
 function TagBox(props) {
   const [showInputModal, setShowInputModal] = useState(false);
@@ -258,9 +256,9 @@ function TagBox(props) {
     getData();
   }, []);
 
-  function showTagInputHandler(name) {
-    selectedTagBoxName = name;
-    console.log("show modal, group name", name);
+  function showTagInputHandler(index) {
+    selectedBoxIndex = index;
+    console.log("show modal, group name", index);
     setShowInputModal(true);
   }
 
@@ -387,7 +385,7 @@ function TagBox(props) {
 
               <AddSignContainer>
                 <AddSign
-                  onClick={() => showTagInputHandler(box.name)}
+                  onClick={() => showTagInputHandler(index)}
                   title="新增標籤"
                   key={`add${box.name}${index}`}
                 />
@@ -403,7 +401,7 @@ function TagBox(props) {
           setShowInputModal={setShowInputModal}
           groupData={props.groupData}
           setGroupData={props.setGroupData}
-          selectedTagBoxName={selectedTagBoxName}
+          selectedBoxIndex={selectedBoxIndex}
         />
       )}
       {notesBoxData.length > 0 && <Note notesBoxData={notesBoxData} />}

@@ -25,7 +25,7 @@ const InputContainer = styled.form`
   align-items: center;
   padding: 20px;
   width: 60%;
-  height: 150px;
+  height: 180px;
   background-color: white;
   border-radius: 10px;
 
@@ -39,6 +39,7 @@ const Delete = styled(CloseSquareOutline)`
   right: 10px;
   width: 20px;
   color: #ff6972;
+  cursor: pointer;
 `;
 const ModalTitle = styled.p`
   margin-bottom: 25px;
@@ -86,20 +87,23 @@ function InputModal(props) {
 
   async function addTagGroupHandler(e) {
     e.preventDefault();
+    setIsWarning(false);
     let allTags = tools.allTagsArray(allGroupData);
     let allTitles = tools.allGroupTitleArray(allGroupData);
 
     if (!inputValue) {
       return;
     } else {
-      if (!props.selectedTagBoxName) {
+      console.log(inputValue);
+
+      if (!props.selectedBoxIndex) {
         if (allTitles.includes(inputValue)) {
           setIsWarning(true);
         } else {
+          console.log("no selected box name");
           setIsWarning(false);
           setIsLoading(true);
           allGroupData.push({ name: inputValue, tags: [] });
-
           await firebase.updateTagGroup(userId, allGroupData);
 
           props.setGroupData(allGroupData);
@@ -108,18 +112,14 @@ function InputModal(props) {
           setIsLoading(false);
         }
       } else {
+        console.log("second else");
         if (allTags.includes(inputValue)) {
           setIsWarning(true);
         } else {
           setIsWarning(false);
           setIsLoading(true);
-          allGroupData.forEach((tagBox) => {
-            if (tagBox.name === props.selectedTagBoxName) {
-              tagBox.tags.push(inputValue);
-            } else {
-              console.log("no match box name");
-            }
-          });
+
+          allGroupData[props.selectedBoxIndex].tags.push(inputValue);
 
           await firebase.updateTagGroup(userId, allGroupData);
           props.setGroupData([...allGroupData]);
