@@ -40,12 +40,14 @@ const CardContainer = styled.div`
 
 const BookImageContainer = styled.div`
   width: 185px;
-  height: 250px;
+  overflow: hidden;
+  ${"" /* height: 250px; */}
   margin: 32px 15px;
 `;
 const BookImage = styled.img`
   width: 100%;
-  object-fit: contain;
+  height: auto;
+  ${"" /* object-fit: contain; */}
   border: solid 1px #eeeded;
 `;
 const AddButton = styled.button`

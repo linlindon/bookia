@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Search } from "@styled-icons/heroicons-solid/Search";
 import Loading from "./Loading";
 import Card from "./Card";
+import HintModal from "./modal/HintModal";
 
 const SearchContainer = styled.div`
   display: flex;
@@ -71,6 +72,8 @@ function SearchBar(props) {
   const [bookList, setBookList] = useState([]);
   const [noDataHint, setNoDataHint] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isHint, setIsHint] = useState(false);
+  const [hintTitle, setIsHintTitle] = useState("");
 
   function searchData(e) {
     e.preventDefault();
@@ -81,7 +84,8 @@ function SearchBar(props) {
     if (!searchInput) {
       return;
     } else if (searchInput.replace(/\s*/g, "").length === 0) {
-      alert("請輸入要搜尋的文字");
+      setIsHintTitle("請輸入要搜尋的書名");
+      setIsHint(true);
     } else if (props.searchType) {
       console.log("have search type");
       props.setIsLoading(true);
@@ -129,6 +133,7 @@ function SearchBar(props) {
         </LoadingContainer>
       )}
       {noDataHint && <h2>搜尋不到此書</h2>}
+      {isHint && <HintModal hintTitle={hintTitle} setIsHint={setIsHint} />}
       <DataContainer>
         <Card bookList={bookList} />
       </DataContainer>

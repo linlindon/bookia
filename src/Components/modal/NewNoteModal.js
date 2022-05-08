@@ -6,6 +6,7 @@ import firebase from "../../utils/firebaseTools";
 import { UserProfile } from "../../App";
 import InputModal from "./InputModal";
 import Loading from "../Loading";
+import HintModal from "./HintModal";
 import AddTagSign from "../AddTagSign";
 
 const Flex = styled.div`
@@ -16,9 +17,8 @@ const Background = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: -100px;
-  left: 0;
+  position: fixed;
+  top: 0;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
@@ -148,7 +148,8 @@ let chosenTagArray = [];
 let currentGroups = [];
 let groupArray = [];
 let selectedTagBox;
-const NewNote = (props) => {
+
+const NewNoteModal = (props) => {
   const [groupData, setGroupData] = useState([]);
   const [inputDatas, setInputDatas] = useState({
     content: "",
@@ -157,6 +158,9 @@ const NewNote = (props) => {
   });
   const [showInputModal, setShowInputModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isHint, setIsHint] = useState(false);
+  const [hintTitle, setIsHintTitle] = useState("");
+  const [isConfirmClose, setIsConfirmClose] = useState(false);
   const inputRef = useRef();
   const userId = useContext(UserProfile);
 
@@ -170,8 +174,8 @@ const NewNote = (props) => {
       for (let i = 0; i < data.length; i++) {
         groupArray.push(false);
       }
-    });
-
+    }, []);
+    console.log(props.noteData);
     if (props.noteData) {
       chosenTagArray = [...props.noteData.tagNames];
       setInputDatas((prevState) => ({
@@ -207,11 +211,14 @@ const NewNote = (props) => {
     e.preventDefault();
     setIsLoading(false);
     if (chosenTagArray.length === 0) {
-      alert("每個筆記需要至少一個標籤");
+      setIsHintTitle("每個筆記需要至少一個標籤");
+      setIsHint(true);
     } else if (!inputDatas.title) {
-      alert("請輸入筆記標題");
+      setIsHintTitle("請輸入筆記標題");
+      setIsHint(true);
     } else if (!inputDatas.content) {
-      alert("請輸入筆記內容");
+      setIsHintTitle("請輸入筆記內容");
+      setIsHint(true);
     } else {
       setIsLoading(true);
       let inputData = {
@@ -247,16 +254,22 @@ const NewNote = (props) => {
       });
 
       await firebase.updateBookTags(userId, props.bookInfo.id, bookTagArray);
-
-      props.show(false);
+      props.setShowNoteInput(false);
       // chosenTagArray = [];
     }
   }
 
-  function closeInput(e) {
+  function closeInputByWindow(e) {
     if (inputRef.current === e.target) {
-      props.show(false);
+      setIsHintTitle("變更未儲存，確定要離開嗎");
+      setIsHint(true);
+    } else {
+      console.log("target else");
     }
+  }
+  function closeInput() {
+    setIsHintTitle("變更未儲存，確定要離開嗎");
+    setIsHint(true);
   }
 
   function tagInputHandler(index) {
@@ -266,11 +279,9 @@ const NewNote = (props) => {
 
   return (
     <>
-      <Background ref={inputRef} onClick={closeInput}>
+      <Background ref={inputRef} onClick={closeInputByWindow}>
         <TagBoxFlat onSubmit={submitHandler} as="form">
-          <CloseButton onClick={() => props.show((prev) => !prev)}>
-            X
-          </CloseButton>
+          <CloseButton onClick={closeInput}>X</CloseButton>
 
           <Title>筆記標題</Title>
           <TitleInput
@@ -349,9 +360,17 @@ const NewNote = (props) => {
             selectedBoxIndex={selectedTagBox}
           />
         )}
+        {isHint && (
+          <HintModal
+            hintTitle={hintTitle}
+            setIsHint={setIsHint}
+            setShowNoteInput={props.setShowNoteInput}
+            setIsConfirmClose={setIsConfirmClose}
+          />
+        )}
       </Background>
     </>
   );
 };
 
-export default NewNote;
+export default NewNoteModal;

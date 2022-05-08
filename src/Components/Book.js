@@ -80,12 +80,12 @@ const BookBox = styled.div`
 
 const BookImg = styled.div`
   width: 185px;
-  height: 250px;
+  overflow: hidden;
   margin: 32px 15px;
 `;
 const Img = styled.img`
   width: 100%;
-  object-fit: contain;
+  height: auto;
   border: solid 1px #eeeded;
 `;
 const ContentContainer = styled.div`

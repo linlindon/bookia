@@ -19,7 +19,7 @@ const Title = styled.h1`
 function SearchBook() {
   return (
     <Container>
-      <Title>搜尋要筆記的書</Title>
+      <Title>輸入欲新增的書名</Title>
       <SearchBar />
     </Container>
   );

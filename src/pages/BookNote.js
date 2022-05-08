@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { NoteAdd } from "@styled-icons/fluentui-system-regular/NoteAdd";
 import { onSnapshot } from "firebase/firestore";
 import firebase from "../utils/firebaseTools";
-import NewNote from "../components/modal/NewNoteModal";
+import NewNoteModal from "../components/modal/NewNoteModal";
 import NoteBox from "../components/NoteBox";
 import Loading from "../components/Loading";
 import { UserProfile } from "../App";
@@ -107,14 +107,20 @@ const LoadingContainer = styled.div`
 `;
 
 function BookNote() {
+  // render畫面使用
   const [bookNotesData, setBookNotesData] = useState([]);
-  const [bookInfo, setBookInfo] = useState({});
+  // const [bookInfo, setBookInfo] = useState({});
+  // 如果是修改note，就要傳noteData到表格裡面
+  const [noteData, setNoteData] = useState(undefined);
+  const [bookInfo, setBookInfo] = useState([]);
   const [showNoteInput, setShowNoteInput] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
   const userId = useContext(UserProfile);
+  console.log(noteData);
 
   useEffect(() => {
+    console.log("inside effect");
     setIsLoading(true);
     firebase.getBookInfo(userId, id).then((res) => {
       setBookInfo({ ...res });
@@ -123,7 +129,7 @@ function BookNote() {
   }, []);
 
   useEffect(() => {
-    let noteData = [];
+    // let noteData = [];
     let notesRef = firebase.getNotesRef(userId);
     onSnapshot(notesRef, (notes) => {
       console.log("in snap shot");
@@ -133,8 +139,8 @@ function BookNote() {
           data.push(note.data());
         }
       });
-      noteData = data;
-      setBookNotesData(noteData);
+      // noteData = data;
+      setBookNotesData(data);
     });
   }, []);
 
@@ -173,19 +179,25 @@ function BookNote() {
               <NoDataTitle>
                 無筆記
                 <br />
-                點擊右下按鈕新增筆記
+                請點擊右下按鈕新增筆記
               </NoDataTitle>
             </NoDataContainer>
           ) : (
-            <NoteBox bookNotesData={bookNotesData} />
+            <NoteBox
+              bookNotesData={bookNotesData}
+              setShowNoteInput={setShowNoteInput}
+              setNoteData={setNoteData}
+              // bookInfo={bookInfo}
+            />
           )}
         </Wrapper>
       </Container>
       {showNoteInput ? (
-        <NewNote
+        <NewNoteModal
           showNoteInput={showNoteInput}
-          show={setShowNoteInput}
+          setShowNoteInput={setShowNoteInput}
           bookInfo={bookInfo}
+          noteData={noteData}
         />
       ) : null}
     </>

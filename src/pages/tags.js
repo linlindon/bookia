@@ -69,6 +69,8 @@ function Tags() {
   const [boxDatas, setboxDatas] = useState([]);
   const [showInputModal, setShowInputModal] = useState(false);
   const [groupData, setGroupData] = useState([]);
+  const [selectedBoxIndex, setSelectedBoxIndex] = useState();
+  const [modalTitle, setModalTitle] = useState("新書籤櫃名稱");
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
 
@@ -103,6 +105,9 @@ function Tags() {
           setboxDatas={setboxDatas}
           groupData={groupData}
           setGroupData={setGroupData}
+          setShowInputModal={setShowInputModal}
+          setModalTitle={setModalTitle}
+          setSelectedBoxIndex={setSelectedBoxIndex}
         />
       </TagBoxContainer>
       {/* </Wrapper> */}
@@ -117,7 +122,8 @@ function Tags() {
           groupData={groupData}
           setGroupData={setGroupData}
           setShowInputModal={setShowInputModal}
-          modalTitle={"新書籤櫃名稱"}
+          modalTitle={modalTitle}
+          selectedBoxIndex={selectedBoxIndex}
         />
       )}
     </>

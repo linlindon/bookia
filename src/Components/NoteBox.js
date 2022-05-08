@@ -1,8 +1,7 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import styled from "styled-components";
 import { Edit } from "@styled-icons/fa-regular/Edit";
 import firebase from "../utils/firebaseTools";
-import NewNote from "./modal/NewNoteModal";
 import { UserProfile } from "../App";
 
 const Container = styled.div`
@@ -84,21 +83,13 @@ const Content = styled.div`
 const DeleteSign = styled.span``;
 
 function NoteBox(props) {
-  const [showUpdate, setShowUpdate] = useState(false);
-  const [noteData, setNoteData] = useState({});
-  const [bookInfo, setBookInfo] = useState([]);
   const userId = useContext(UserProfile);
-  // setBookInfo要加入book id & book title，為了讓NewNote送出資料
   async function updateNote(id) {
-    let info = {};
     await firebase.getNoteData(userId, id).then((data) => {
-      setNoteData(data);
       console.log(data);
-      info = { id: data.bookID, title: data.bookTitle, noteId: id };
+      props.setNoteData(data);
+      props.setShowNoteInput(true);
     });
-    setShowUpdate(true);
-    setBookInfo(info);
-    // console.log("NoteBox bookInfo", info);
   }
 
   return (
@@ -130,9 +121,13 @@ function NoteBox(props) {
           </TagBox>
         ))}
       </Container>
-      {showUpdate && (
-        <NewNote noteData={noteData} show={setShowUpdate} bookInfo={bookInfo} />
-      )}
+      {/* {showUpdate && (
+        <NewNoteModal
+          noteData={noteData}
+          show={setShowUpdate}
+          bookInfo={bookInfo}
+        />
+      )} */}
     </>
   );
 }

@@ -251,7 +251,7 @@ let allNotesData = [];
 let selectedBoxIndex;
 
 function TagBox(props) {
-  const [showInputModal, setShowInputModal] = useState(false);
+  // const [showInputModal, setShowInputModal] = useState(false);
   const [isUpdateTagBoxName, setIsUpdateTagBoxName] = useState(false);
   const [notesBoxData, setNotesBoxData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -272,9 +272,10 @@ function TagBox(props) {
   }, []);
 
   function showTagInputHandler(index) {
-    selectedBoxIndex = index;
+    props.setSelectedBoxIndex(index);
     console.log("show modal, group name", index);
-    setShowInputModal(true);
+    props.setShowInputModal(true);
+    props.setModalTitle("新書籤名稱");
   }
 
   async function choseTagHandler(tagName) {
@@ -348,7 +349,6 @@ function TagBox(props) {
 
   return (
     <>
-      {/* <Wrapper> */}
       {isLoading && (
         <LoadingContainer>
           <Loading />
@@ -409,16 +409,7 @@ function TagBox(props) {
           </TagBoxContainer>
         ))}
       </BoxWrapper>
-      {/* </Wrapper> */}
-      {showInputModal && (
-        <InputModal
-          modalTitle={"標籤名稱"}
-          setShowInputModal={setShowInputModal}
-          groupData={props.groupData}
-          setGroupData={props.setGroupData}
-          selectedBoxIndex={selectedBoxIndex}
-        />
-      )}
+
       {notesBoxData.length > 0 ? (
         <Note notesBoxData={notesBoxData} />
       ) : (
