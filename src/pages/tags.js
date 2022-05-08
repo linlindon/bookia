@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-import { FolderAdd } from "@styled-icons/fluentui-system-filled/FolderAdd";
+import { FolderAdd } from "@styled-icons/fluentui-system-regular/FolderAdd";
 import firebase from "../utils/firebaseTools";
 import TagBox from "../components/TagBox";
 import InputModal from "../components/modal/InputModal";

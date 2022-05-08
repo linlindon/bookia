@@ -40,6 +40,7 @@ const CardContainer = styled.div`
 
 const BookImageContainer = styled.div`
   width: 185px;
+  height: 250px;
   margin: 32px 15px;
 `;
 const BookImage = styled.img`

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { BookAdd } from "@styled-icons/fluentui-system-filled/BookAdd";
+import { NotebookAdd } from "@styled-icons/fluentui-system-regular/NotebookAdd";
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
 import Book from "../components/Book";
@@ -37,22 +37,20 @@ const SignContainer = styled.div`
     box-shadow: 0 2px 10px rgba(0 0 0 / 30%);
   }
 `;
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
 
-  margin-top: 100px;
-`;
-const AddNoteSign = styled(BookAdd)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const AddNoteSign = styled(NotebookAdd)`
   width: 50px;
   color: #dca246;
   cursor: pointer;
   @media only screen and (max-width: 786px) {
     width: 40px;
   }
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
 `;
 
 function Books() {

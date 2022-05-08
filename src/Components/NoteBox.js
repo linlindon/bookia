@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import styled from "styled-components";
-import { Edit2 } from "@styled-icons/evaicons-solid/Edit2";
+import { Edit } from "@styled-icons/fa-regular/Edit";
 import firebase from "../utils/firebaseTools";
 import NewNote from "./modal/NewNoteModal";
 import { UserProfile } from "../App";
@@ -49,21 +49,23 @@ const TagsContainer = styled.div`
 
 const EditSignContainer = styled.div`
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   right: 15px;
   bottom: 10px;
-  width: 35px;
-  height: 35px;
-  border-radius: 16px;
-  background-color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  background-color: #fff;
 
   &:hover {
     box-shadow: 3px 3px 3px rgba(0 0 0 / 30%);
   }
 `;
 
-const EdditSign = styled(Edit2)`
+const EdditSign = styled(Edit)`
   position: absolute;
-
   width: 30px;
   height: 30px;
   cursor: pointer;
@@ -127,14 +129,10 @@ function NoteBox(props) {
             </TagsContainer>
           </TagBox>
         ))}
-        {showUpdate ? (
-          <NewNote
-            noteData={noteData}
-            show={setShowUpdate}
-            bookInfo={bookInfo}
-          />
-        ) : null}
       </Container>
+      {showUpdate && (
+        <NewNote noteData={noteData} show={setShowUpdate} bookInfo={bookInfo} />
+      )}
     </>
   );
 }

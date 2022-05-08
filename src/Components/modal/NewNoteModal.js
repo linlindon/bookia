@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
 import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
 import firebase from "../../utils/firebaseTools";
-import tools from "../../utils/tools";
 import { UserProfile } from "../../App";
 import InputModal from "./InputModal";
+import Loading from "../Loading";
 import AddTagSign from "../AddTagSign";
 
 const Flex = styled.div`
@@ -16,8 +16,9 @@ const Background = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  top: 0;
+  position: absolute;
+  top: -100px;
+  left: 0;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
@@ -50,9 +51,13 @@ const CloseButton = styled(CloseSquareOutline)`
   position: absolute;
   top: 5px;
   right: 10px;
-  width: 20px;
-  color: #ff6972;
+  width: 25px;
+  color: #d3d2d1;
   cursor: pointer;
+
+  &:hover {
+    color: #ff6972;
+  }
 `;
 const TagContentBox = styled(Flex)`
   position: relative;
@@ -89,7 +94,7 @@ const Tag = styled.p`
   }
 `;
 const ContentInput = styled.textarea`
-  width: 98.9%;
+  width: 98%;
   height: 25vh;
   border: 2px solid #d3d2d1;
 `;
@@ -119,10 +124,11 @@ const SubmitButton = styled.button`
   border: none;
   width: 120px;
   height: 35px;
+  margin-top: 10px;
+  margin-right: 20px;
+  padding: 3px 8px;
   letter-spacing: 2px;
   text-align: center;
-  margin-top: 10px;
-  padding: 3px 8px;
   font-size: 14px;
   border-radius: 5px;
   background-color: #e6c88b;
@@ -131,6 +137,11 @@ const SubmitButton = styled.button`
   &:hover {
     background-color: #dca246;
   }
+`;
+
+const LoadingContainer = styled.div`
+  height: 50px;
+  margin-top: 10px;
 `;
 
 let chosenTagArray = [];
@@ -145,6 +156,7 @@ const NewNote = (props) => {
     title: "",
   });
   const [showInputModal, setShowInputModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef();
   const userId = useContext(UserProfile);
 
@@ -193,7 +205,7 @@ const NewNote = (props) => {
 
   async function submitHandler(e) {
     e.preventDefault();
-
+    setIsLoading(false);
     if (chosenTagArray.length === 0) {
       alert("每個筆記需要至少一個標籤");
     } else if (!inputDatas.title) {
@@ -201,6 +213,7 @@ const NewNote = (props) => {
     } else if (!inputDatas.content) {
       alert("請輸入筆記內容");
     } else {
+      setIsLoading(true);
       let inputData = {
         ...inputDatas,
         bookID: props.bookInfo.id,
@@ -319,7 +332,13 @@ const NewNote = (props) => {
               onChange={inputChangeHandler}
             ></ContentInput>
           </div>
-          <SubmitButton>{props.noteData ? "修改" : "新增"}</SubmitButton>
+          {isLoading ? (
+            <LoadingContainer>
+              <Loading />
+            </LoadingContainer>
+          ) : (
+            <SubmitButton>{props.noteData ? "修改" : "新增"}</SubmitButton>
+          )}
         </TagBoxFlat>
         {showInputModal && (
           <InputModal

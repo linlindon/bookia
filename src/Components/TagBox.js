@@ -1,7 +1,9 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { DeleteBack2 } from "@styled-icons/remix-fill/DeleteBack2";
-import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
+import { DeleteOutline } from "@styled-icons/typicons/DeleteOutline";
+// import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
+import { AddCircle } from "@styled-icons/ionicons-outline/AddCircle";
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
 import { UserProfile } from "../App";
@@ -113,16 +115,18 @@ const TagBoxContainer = styled.div`
   } */
   }
 `;
-const BoxDeleteTag = styled(DeleteBack2)`
+const BoxDeleteTag = styled(DeleteOutline)`
   display: none;
   position: absolute;
-  right: -5px;
+  right: 0px;
   top: 0px;
-  width: 22px;
+  width: 28px;
   cursor: pointer;
-  color: #ff6972;
-  transform: rotate(0.92turn);
+  color: #d3d2d1;
 
+  &:hover {
+    color: #ff6972;
+  }
   ${TagBoxContainer}:hover & {
     display: inline;
     z-index: 99;
@@ -153,7 +157,7 @@ const BoxNameInput = styled.input`
 
 const TagsContainer = styled.div`
   display: flex;
-  flex-direction: flex-start;
+  align-content: flex-start;
   flex-wrap: wrap;
   width: 80%;
   gap: 1em;
@@ -209,16 +213,19 @@ const AddSign = styled(AddCircle)`
   }
 `;
 
-const DeleteTag = styled(DeleteBack2)`
+const DeleteTag = styled(DeleteOutline)`
   display: none;
   position: absolute;
-  top: -5px;
-  right: -10px;
-  width: 18px;
+  top: -10px;
+  right: -12px;
+  width: 22px;
   margin-left: 6px;
   cursor: pointer;
-  color: #ff6972;
-  transform: rotate(0.92turn);
+  color: #d3d2d1;
+
+  &:hover {
+    color: #ff6972;
+  }
 
   ${TagContainer}:hover & {
     display: inline;

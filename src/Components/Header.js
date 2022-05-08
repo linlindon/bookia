@@ -33,7 +33,7 @@ const Logo = styled.a`
 `;
 
 const NavLinks = styled.div`
-  width: 65%;
+  width: 80%;
 
   @media screen and (max-width: 786px) {
     display: flex;
@@ -46,7 +46,7 @@ const NavLinks = styled.div`
 const Nav = styled(NavLink)`
   padding: 4px 6px;
   margin-right: 2%;
-  font-size: 14px;
+  font-size: 16px;
   color: #363434;
   font-weight: 600;
   border-radius: 5px;
@@ -218,8 +218,8 @@ function Header() {
                 筆記櫃
               </MobileLink>
               <MobileLink
-                to="/alltags"
-                onClick={() => closeToggleHandler("/alltags")}
+                to="/tags"
+                onClick={() => closeToggleHandler("/tags")}
               >
                 書籤櫃
               </MobileLink>
@@ -245,7 +245,7 @@ function Header() {
         <Logo to="/books">Bookia</Logo>
         <NavLinks>
           <Nav to="/books">筆記櫃</Nav>
-          <Nav to="/alltags">書籤櫃</Nav>
+          <Nav to="/tags">書籤櫃</Nav>
           <Nav to="/search">新增筆記</Nav>
         </NavLinks>
         <SignContainer>

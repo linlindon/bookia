@@ -1,11 +1,12 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { NoteAdd } from "@styled-icons/fluentui-system-filled/NoteAdd";
+import { NoteAdd } from "@styled-icons/fluentui-system-regular/NoteAdd";
 import { onSnapshot } from "firebase/firestore";
 import firebase from "../utils/firebaseTools";
 import NewNote from "../components/modal/NewNoteModal";
 import NoteBox from "../components/NoteBox";
+import Loading from "../components/Loading";
 import { UserProfile } from "../App";
 
 const Flex = styled.div`
@@ -34,13 +35,13 @@ const BookInfoContainer = styled(Flex)`
   align-items: flex-start;
   align-self: flex-start;
   padding: 15px;
-  width: 90%;
+  width: 1000px;
   border-radius: 10px;
   background-color: #ffffff;
 `;
 
 const BookImg = styled.div`
-  width: 100%;
+  width: 180px;
   border: solid 1px #f2f1f0;
 `;
 const Img = styled.img`
@@ -53,6 +54,17 @@ const ContentContainer = styled.div`
 `;
 const BookTitle = styled.h3`
   margin: 0;
+`;
+
+const NoDataContainer = styled.div`
+  display: flex;
+  width: 100%;
+  align-self: flex-start;
+  justify-content: space-evenly;
+`;
+const NoDataTitle = styled.h3`
+  font-size: 20px;
+  font-weight: 900;
 `;
 const SignContainer = styled.div`
   position: fixed;
@@ -87,16 +99,25 @@ const AddButton = styled(NoteAdd)`
   }
 `;
 
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
 function BookNote() {
   const [bookNotesData, setBookNotesData] = useState([]);
   const [bookInfo, setBookInfo] = useState({});
   const [showNoteInput, setShowNoteInput] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
   const userId = useContext(UserProfile);
 
   useEffect(() => {
+    setIsLoading(true);
     firebase.getBookInfo(userId, id).then((res) => {
       setBookInfo({ ...res });
+      setIsLoading(false);
     });
   }, []);
 
@@ -122,6 +143,11 @@ function BookNote() {
         <TitleContainer>
           <Title>新增筆記</Title>
         </TitleContainer>
+        {isLoading && (
+          <LoadingContainer>
+            <Loading />
+          </LoadingContainer>
+        )}
         <SignContainer>
           <AddButton
             onClick={() => setShowNoteInput((prev) => !prev)}
@@ -141,7 +167,13 @@ function BookNote() {
               <p>出版年: {bookInfo.publish}</p>
             </ContentContainer>
           </BookInfoContainer>
-          <NoteBox bookNotesData={bookNotesData} />
+          {bookNotesData.length === 0 ? (
+            <NoDataContainer>
+              <NoDataTitle>無筆記。點擊右下按鈕新增筆記</NoDataTitle>
+            </NoDataContainer>
+          ) : (
+            <NoteBox bookNotesData={bookNotesData} />
+          )}
         </Wrapper>
       </Container>
       {showNoteInput ? (

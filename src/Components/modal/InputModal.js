@@ -38,8 +38,11 @@ const Delete = styled(CloseSquareOutline)`
   top: 5px;
   right: 10px;
   width: 20px;
-  color: #ff6972;
+  color: #d3d2d1;
   cursor: pointer;
+  &:hover {
+    color: #ff6972;
+  }
 `;
 const ModalTitle = styled.p`
   margin-bottom: 25px;
@@ -52,12 +55,14 @@ const ModalInput = styled.input`
 `;
 const Warning = styled.p`
   margin: 0;
-  color: red;
+  height: 12px;
+  color: #ff6972;
 `;
 const LoadingContainer = styled.div`
-  margin-top: 20px;
   display: flex;
   justify-content: center;
+  height: 35px;
+  margin-top: 20px;
 `;
 
 const ConfirmButton = styled.button`
@@ -96,11 +101,12 @@ function InputModal(props) {
     } else {
       console.log(inputValue);
 
-      if (!props.selectedBoxIndex) {
+      if (props.selectedBoxIndex === undefined) {
         if (allTitles.includes(inputValue)) {
           setIsWarning(true);
         } else {
           console.log("no selected box name");
+
           setIsWarning(false);
           setIsLoading(true);
           allGroupData.push({ name: inputValue, tags: [] });
@@ -112,7 +118,7 @@ function InputModal(props) {
           setIsLoading(false);
         }
       } else {
-        console.log("second else");
+        console.log("second else", props.selectedBoxIndex);
         if (allTags.includes(inputValue)) {
           setIsWarning(true);
         } else {
@@ -148,12 +154,14 @@ function InputModal(props) {
           onChange={(e) => (inputValue = e.target.value)}
           type="text"
         />
-        {isWarning ? <Warning>此名稱已存在，請重新命名</Warning> : null}
-        <ConfirmButton onClick={addTagGroupHandler}>確認</ConfirmButton>
-        {isLoading && (
+        {isWarning ? <Warning>此名稱已存在，請重新命名</Warning> : <Warning />}
+
+        {isLoading ? (
           <LoadingContainer>
             <Loading />
           </LoadingContainer>
+        ) : (
+          <ConfirmButton onClick={addTagGroupHandler}>確認</ConfirmButton>
         )}
       </InputContainer>
     </Background>

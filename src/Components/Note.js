@@ -48,7 +48,7 @@ const NoteBox = styled.div`
 `;
 const BoxName = styled.p`
   font-weight: 600;
-  border-bottom: solid 2px #6a7fdb;
+  border-bottom: solid 2px #d3d2d1;
 `;
 const TagsContainer = styled.div`
   display: flex;
@@ -69,11 +69,12 @@ const NoteName = styled.div`
   font-weight: 700;
   margin-bottom: 5px;
 `;
-const Tag = styled.div`
-  padding: 1px 4px;
+const Tag = styled.p`
+  margin: 0;
+  padding: 5px 10px;
   font-size: 14px;
-  border: 1px solid #00d084;
-  border-radius: 5px;
+  border-radius: 15px;
+  background-color: #e4d36d;
 `;
 const Content = styled.p``;
 const DeleteSign = styled.span``;

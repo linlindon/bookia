@@ -122,7 +122,7 @@ function App() {
                 }
               />
               <Route
-                path="alltags"
+                path="tags"
                 element={
                   loginState ? (
                     <Tags />
