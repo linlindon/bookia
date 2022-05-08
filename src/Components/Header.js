@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Search } from "@styled-icons/heroicons-solid/Search";
 import { Logout } from "@styled-icons/heroicons-outline/Logout";
 import { Menu } from "@styled-icons/heroicons-outline/Menu";
+import BookiaLogo from "../img/logo.png";
 import firebase from "../utils/firebaseTools";
 import { useNavigate, NavLink, Link } from "react-router-dom";
 import { UserProfile } from "../App";
@@ -26,14 +27,17 @@ const NavbarWrapper = styled.div`
     display: none;
   }
 `;
-const Logo = styled.a`
+const Logo = styled.img`
   margin-right: 5%;
-  font-size: 28px;
-  font-weight: 700;
+  cursor: pointer;
 `;
 
 const NavLinks = styled.div`
   width: 80%;
+
+  .active {
+    border-bottom: solid 3px #d3d2d1;
+  }
 
   @media screen and (max-width: 786px) {
     display: flex;
@@ -49,7 +53,6 @@ const Nav = styled(NavLink)`
   font-size: 16px;
   color: #363434;
   font-weight: 600;
-  border-radius: 5px;
 
   &:hover {
     color: #000;
@@ -242,7 +245,7 @@ function Header() {
       )}
 
       <NavbarWrapper>
-        <Logo to="/books">Bookia</Logo>
+        <Logo src={BookiaLogo} />
         <NavLinks>
           <Nav to="/books">筆記櫃</Nav>
           <Nav to="/tags">書籤櫃</Nav>

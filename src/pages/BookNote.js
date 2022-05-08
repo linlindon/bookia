@@ -117,7 +117,6 @@ function BookNote() {
   const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
   const userId = useContext(UserProfile);
-  console.log(noteData);
 
   useEffect(() => {
     console.log("inside effect");
@@ -144,6 +143,11 @@ function BookNote() {
     });
   }, []);
 
+  function showNoteInputHandler() {
+    setNoteData(undefined);
+    setShowNoteInput(true);
+  }
+
   return (
     <>
       <Container>
@@ -156,10 +160,7 @@ function BookNote() {
           </LoadingContainer>
         )}
         <SignContainer>
-          <AddButton
-            onClick={() => setShowNoteInput((prev) => !prev)}
-            title={"新增筆記"}
-          />
+          <AddButton onClick={showNoteInputHandler} title={"新增筆記"} />
         </SignContainer>
 
         <Wrapper>
