@@ -1,8 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-import { DeleteBack2 } from "@styled-icons/remix-fill/DeleteBack2";
 import { DeleteOutline } from "@styled-icons/typicons/DeleteOutline";
-// import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
 import { AddCircle } from "@styled-icons/ionicons-outline/AddCircle";
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
@@ -77,10 +75,10 @@ const Wrapper = styled.div`
 
 const BoxWrapper = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-start;
   flex-wrap: wrap;
-  width: 100%;
+  width: 30%;
 `;
 
 const TagBoxContainer = styled.div`
@@ -89,7 +87,6 @@ const TagBoxContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: calc((100% - 108px) / 2);
   margin: 15px;
   padding: 10px;
   border-radius: 10px;
@@ -231,6 +228,17 @@ const DeleteTag = styled(DeleteOutline)`
     display: inline;
     z-index: 99;
   }
+`;
+const NoDataContainer = styled.div`
+  display: flex;
+  width: 100%;
+  align-self: flex-start;
+  justify-content: space-evenly;
+`;
+const NoDataTitle = styled.h3`
+  font-size: 20px;
+  font-weight: 900;
+  text-align: center;
 `;
 
 const LoadingContainer = styled.div`
@@ -411,7 +419,17 @@ function TagBox(props) {
           selectedBoxIndex={selectedBoxIndex}
         />
       )}
-      {notesBoxData.length > 0 && <Note notesBoxData={notesBoxData} />}
+      {notesBoxData.length > 0 ? (
+        <Note notesBoxData={notesBoxData} />
+      ) : (
+        <NoDataContainer>
+          <NoDataTitle>
+            點選左側書籤
+            <br />
+            顯示相關筆記
+          </NoDataTitle>
+        </NoDataContainer>
+      )}
     </>
   );
 }

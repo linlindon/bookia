@@ -65,6 +65,7 @@ const NoDataContainer = styled.div`
 const NoDataTitle = styled.h3`
   font-size: 20px;
   font-weight: 900;
+  text-align: center;
 `;
 const SignContainer = styled.div`
   position: fixed;
@@ -169,7 +170,11 @@ function BookNote() {
           </BookInfoContainer>
           {bookNotesData.length === 0 ? (
             <NoDataContainer>
-              <NoDataTitle>無筆記。點擊右下按鈕新增筆記</NoDataTitle>
+              <NoDataTitle>
+                無筆記
+                <br />
+                點擊右下按鈕新增筆記
+              </NoDataTitle>
             </NoDataContainer>
           ) : (
             <NoteBox bookNotesData={bookNotesData} />

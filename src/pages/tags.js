@@ -16,11 +16,11 @@ const Container = styled.div`
 `;
 
 const TagBoxContainer = styled.div`
-  height: 100%;
   display: flex;
+  height: 100%;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  align-items: flex-start;
+  align-content: space-around;
   margin: 5% 15%;
 `;
 

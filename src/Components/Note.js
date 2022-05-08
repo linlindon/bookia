@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
-  ${"" /* width: 78%; */}
+  width: 80%;
 
   @media only screen and (min-width: 1280px) {
     ${"" /* width: 1140px; */}
@@ -34,10 +34,10 @@ const NoteBox = styled.div`
   background-color: #ffffff;
   box-shadow: 2px 2px 7px rgb(0 0 0 / 20%);
   cursor: pointer;
+  transition: 0.5s ease;
 
   &:hover {
-    ${"" /* transform: scale(1.05); */}
-    ${"" /* background-color: #6a7fdb; */}
+    box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
   }
 
   @media only screen and (max-width: 786px) {
