@@ -35,7 +35,7 @@ const BookInfoContainer = styled(Flex)`
   align-items: flex-start;
   align-self: flex-start;
   padding: 15px;
-  width: 1000px;
+  width: 600px;
   border-radius: 10px;
   background-color: #ffffff;
 `;
@@ -122,14 +122,16 @@ function BookNote() {
     console.log("inside effect");
     setIsLoading(true);
     firebase.getBookInfo(userId, id).then((res) => {
-      setBookInfo({ ...res });
       setIsLoading(false);
+      console.log(res);
+      setBookInfo({ ...res });
     });
   }, []);
 
   useEffect(() => {
     // let noteData = [];
     let notesRef = firebase.getNotesRef(userId);
+    setIsLoading(true);
     onSnapshot(notesRef, (notes) => {
       console.log("in snap shot");
       let data = [];
@@ -139,6 +141,7 @@ function BookNote() {
         }
       });
       // noteData = data;
+      setIsLoading(false);
       setBookNotesData(data);
     });
   }, []);

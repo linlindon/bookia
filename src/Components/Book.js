@@ -28,9 +28,10 @@ const Container = styled.div`
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
+  margin: 5% 15%;
 
   @media only screen and (min-width: 1280px) {
-    width: 1280px;
+    ${"" /* width: 1280px; */}
     align-items: center;
   }
   @media only screen and (max-width: 786px) {
@@ -42,7 +43,7 @@ const BookBox = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: row-reverse;
-  width: calc((100% - 84px) / 2);
+  width: calc((100% - 82px) / 2);
   margin: 30px 20px;
   border-radius: 10px;
   background-color: #ffffff;

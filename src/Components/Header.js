@@ -21,15 +21,23 @@ const NavbarWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 20px 40px;
-  align-items: baseline;
+  align-items: center;
 
   @media screen and (max-width: 786px) {
     display: none;
   }
 `;
-const Logo = styled.img`
+const LogoContainer = styled.div`
+  width: 140px;
   margin-right: 5%;
   cursor: pointer;
+`;
+
+const Logo = styled.img.attrs({
+  src: `${BookiaLogo}`,
+})`
+  width: 100%;
+  object-fit: cover;
 `;
 
 const NavLinks = styled.div`
@@ -105,7 +113,7 @@ const LogoutSign = styled(Logout)`
 `;
 const LogoutHint = styled.div`
   position: absolute;
-  left: 2vw;
+  left: 1vw;
   top: 30px;
   width: 50px;
   padding: 3px 8px;
@@ -245,11 +253,13 @@ function Header() {
       )}
 
       <NavbarWrapper>
-        <Logo src={BookiaLogo} />
+        <LogoContainer>
+          <Logo href="/books" />
+        </LogoContainer>
         <NavLinks>
           <Nav to="/books">筆記櫃</Nav>
           <Nav to="/tags">書籤櫃</Nav>
-          <Nav to="/search">新增筆記</Nav>
+          <Nav to="/search">新增書籍</Nav>
         </NavLinks>
         <SignContainer>
           <Link to="/site-search">

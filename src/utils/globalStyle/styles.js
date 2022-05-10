@@ -3,14 +3,15 @@ import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle`
 
     body {
+        margin: 0;
         line-height: 1.5;
         background-color: #f2f1f0;
         box-sizing: border-box;
         letter-spacing: .1rem;
         color: #404040;
-        font-family: 'Noto Serif TC', serif;
+        font-family: 'Noto Serif TC', serif; 
         font-size: 14px;
-        ${"" /* font-family: 'Noto Sans TC', sans-serif; */}
+        font-family: 'Noto Sans TC', sans-serif; 
 
 
         @media only screen and (max-width: 786px) {
@@ -28,7 +29,7 @@ export const GlobalStyle = createGlobalStyle`
         border: none;
         border-bottom: solid 1px black;
         font-size: 14px;
-        font-family: 'Noto Serif TC', serif;
+        font-family: 'Noto Serif TC', serif; 
         color: #404040;
     }
 

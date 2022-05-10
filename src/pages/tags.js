@@ -17,9 +17,9 @@ const Container = styled.div`
 
 const TagBoxContainer = styled.div`
   display: flex;
+  flex-direction: column;
   height: 100%;
   align-items: center;
-  align-items: flex-start;
   align-content: space-around;
   margin: 5% 15%;
 `;

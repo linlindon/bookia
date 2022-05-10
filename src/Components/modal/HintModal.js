@@ -72,7 +72,7 @@ function HintModal(props) {
     }
   }
   function closeModals() {
-    console.log("close modals");
+    // console.log("close modals");
     props.setShowNoteInput(false);
     props.setIsHint(false);
   }
@@ -82,7 +82,7 @@ function HintModal(props) {
       <InputContainer>
         <Delete onClick={() => props.setIsHint(false)}>x</Delete>
         <ModalTitle>{props.hintTitle}</ModalTitle>
-        {props.setIsConfirmClose ? (
+        {props.isConfirmClose ? (
           <div>
             <ConfirmButton onClick={closeModals}>是</ConfirmButton>
             <span> </span>

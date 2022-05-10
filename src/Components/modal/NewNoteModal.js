@@ -2,6 +2,9 @@ import { useEffect, useState, useRef, useContext } from "react";
 import styled from "styled-components";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
 import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
+// import Editor from "ckeditor5-custom-build/build/ckeditor";
+// import { CKEditor } from "@ckeditor/ckeditor5-react";
+import Editor from "../Editor";
 import firebase from "../../utils/firebaseTools";
 import { UserProfile } from "../../App";
 import InputModal from "./InputModal";
@@ -88,6 +91,7 @@ const Tag = styled.p`
   font-size: 14px;
   border-radius: 15px;
   background-color: #eeeded;
+  cursor: pointer;
   ${Input}:checked + && {
     background-color: #e4d36d;
     color: #fff;
@@ -163,6 +167,9 @@ const NewNoteModal = (props) => {
   const [isConfirmClose, setIsConfirmClose] = useState(false);
   const inputRef = useRef();
   const userId = useContext(UserProfile);
+  // const editorConfiguration = {
+  //   toolbar: ["bold", "italic"],
+  // };
 
   useEffect(() => {
     chosenTagArray = [];
@@ -209,6 +216,7 @@ const NewNoteModal = (props) => {
 
   async function submitHandler(e) {
     e.preventDefault();
+    setIsConfirmClose(false);
     setIsLoading(false);
     if (chosenTagArray.length === 0) {
       setIsHintTitle("每個筆記需要至少一個標籤");
@@ -221,19 +229,23 @@ const NewNoteModal = (props) => {
       setIsHint(true);
     } else {
       setIsLoading(true);
+      // console.log(props.noteData.id);
+      console.log(props.bookInfo.noteId);
       let inputData = {
         ...inputDatas,
         bookID: props.bookInfo.id,
-        id: props.noteData && props.bookInfo.noteId,
+        id: props.noteData?.id ? props.noteData.id : "",
         bookTitle: props.bookInfo.title,
         tagNames: chosenTagArray,
       };
       // console.log("新筆記資料包===>", inputData);
 
       if (!props.noteData) {
+        console.log("new note");
         await firebase.addNewNote(userId, inputData);
       } else {
-        await firebase.addNewNote(userId, inputData, props.bookInfo.noteId);
+        console.log("update", props.bookInfo.noteId);
+        await firebase.addNewNote(userId, inputData, props.noteData.id);
       }
 
       // 把標籤加到書本
@@ -261,6 +273,7 @@ const NewNoteModal = (props) => {
 
   function closeInputByWindow(e) {
     if (inputRef.current === e.target) {
+      setIsConfirmClose(true);
       setIsHintTitle("變更未儲存，確定要離開嗎");
       setIsHint(true);
     } else {
@@ -268,6 +281,7 @@ const NewNoteModal = (props) => {
     }
   }
   function closeInput() {
+    setIsConfirmClose(true);
     setIsHintTitle("變更未儲存，確定要離開嗎");
     setIsHint(true);
   }
@@ -301,11 +315,11 @@ const NewNoteModal = (props) => {
           <Title>選擇此筆記的書籤</Title>
           {groupData?.map((data, index) => (
             <TagContentBox key={data.name}>
-              <SubTitle key={data.name}>{data.name}</SubTitle>
+              <SubTitle>{data.name}</SubTitle>
 
-              <TagsContainer key={index}>
+              <TagsContainer>
                 {data.tags.map((tag, tagIndex) => (
-                  <label name={tag} key={tagIndex}>
+                  <label name={tag} key={tag}>
                     <Input
                       id={tag}
                       defaultChecked={
@@ -313,11 +327,8 @@ const NewNoteModal = (props) => {
                           ? props.noteData.tagNames.includes(tag)
                           : false
                       }
-                      key={`${tag}${tagIndex}`}
                     ></Input>
-                    <Tag onClick={() => choseTagHandler(tag)} key={tag}>
-                      {tag}
-                    </Tag>
+                    <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
                   </label>
                 ))}
                 {/* <AddTagSign
@@ -337,11 +348,13 @@ const NewNoteModal = (props) => {
 
           <div>
             <Title>筆記內容</Title>
-            <ContentInput
+            <Editor noteData={props.noteData} />
+
+            {/* <ContentInput
               defaultValue={props.noteData ? props.noteData.content : ""}
               name="content"
               onChange={inputChangeHandler}
-            ></ContentInput>
+            ></ContentInput> */}
           </div>
           {isLoading ? (
             <LoadingContainer>
@@ -365,7 +378,7 @@ const NewNoteModal = (props) => {
             hintTitle={hintTitle}
             setIsHint={setIsHint}
             setShowNoteInput={props.setShowNoteInput}
-            setIsConfirmClose={setIsConfirmClose}
+            isConfirmClose={isConfirmClose}
           />
         )}
       </Background>

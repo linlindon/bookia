@@ -17,6 +17,12 @@ const Wrapper = styled.div`
 const Title = styled.h1`
   text-align: center;
 `;
+const HintTitle = styled.h3`
+  font-size: 16px;
+  margin-top: 5%;
+  text-align: center;
+`;
+
 const SignContainer = styled.div`
   position: fixed;
   display: flex;
@@ -56,6 +62,7 @@ const LoadingContainer = styled.div`
 function Books() {
   const [bookDatas, setBookDatas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isHint, setIsHint] = useState(false);
   const userId = useContext(UserProfile);
   let navigate = useNavigate();
 
@@ -63,12 +70,18 @@ function Books() {
     let bookData = [];
     setIsLoading(true);
     firebase.getBooksData(userId).then((data) => {
-      data.forEach((book) => {
-        bookData.push(book.data());
-      });
-      setBookDatas(bookData);
+      if (data.docs.length === 0) {
+        setIsLoading(false);
+        setIsHint(true);
+      } else {
+        data.docs.forEach((book) => {
+          bookData.push(book.data());
+          console.log("else");
+        });
+        setIsLoading(false);
+        setBookDatas(bookData);
+      }
       console.log(bookData);
-      setIsLoading(false);
     });
   }, []);
 
@@ -81,6 +94,13 @@ function Books() {
         <LoadingContainer>
           <Loading />
         </LoadingContainer>
+      )}
+      {isHint && (
+        <HintTitle>
+          尚無書本
+          <br />
+          點擊右下按鈕新增書籍
+        </HintTitle>
       )}
       <Book bookDatas={bookDatas} />
       <SignContainer>

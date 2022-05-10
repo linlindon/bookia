@@ -8,6 +8,7 @@ import { UserProfile } from "../App";
 import InputModal from "./modal/InputModal";
 import Note from "./Note";
 import Loading from "../components/Loading";
+import uniqid from "uniqid";
 
 const Wrapper = styled.div`
   ${
@@ -75,10 +76,8 @@ const Wrapper = styled.div`
 
 const BoxWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   flex-wrap: wrap;
-  width: 30%;
+  width: 100%;
 `;
 
 const TagBoxContainer = styled.div`
@@ -87,6 +86,8 @@ const TagBoxContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: calc((100% - 108px) / 2);
+
   margin: 15px;
   padding: 10px;
   border-radius: 10px;
@@ -142,21 +143,24 @@ const BoxNameDiv = styled.div`
 `;
 const BoxName = styled.p`
   margin: 8px;
+  letter-spacing: 2px;
 `;
 const BoxNameInput = styled.input`
   border: none;
-  margin-top: 8px;
-  margin-bottom: 12px;
+  margin-top: 6px;
+  margin-bottom: 9px;
   font-size: 16px;
   font-weight: 600;
   text-align: center;
+  letter-spacing: 2px;
+  background-color: #eeeded;
 `;
 
 const TagsContainer = styled.div`
   display: flex;
   align-content: flex-start;
   flex-wrap: wrap;
-  width: 80%;
+  width: 90%;
   gap: 1em;
   flex-grow: 1;
   margin-bottom: 20px;
@@ -232,10 +236,10 @@ const DeleteTag = styled(DeleteOutline)`
 const NoDataContainer = styled.div`
   display: flex;
   width: 100%;
-  align-self: flex-start;
-  justify-content: space-evenly;
+  justify-content: center;
 `;
 const NoDataTitle = styled.h3`
+  margin-top: 80px;
   font-size: 20px;
   font-weight: 900;
   text-align: center;
@@ -248,7 +252,6 @@ const LoadingContainer = styled.div`
 
 let clickTagNameArray = [];
 let allNotesData = [];
-let selectedBoxIndex;
 
 function TagBox(props) {
   // const [showInputModal, setShowInputModal] = useState(false);
@@ -269,6 +272,12 @@ function TagBox(props) {
       });
     }
     getData();
+
+    // const groupDatasId = props.groupData.map((group) => {
+    //   return [...groupDatasId, uniqid()];
+    // });
+
+    // console.log(groupDatasId);
   }, []);
 
   function showTagInputHandler(index) {
@@ -356,45 +365,33 @@ function TagBox(props) {
       )}
       <BoxWrapper>
         {props.groupData?.map((box, index) => (
-          <TagBoxContainer key={box}>
+          <TagBoxContainer key={index}>
             <BoxDeleteTag
               onClick={() => deleteTagGroupHandler(index)}
               title="刪除書籤櫃"
-              key={`delete${box}`}
             />
             <BoxNameDiv>
               {isUpdateTagBoxName ? (
-                <Form
-                  onSubmit={(e) => e.preventDefault()}
-                  key={`${index}${box.name}`}
-                >
+                <Form onSubmit={(e) => e.preventDefault()}>
                   <BoxNameInput
+                    autoFocus
                     defaultValue={box.name}
                     as="input"
                     onBlur={(e) => onBlurHandler(box.name, e.target.value)}
-                    key={box.name}
                   />
                 </Form>
               ) : (
-                <BoxName
-                  key={box.name}
-                  onClick={() => setIsUpdateTagBoxName(true)}
-                >
+                <BoxName onClick={() => setIsUpdateTagBoxName(true)}>
                   {box.name}
                 </BoxName>
               )}
             </BoxNameDiv>
-            <TagsContainer key={`${box.name}${index}`}>
-              {box.tags?.map((tag, tagIndex) => (
-                <TagContainer name={tag} key={tagIndex}>
-                  <Input id={tag} key={`${tag}${tagIndex}`}></Input>
-                  <Tag onClick={() => choseTagHandler(tag)} key={tag}>
-                    {tag}
-                  </Tag>
-                  <DeleteTag
-                    onClick={() => deleteTagHandler(tag, index)}
-                    key={`delete${tag}`}
-                  />
+            <TagsContainer>
+              {box.tags?.map((tag) => (
+                <TagContainer name={tag} key={tag}>
+                  <Input id={tag}></Input>
+                  <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
+                  <DeleteTag onClick={() => deleteTagHandler(tag, index)} />
                 </TagContainer>
               ))}
 
@@ -402,7 +399,6 @@ function TagBox(props) {
                 <AddSign
                   onClick={() => showTagInputHandler(index)}
                   title="新增標籤"
-                  key={`add${box.name}${index}`}
                 />
               </AddSignContainer>
             </TagsContainer>
@@ -415,7 +411,7 @@ function TagBox(props) {
       ) : (
         <NoDataContainer>
           <NoDataTitle>
-            點選左側書籤
+            點選上方書籤
             <br />
             顯示相關筆記
           </NoDataTitle>

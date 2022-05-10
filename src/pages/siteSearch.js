@@ -7,10 +7,18 @@ import Book from "../components/Book";
 import Note from "../components/Note";
 import Loading from "../components/Loading";
 
+const PageTitle = styled.h1`
+  marign-top: 5%;
+  text-align: center;
+  @media only screen and (max-width: 786px) {
+    margin: 5px;
+  }
+`;
 const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 15%;
 `;
 const ButtonContainer = styled.div`
   display: flex;
@@ -20,13 +28,17 @@ const ButtonContainer = styled.div`
 
 const Button = styled.button`
   border: none;
+  width: 150px;
+  height: 35px;
+  margin-right: 15px;
+  letter-spacing: 2px;
+  text-align: center;
   margin: 20px;
-  padding: 10px 12px;
-  font-size: 14px;
-  font-weight: 600;
-
+  padding: 3px 8px;
+  font-size: 16px;
   border-radius: 5px;
-  background-color: ${(props) => (props.active ? "#3fccdc" : "white")};
+  color: #fff;
+  background-color: ${(props) => (props.active ? "#dca246" : "#e6c88b")};
 `;
 
 const Title = styled.h3`
@@ -97,29 +109,28 @@ function SiteSearch() {
           });
 
           filterData = notesData.filter((note) => {
-            console.log(note.content);
+            // console.log(note.content);
             return inputWordArray.every((word) => {
-              console.log(word);
-              console.log(note.content.includes(word));
+              // console.log(note.content.includes(word));
               return note.content.includes(word);
             });
           });
-          console.log(filterData);
+          // console.log(filterData);
           setIsLoading(false);
           setSearchNoteResults(filterData);
         }
         if (filterData.length === 0) {
           setIsData(false);
         }
-        console.log("book", booksData);
-        console.log("note", notesData);
+        // console.log("book", booksData);
+        // console.log("note", notesData);
       }
     }
     searchData();
   }, [searchInput, isRender]);
 
   function searchTypeHandler(type) {
-    console.log("handler", searchInput);
+    // console.log("handler", searchInput);
     setIsData(true);
     setSearchBookResults([]);
     setSearchNoteResults([]);
@@ -128,6 +139,7 @@ function SiteSearch() {
 
   return (
     <>
+      <PageTitle>站內搜尋</PageTitle>
       <SearchContainer>
         <ButtonContainer>
           <Button

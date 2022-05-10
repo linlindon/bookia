@@ -1,10 +1,11 @@
 import { serverTimestamp } from "firebase/firestore";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
 import image from "../img/book.png";
+import Loading from "./Loading";
 
 // align-item: flex-start。讓flexbox不要stretch
 // const Wrapper = styled.div`
@@ -56,7 +57,7 @@ const AddButton = styled.button`
   height: 35px;
   letter-spacing: 2px;
   text-align: center;
-  margin-top: 10px;
+  margin: 6px;
   padding: 3px 8px;
   font-size: 14px;
   border-radius: 5px;
@@ -81,16 +82,25 @@ const BookName = styled.h3`
   margin: 6px;
 `;
 const BookAuthor = styled.p`
-  margin: 5px;
+  margin: 6px;
 `;
 const BookPublish = styled(BookAuthor)``;
 
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 35px;
+  margin-top: 20px;
+`;
+
 function Card(props) {
-  let navigate = useNavigate();
   const userId = useContext(UserProfile);
-  console.log("card");
+  const [isLoading, setIsLoading] = useState(false);
+  let navigate = useNavigate();
+
   async function getBookData(book, title, authors, publisher, date, img) {
     console.log(book);
+    setIsLoading(true);
     if (date === undefined) {
       date = "無資料";
     } else if (authors === undefined) {
@@ -110,9 +120,10 @@ function Card(props) {
     };
     console.log(data);
     const newBookId = firebase.setNewBookRef(userId);
-
-    await firebase.addNewBook(userId, newBookId, data);
-    navigate(`/booknote/${newBookId}`, { state: data });
+    await firebase.addNewBook(userId, newBookId, data).then(() => {
+      setIsLoading(false);
+      navigate(`/booknote/${newBookId}`, { state: data });
+    });
   }
 
   return (
@@ -121,38 +132,42 @@ function Card(props) {
       {props.bookList?.map((book, index) => {
         let img = book.imageLinks;
         return (
-          <CardContainer key={book}>
-            <BookImageContainer key={book.imageLinks}>
-              <BookImage key={image} src={img ? img.smallThumbnail : image} />
+          <CardContainer key={index}>
+            <BookImageContainer>
+              <BookImage src={img ? img.smallThumbnail : image} />
             </BookImageContainer>
 
-            <BookDetail key={`${index}${book}`}>
+            <BookDetail>
               <div>
-                <BookName key={book.title}>{book.title}</BookName>
-                <BookAuthor key={book.authors}>
+                <BookName>{book.title}</BookName>
+                <BookAuthor>
                   {book.authors && book.authors.join("、")}
                 </BookAuthor>
-                <BookPublish key={book.publishedDate}>
-                  {book.publishedDate}
-                </BookPublish>
-                <BookPublish key={book.publisher}>{book.publisher}</BookPublish>
+                <BookPublish>{book.publishedDate}</BookPublish>
+                <BookPublish>{book.publisher}</BookPublish>
               </div>
 
-              <AddButton
-                key={`books${index}`}
-                onClick={() =>
-                  getBookData(
-                    book,
-                    book.title,
-                    book.authors,
-                    book.publisher,
-                    book.publishedDate,
-                    img ? img.thumbnail : image
-                  )
-                }
-              >
-                選擇此書筆記
-              </AddButton>
+              {isLoading ? (
+                <LoadingContainer>
+                  <Loading />
+                </LoadingContainer>
+              ) : (
+                <AddButton
+                  key={`books${index}`}
+                  onClick={() =>
+                    getBookData(
+                      book,
+                      book.title,
+                      book.authors,
+                      book.publisher,
+                      book.publishedDate,
+                      img ? img.thumbnail : image
+                    )
+                  }
+                >
+                  選擇此書筆記
+                </AddButton>
+              )}
             </BookDetail>
           </CardContainer>
         );

@@ -1,16 +1,11 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-// const Wrapper = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   margin: 5% 15%;
-// `;
-
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: 80%;
+  ${"" /* margin-top: 60px; */}
+  ${"" /* margin: 1% 15%; */}
 
   @media only screen and (min-width: 1280px) {
     ${"" /* width: 1140px; */}
@@ -24,15 +19,13 @@ const Container = styled.div`
 const NoteBox = styled.div`
   display: flex;
   flex-direction: column;
-  flex-basis: 45%;
-  flex-grow: 1;
-  padding: 10px 20px;
-
-  margin: 1%;
+  padding: 10px 30px;
+  margin: 15px;
+  ${"" /* width: calc((100% - 250px) / 2); */}
   border: 1px solid #ece6e6;
   border-radius: 10px;
   background-color: #ffffff;
-  box-shadow: 2px 2px 7px rgb(0 0 0 / 20%);
+  flex-grow: 1;
   cursor: pointer;
   transition: 0.5s ease;
 

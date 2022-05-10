@@ -7,7 +7,6 @@ import { App } from "./App";
 
 ReactDOM.render(
   <>
-    <ResetStyle />
     <GlobalStyle />
     <App />
   </>,
