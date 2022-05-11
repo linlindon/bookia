@@ -9,7 +9,6 @@ import {
 import styled from "styled-components";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
 import Tags from "./pages/tags";
 import Books from "./pages/books";
 import BookNote from "./pages/bookNote";
@@ -45,7 +44,7 @@ const Background = styled.div`
 
 function RequireAuth({ children, loginState }) {
   let location = useLocation();
-  // 會導回你當初登入的頁面
+  // 會導回你當初登入的頁面。children指的就是被RequireAuth包住的所有東西(路徑)
   if (loginState === 0) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
@@ -66,7 +65,6 @@ function App() {
   };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const [user, loading, error] = useAuthState(auth);
 
   // useEffect(() => {
   //   const test = () => {
