@@ -9,7 +9,7 @@ export const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
         letter-spacing: .1rem;
         color: #404040;
-        font-family: 'Noto Serif TC', serif; 
+        ${"" /* font-family: 'Noto Serif TC', serif;  */}
         font-size: 14px;
         font-family: 'Noto Sans TC', sans-serif; 
 
@@ -27,10 +27,12 @@ export const GlobalStyle = createGlobalStyle`
     input {
         -webkit-appearance:none; 
         border: none;
+        height: 18px;
         border-bottom: solid 1px black;
         font-size: 14px;
-        font-family: 'Noto Serif TC', serif; 
+        font-family: 'Noto Sans TC', serif; 
         color: #404040;
+        background-color: #f2f1f0;
     }
 
     textarea {

@@ -28,6 +28,7 @@ const Container = styled.div`
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
+  width: 1200px;
   margin: 5% 15%;
 
   @media only screen and (min-width: 1280px) {

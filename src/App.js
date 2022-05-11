@@ -1,5 +1,11 @@
 import { useState, createContext, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import styled from "styled-components";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -11,7 +17,8 @@ import SearchBook from "./pages/searchBook";
 import Header from "./components/Header";
 import Login from "./pages/login";
 import SiteSearch from "./pages/siteSearch";
-import backgroundImg from "./img/background.jpg";
+import backgroundImg from "./image/background.jpg";
+import NoMatch from "./pages/noMatch";
 import Loading from "./components/Loading";
 
 const UserProfile = createContext();
@@ -36,8 +43,18 @@ const Background = styled.div`
   }
 `;
 
+function RequireAuth({ children, loginState }) {
+  let location = useLocation();
+  // 會導回你當初登入的頁面
+  if (loginState === 0) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  return children;
+}
+
 function App() {
-  const [loginState, setLoginState] = useState(false);
+  // 0:沒有登入/ 1:判斷中 /2:已登入
+  const [loginState, setLoginState] = useState("1");
   const [userId, setUserId] = useState();
   const firebaseConfig = {
     apiKey: "AIzaSyBM3IamCWyJi_8vyVPP34KUixJJKXlAwQ8",
@@ -68,17 +85,14 @@ function App() {
   //   };
   //   test();
   // }, []);
-
+  console.log("outside");
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setLoginState(true);
-        console.log(user.uid);
+        setLoginState("2");
         setUserId(user.uid);
-        console.log("login true");
       } else {
-        setLoginState(false);
-        console.log("not login");
+        setLoginState("0");
       }
     });
   }, []);
@@ -88,79 +102,68 @@ function App() {
       <Background>
         <BrowserRouter>
           <UserProfile.Provider value={userId}>
-            {loginState && <Header loginState={loginState} />}
+            {<Header loginState={loginState} />}
             <Routes>
-              <Route path="/" element={<Login />} />
+              <Route
+                path="/books"
+                element={
+                  <RequireAuth loginState={loginState}>
+                    <Books />
+                  </RequireAuth>
+                }
+              />
+
               <Route
                 path="books"
                 element={
-                  loginState ? (
+                  <RequireAuth loginState={loginState}>
                     <Books />
-                  ) : (
-                    <Navigate to="/login" replace={true} />
-                  )
+                  </RequireAuth>
                 }
               />
               <Route
                 path="search"
                 element={
-                  loginState ? (
+                  <RequireAuth loginState={loginState}>
                     <SearchBook />
-                  ) : (
-                    <Navigate to="/login" replace={true} />
-                  )
+                  </RequireAuth>
                 }
               />
               <Route
                 path="site-search"
                 element={
-                  loginState ? (
+                  <RequireAuth loginState={loginState}>
                     <SiteSearch />
-                  ) : (
-                    <Navigate to="/login" replace={true} />
-                  )
+                  </RequireAuth>
                 }
               />
               <Route
                 path="tags"
                 element={
-                  loginState ? (
+                  <RequireAuth loginState={loginState}>
                     <Tags />
-                  ) : (
-                    <Navigate to="/login" replace={true} />
-                  )
+                  </RequireAuth>
                 }
               />
               <Route
                 path="booknote"
                 element={
-                  loginState ? (
+                  <RequireAuth loginState={loginState}>
                     <BookNote />
-                  ) : (
-                    <Navigate to="/login" replace={true} />
-                  )
+                  </RequireAuth>
                 }
               />
               <Route
                 path="booknote/:id"
                 element={
-                  loginState ? (
+                  <RequireAuth loginState={loginState}>
                     <BookNote />
-                  ) : (
-                    <Navigate to="/login" replace={true} />
-                  )
+                  </RequireAuth>
                 }
               />
-              <Route
-                path="login"
-                element={
-                  loginState ? (
-                    <Navigate to="/books" replace={true} />
-                  ) : (
-                    <Login />
-                  )
-                }
-              />
+              <Route path="/" element={<Login />} />
+
+              <Route path="*" element={<NoMatch />} />
             </Routes>
           </UserProfile.Provider>
         </BrowserRouter>

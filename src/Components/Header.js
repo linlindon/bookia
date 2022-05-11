@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Search } from "@styled-icons/heroicons-solid/Search";
 import { Logout } from "@styled-icons/heroicons-outline/Logout";
 import { Menu } from "@styled-icons/heroicons-outline/Menu";
-import BookiaLogo from "../img/logo.png";
+import BookiaLogo from "../image/logo.png";
 import firebase from "../utils/firebaseTools";
 import { useNavigate, NavLink, Link } from "react-router-dom";
 import { UserProfile } from "../App";
@@ -207,6 +207,10 @@ function Header() {
     });
   }
 
+  function logoRedirect() {
+    navigate("/books");
+  }
+
   return (
     <>
       <PlaceHolder />
@@ -254,7 +258,7 @@ function Header() {
 
       <NavbarWrapper>
         <LogoContainer>
-          <Logo href="/books" />
+          <Logo onClick={logoRedirect} alt="bookia logo" />
         </LogoContainer>
         <NavLinks>
           <Nav to="/books">筆記櫃</Nav>

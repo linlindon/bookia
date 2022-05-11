@@ -69,21 +69,23 @@ function Books() {
   useEffect(() => {
     let bookData = [];
     setIsLoading(true);
-    firebase.getBooksData(userId).then((data) => {
-      if (data.docs.length === 0) {
-        setIsLoading(false);
-        setIsHint(true);
-      } else {
-        data.docs.forEach((book) => {
-          bookData.push(book.data());
-          console.log("else");
-        });
-        setIsLoading(false);
-        setBookDatas(bookData);
-      }
-      console.log(bookData);
-    });
-  }, []);
+    if (userId) {
+      firebase.getBooksData(userId).then((data) => {
+        if (data.docs.length === 0) {
+          setIsLoading(false);
+          setIsHint(true);
+        } else {
+          data.docs.forEach((book) => {
+            bookData.push(book.data());
+            console.log("else");
+          });
+          setIsLoading(false);
+          setBookDatas(bookData);
+        }
+        console.log(bookData);
+      });
+    }
+  }, [userId]);
 
   // setBookDatas((prev) => [...prev, bookData]);
 

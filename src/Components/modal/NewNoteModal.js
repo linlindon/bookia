@@ -155,18 +155,21 @@ let selectedTagBox;
 
 const NewNoteModal = (props) => {
   const [groupData, setGroupData] = useState([]);
-  const [inputDatas, setInputDatas] = useState({
-    content: "",
-    page: "",
-    title: "",
-  });
   const [showInputModal, setShowInputModal] = useState(false);
+  const [titleInput, setTitleInput] = useState("");
+  const [pageInput, setPageInput] = useState("");
+  const [noteInput, setNoteInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isHint, setIsHint] = useState(false);
   const [hintTitle, setIsHintTitle] = useState("");
   const [isConfirmClose, setIsConfirmClose] = useState(false);
   const inputRef = useRef();
   const userId = useContext(UserProfile);
+  const [inputDatas, setInputDatas] = useState({
+    content: "",
+    page: "",
+    title: "",
+  });
   // const editorConfiguration = {
   //   toolbar: ["bold", "italic"],
   // };
@@ -206,13 +209,13 @@ const NewNoteModal = (props) => {
     console.log(chosenTagArray);
   }
 
-  const inputChangeHandler = (e) => {
-    const { name, value } = e.target;
-    setInputDatas((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  // const inputChangeHandler = (e) => {
+  //   const { name, value } = e.target;
+  //   setInputDatas((prevState) => ({
+  //     ...prevState,
+  //     [name]: value,
+  //   }));
+  // };
 
   async function submitHandler(e) {
     e.preventDefault();
@@ -221,10 +224,10 @@ const NewNoteModal = (props) => {
     if (chosenTagArray.length === 0) {
       setIsHintTitle("每個筆記需要至少一個標籤");
       setIsHint(true);
-    } else if (!inputDatas.title) {
+    } else if (!titleInput) {
       setIsHintTitle("請輸入筆記標題");
       setIsHint(true);
-    } else if (!inputDatas.content) {
+    } else if (!noteInput) {
       setIsHintTitle("請輸入筆記內容");
       setIsHint(true);
     } else {
@@ -232,13 +235,23 @@ const NewNoteModal = (props) => {
       // console.log(props.noteData.id);
       console.log(props.bookInfo.noteId);
       let inputData = {
-        ...inputDatas,
         bookID: props.bookInfo.id,
         id: props.noteData?.id ? props.noteData.id : "",
         bookTitle: props.bookInfo.title,
         tagNames: chosenTagArray,
+        content: noteInput,
+        page: pageInput,
+        title: titleInput,
       };
-      // console.log("新筆記資料包===>", inputData);
+
+      // let inputData = {
+      //   ...inputDatas,
+      //   bookID: props.bookInfo.id,
+      //   id: props.noteData?.id ? props.noteData.id : "",
+      //   bookTitle: props.bookInfo.title,
+      //   tagNames: chosenTagArray,
+      // };
+      console.log("新筆記資料包===>", inputData);
 
       if (!props.noteData) {
         console.log("new note");
@@ -248,7 +261,7 @@ const NewNoteModal = (props) => {
         await firebase.addNewNote(userId, inputData, props.noteData.id);
       }
 
-      // 把標籤加到書本
+      // // 把標籤加到書本
 
       let bookTagArray = [];
       await firebase.getBookInfo(userId, props.bookInfo.id).then((data) => {
@@ -265,8 +278,8 @@ const NewNoteModal = (props) => {
         }
       });
 
-      await firebase.updateBookTags(userId, props.bookInfo.id, bookTagArray);
-      props.setShowNoteInput(false);
+      // await firebase.updateBookTags(userId, props.bookInfo.id, bookTagArray);
+      // props.setShowNoteInput(false);
       // chosenTagArray = [];
     }
   }
@@ -301,7 +314,7 @@ const NewNoteModal = (props) => {
           <TitleInput
             name="title"
             defaultValue={props.noteData ? props.noteData.title : ""}
-            onChange={inputChangeHandler}
+            onChange={(e) => setTitleInput(e.target.value)}
             placeholder={"ex.書摘"}
           ></TitleInput>
 
@@ -309,7 +322,7 @@ const NewNoteModal = (props) => {
           <TitleInput
             name="page"
             defaultValue={props.noteData ? props.noteData.page : ""}
-            onChange={inputChangeHandler}
+            onChange={(e) => setPageInput(e.target.value)}
           ></TitleInput>
 
           <Title>選擇此筆記的書籤</Title>
@@ -348,7 +361,7 @@ const NewNoteModal = (props) => {
 
           <div>
             <Title>筆記內容</Title>
-            <Editor noteData={props.noteData} />
+            <Editor noteData={props.noteData} setNoteInput={setNoteInput} />
 
             {/* <ContentInput
               defaultValue={props.noteData ? props.noteData.content : ""}

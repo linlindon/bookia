@@ -85,12 +85,13 @@ function Tags() {
         setIsLoading(false);
       });
     }
-    getData();
-  }, []);
+    if (userId) {
+      getData();
+    }
+  }, [userId]);
 
   return (
     <>
-      {/* <Wrapper> */}
       <Container>
         <PageTitle>書籤櫃</PageTitle>
         {isLoading && (
@@ -110,7 +111,7 @@ function Tags() {
           setSelectedBoxIndex={setSelectedBoxIndex}
         />
       </TagBoxContainer>
-      {/* </Wrapper> */}
+
       <SignContainer>
         <AddBoxSign
           onClick={() => setShowInputModal(true)}

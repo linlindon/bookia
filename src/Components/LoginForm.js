@@ -4,6 +4,38 @@ import styled from "styled-components";
 import firebase from "../utils/firebaseTools";
 import Loading from "./Loading";
 
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  height: 415px;
+`;
+const Title = styled.h4`
+  nargin: 0;
+  font-weight: 500;
+`;
+const Input = styled.input`
+  font-size: 16px;
+`;
+
+const Button = styled.button`
+  border: none;
+  width: 150px;
+  height: 35px;
+  margin-top: 60px;
+  padding: 3px 8px;
+  align-self: end;
+  letter-spacing: 2px;
+  text-align: center;
+  font-size: 16px;
+  border-radius: 5px;
+  color: #fff;
+  background-color: #e6c88b;
+
+  &:hover {
+    background-color: #dca246;
+  }
+`;
 const LoadingContainer = styled.div`
   margin-top: 30px;
 `;
@@ -17,6 +49,7 @@ export const LoginForm = () => {
   let navigate = useNavigate();
 
   const inputHandler = (e) => {
+    console.log(e);
     const { name, value } = e.target;
     setLoginInfo((prevState) => ({
       ...prevState,
@@ -25,6 +58,7 @@ export const LoginForm = () => {
   };
   async function login(e) {
     e.preventDefault();
+    console.log("submit");
     setIsLoading(true);
     console.log("login func");
     await firebase
@@ -41,21 +75,19 @@ export const LoginForm = () => {
   }
 
   return (
-    <form onSubmit={(e) => login(e)}>
-      <div>
-        <p>Email</p>
-        <input name="email" onChange={inputHandler} />
-        <p>Password</p>
-        <input name="password" onChange={inputHandler} />
-      </div>
+    <Form onSubmit={(e) => login(e)}>
+      <Title>Email</Title>
+      <Input name="email" onChange={inputHandler} />
+      <Title>Password</Title>
+      <Input name="password" onChange={inputHandler} type="password" />
       {isLoading ? (
         <LoadingContainer>
           <Loading />
         </LoadingContainer>
       ) : (
-        <button onSubmit={login}>登入</button>
+        <Button>登入</Button>
       )}
-    </form>
+    </Form>
   );
 };
 

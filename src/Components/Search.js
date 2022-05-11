@@ -59,7 +59,7 @@ async function getSearchData(input) {
   const type = "orderBy=newest";
   const type2 = "maxResults=40";
   return fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=${input}&key=${key}&${type2}`
+    `https://www.googleapis.com/books/v1/volumes?q=${input}&key=${key}&${type}&${type2}`
   )
     .then((res) => res.json())
     .catch((err) => {

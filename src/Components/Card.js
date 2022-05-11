@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
-import image from "../img/book.png";
+import image from "../image/book.png";
 import Loading from "./Loading";
 
 // align-item: flex-start。讓flexbox不要stretch

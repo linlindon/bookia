@@ -121,30 +121,34 @@ function BookNote() {
   useEffect(() => {
     console.log("inside effect");
     setIsLoading(true);
-    firebase.getBookInfo(userId, id).then((res) => {
-      setIsLoading(false);
-      console.log(res);
-      setBookInfo({ ...res });
-    });
-  }, []);
+    if (userId) {
+      firebase.getBookInfo(userId, id).then((res) => {
+        setIsLoading(false);
+        console.log(res);
+        setBookInfo({ ...res });
+      });
+    }
+  }, [userId]);
 
   useEffect(() => {
     // let noteData = [];
-    let notesRef = firebase.getNotesRef(userId);
     setIsLoading(true);
-    onSnapshot(notesRef, (notes) => {
-      console.log("in snap shot");
-      let data = [];
-      notes.forEach((note) => {
-        if (note.data().bookID === id) {
-          data.push(note.data());
-        }
+    if (userId) {
+      let notesRef = firebase.getNotesRef(userId);
+      onSnapshot(notesRef, (notes) => {
+        console.log("in snap shot");
+        let data = [];
+        notes.forEach((note) => {
+          if (note.data().bookID === id) {
+            data.push(note.data());
+          }
+        });
+        // noteData = data;
+        setIsLoading(false);
+        setBookNotesData(data);
       });
-      // noteData = data;
-      setIsLoading(false);
-      setBookNotesData(data);
-    });
-  }, []);
+    }
+  }, [userId]);
 
   function showNoteInputHandler() {
     setNoteData(undefined);

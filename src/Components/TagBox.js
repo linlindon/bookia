@@ -365,7 +365,7 @@ function TagBox(props) {
       )}
       <BoxWrapper>
         {props.groupData?.map((box, index) => (
-          <TagBoxContainer key={index}>
+          <TagBoxContainer key={box.name}>
             <BoxDeleteTag
               onClick={() => deleteTagGroupHandler(index)}
               title="刪除書籤櫃"
