@@ -74,6 +74,21 @@ const tools = {
       })
     );
   },
+  errorMessage(error) {
+    return error.code === "auth/email-already-in-use"
+      ? "這個email已被註冊過"
+      : error.code === "auth/internal-error"
+      ? "email或密碼輸入錯誤"
+      : error.code === "auth/invalid-email"
+      ? "email格式不正確"
+      : error.code === "auth/user-not-found"
+      ? "這個帳號沒有註冊過"
+      : error.code === "auth/weak-password"
+      ? "密碼必須超過六位數"
+      : error.code === "auth/wrong-password"
+      ? "密碼不正確"
+      : "";
+  },
 };
 
 export default tools;

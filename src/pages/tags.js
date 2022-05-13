@@ -2,8 +2,10 @@ import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { FolderAdd } from "@styled-icons/fluentui-system-regular/FolderAdd";
 import firebase from "../utils/firebaseTools";
+import tools from "../utils/tools";
 import TagBox from "../components/TagBox";
 import InputModal from "../components/modal/InputModal";
+import HintModal from "../components/modal/HintModal";
 import { UserProfile } from "../App";
 import Loading from "../components/Loading";
 
@@ -68,15 +70,24 @@ let allGroupData = [];
 function Tags() {
   const [boxDatas, setboxDatas] = useState([]);
   const [showInputModal, setShowInputModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [isConfirmClose, setIsConfirmClose] = useState(false);
+  const [isHint, setIsHint] = useState(false);
+  const [hintTitle, setIsHintTitle] = useState("");
+  const [deleteTagData, setDeleteTagData] = useState(undefined);
+  const [deleteGroupIndex, setDeleteGroupIndex] = useState(undefined);
   const [groupData, setGroupData] = useState([]);
-  const [selectedBoxIndex, setSelectedBoxIndex] = useState();
-  const [modalTitle, setModalTitle] = useState("新書籤櫃名稱");
+  const [selectedBoxIndex, setSelectedBoxIndex] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
+  console.log("tags render");
 
   useEffect(() => {
     let data = [];
     setIsLoading(true);
+
+    setDeleteGroupIndex("");
+
     async function getData() {
       await firebase.getTagGroupsData(userId).then((res) => {
         data.push(...res.tagGroups);
@@ -89,6 +100,57 @@ function Tags() {
       getData();
     }
   }, [userId]);
+
+  async function deleteTagHandler(tag, index) {
+    let currentGroupData = [...groupData];
+    let changeTagArray = currentGroupData[index].tags.filter((name) => {
+      return name !== tag;
+    });
+    currentGroupData[index].tags = [...changeTagArray];
+    setGroupData(currentGroupData);
+    await firebase.updateTagGroup(userId, currentGroupData);
+    await tools.deleteNotesTag(userId, tag);
+    await tools.deleteBooksTag(userId, tag);
+    console.log("delet tag data final");
+    setDeleteTagData(undefined);
+    setIsHintTitle(undefined);
+  }
+
+  async function deleteGroupHandler(index) {
+    setIsLoading(true);
+    console.log("delete group");
+
+    let currentGroupData = [...groupData];
+    let tagsArray = currentGroupData[index].tags;
+    currentGroupData.splice(index, 1);
+    console.log(currentGroupData);
+    console.log(tagsArray);
+    setIsLoading(false);
+    if (tagsArray === undefined || tagsArray.length === 0) {
+      setGroupData(currentGroupData);
+      setIsLoading(false);
+      return;
+    } else {
+      await Promise.all(
+        tagsArray.map(async (tag) => {
+          await tools.deleteNotesTag(userId, tag);
+        })
+      );
+      await Promise.all(
+        tagsArray.map(async (tag) => {
+          await tools.deleteBooksTag(userId, tag);
+        })
+      );
+      setGroupData([...currentGroupData]);
+    }
+    await firebase.updateTagGroup(userId, currentGroupData).then(() => {
+      setDeleteTagData(undefined);
+      setIsHintTitle(undefined);
+      setIsLoading(false);
+    });
+  }
+
+  console.log(groupData);
 
   return (
     <>
@@ -109,12 +171,20 @@ function Tags() {
           setShowInputModal={setShowInputModal}
           setModalTitle={setModalTitle}
           setSelectedBoxIndex={setSelectedBoxIndex}
+          setIsHint={setIsHint}
+          setIsHintTitle={setIsHintTitle}
+          setIsConfirmClose={setIsConfirmClose}
+          setDeleteTagData={setDeleteTagData}
+          setDeleteGroupIndex={setDeleteGroupIndex}
         />
       </TagBoxContainer>
 
       <SignContainer>
         <AddBoxSign
-          onClick={() => setShowInputModal(true)}
+          onClick={() => {
+            setModalTitle("新書籤櫃名稱");
+            setShowInputModal(true);
+          }}
           title="新增書籤櫃"
         />
       </SignContainer>
@@ -125,6 +195,17 @@ function Tags() {
           setShowInputModal={setShowInputModal}
           modalTitle={modalTitle}
           selectedBoxIndex={selectedBoxIndex}
+        />
+      )}
+      {isHint && (
+        <HintModal
+          hintTitle={hintTitle}
+          isConfirmClose={isConfirmClose}
+          setIsHint={setIsHint}
+          deleteTagData={deleteTagData}
+          deleteTagHandler={deleteTagHandler}
+          deleteGroupIndex={deleteGroupIndex}
+          deleteGroupHandler={deleteGroupHandler}
         />
       )}
     </>

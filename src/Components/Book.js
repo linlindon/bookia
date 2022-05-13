@@ -45,6 +45,7 @@ const BookBox = styled.div`
   justify-content: center;
   flex-direction: row-reverse;
   width: calc((100% - 82px) / 2);
+  height: 334px;
   margin: 30px 20px;
   border-radius: 10px;
   background-color: #ffffff;
@@ -128,27 +129,22 @@ function Book(props) {
   return (
     <Container>
       {props.bookDatas?.map((book, index) => (
-        <>
-          <BookBox
-            onClick={() => navigate(`/booknote/${book.id}`)}
-            key={book.id}
-          >
-            <BookImg key={book.img}>
-              <Img src={book.img} key={`${book}${index}`} alt="book photo" />
-            </BookImg>
-            <ContentContainer key={book}>
-              <div>
-                <BookTitle key={book.title}>{book.title}</BookTitle>
-                <p>作者:{book.authors.join("、")}</p>
-              </div>
-              <TagsContainer key={`${book}${book.id}`}>
-                {book.tagNames?.map((tag) => (
-                  <Tag key={tag}>{tag}</Tag>
-                ))}
-              </TagsContainer>
-            </ContentContainer>
-          </BookBox>
-        </>
+        <BookBox onClick={() => navigate(`/booknote/${book.id}`)} key={book.id}>
+          <BookImg key={book.img}>
+            <Img src={book.img} key={`${book}${index}`} alt="book photo" />
+          </BookImg>
+          <ContentContainer key={book}>
+            <div>
+              <BookTitle key={book.title}>{book.title}</BookTitle>
+              <p>作者:{book.authors.join("、")}</p>
+            </div>
+            <TagsContainer key={`${book}${book.id}`}>
+              {book.tagNames?.map((tag) => (
+                <Tag key={tag}>{tag}</Tag>
+              ))}
+            </TagsContainer>
+          </ContentContainer>
+        </BookBox>
       ))}
     </Container>
   );

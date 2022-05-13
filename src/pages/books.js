@@ -104,7 +104,8 @@ function Books() {
           點擊右下按鈕新增書籍
         </HintTitle>
       )}
-      <Book bookDatas={bookDatas} />
+      {bookDatas.length !== 0 && <Book bookDatas={bookDatas} />}
+
       <SignContainer>
         <AddNoteSign onClick={() => navigate(`/search`)} title="新增書籍" />
       </SignContainer>

@@ -187,6 +187,9 @@ const NewNoteModal = (props) => {
     }, []);
     console.log(props.noteData);
     if (props.noteData) {
+      setTitleInput(props.noteData.title);
+      setNoteInput(props.noteData.content);
+      setPageInput(props.noteData.page);
       chosenTagArray = [...props.noteData.tagNames];
       setInputDatas((prevState) => ({
         ...prevState,
@@ -209,13 +212,13 @@ const NewNoteModal = (props) => {
     console.log(chosenTagArray);
   }
 
-  // const inputChangeHandler = (e) => {
-  //   const { name, value } = e.target;
-  //   setInputDatas((prevState) => ({
-  //     ...prevState,
-  //     [name]: value,
-  //   }));
-  // };
+  const inputChangeHandler = (e) => {
+    const { name, value } = e.target;
+    setInputDatas((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
   async function submitHandler(e) {
     e.preventDefault();
@@ -278,9 +281,9 @@ const NewNoteModal = (props) => {
         }
       });
 
-      // await firebase.updateBookTags(userId, props.bookInfo.id, bookTagArray);
-      // props.setShowNoteInput(false);
-      // chosenTagArray = [];
+      await firebase.updateBookTags(userId, props.bookInfo.id, bookTagArray);
+      props.setShowNoteInput(false);
+      chosenTagArray = [];
     }
   }
 
@@ -361,13 +364,13 @@ const NewNoteModal = (props) => {
 
           <div>
             <Title>筆記內容</Title>
-            <Editor noteData={props.noteData} setNoteInput={setNoteInput} />
+            {/* <Editor noteData={props.noteData} setNoteInput={setNoteInput} /> */}
 
-            {/* <ContentInput
+            <ContentInput
               defaultValue={props.noteData ? props.noteData.content : ""}
               name="content"
               onChange={inputChangeHandler}
-            ></ContentInput> */}
+            />
           </div>
           {isLoading ? (
             <LoadingContainer>

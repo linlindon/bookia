@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
+import Loading from "../Loading";
 
 const Background = styled.div`
   display: flex;
@@ -14,7 +15,7 @@ const Background = styled.div`
   z-index: 99;
 `;
 const ModalTitle = styled.p`
-  margin-bottom: 25px;
+  margin-bottom: 45px;
   font-size: 16px;
   font-weight: 600;
 `;
@@ -51,7 +52,7 @@ const ConfirmButton = styled.button`
   height: 35px;
   letter-spacing: 2px;
   text-align: center;
-  margin-top: 20px;
+  margin: 0px 20px;
   padding: 3px 8px;
   font-size: 14px;
   border-radius: 5px;
@@ -62,8 +63,13 @@ const ConfirmButton = styled.button`
     background-color: #dca246;
   }
 `;
-
+const LoadingContainer = styled.div`
+  position: absolute;
+  width: 50px;
+  margin-top: 80px;
+`;
 function HintModal(props) {
+  const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef();
 
   function closeInput(e) {
@@ -71,10 +77,27 @@ function HintModal(props) {
       props.setIsHint(false);
     }
   }
-  function closeModals() {
-    // console.log("close modals");
-    props.setShowNoteInput(false);
-    props.setIsHint(false);
+  async function closeModals() {
+    console.log(props.deleteTagData);
+    if (props.setShowNoteInput) {
+      props.setShowNoteInput(false);
+      props.setIsHint(false);
+    } else if (props.deleteTagData) {
+      console.log("delete tag data");
+      setIsLoading(true);
+      await props.deleteTagHandler(
+        props.deleteTagData[0],
+        props.deleteTagData[1]
+      );
+      setIsLoading(false);
+      props.setIsHint(false);
+    } else if (props.deleteGroupIndex) {
+      console.log("delete group data");
+      setIsLoading(true);
+      await props.deleteGroupHandler(props.deleteGroupIndex);
+      setIsLoading(false);
+      props.setIsHint(false);
+    }
   }
 
   return (
@@ -82,18 +105,27 @@ function HintModal(props) {
       <InputContainer>
         <Delete onClick={() => props.setIsHint(false)}>x</Delete>
         <ModalTitle>{props.hintTitle}</ModalTitle>
-        {props.isConfirmClose ? (
-          <div>
-            <ConfirmButton onClick={closeModals}>是</ConfirmButton>
-            <span> </span>
-            <ConfirmButton onClick={() => props.setIsHint(false)}>
-              否
-            </ConfirmButton>
-          </div>
+
+        {isLoading ? (
+          <LoadingContainer>
+            <Loading />
+          </LoadingContainer>
         ) : (
-          <ConfirmButton onClick={() => props.setIsHint(false)}>
-            確認
-          </ConfirmButton>
+          <>
+            {props.isConfirmClose ? (
+              <div>
+                <ConfirmButton onClick={closeModals}>是</ConfirmButton>
+                <span> </span>
+                <ConfirmButton onClick={() => props.setIsHint(false)}>
+                  否
+                </ConfirmButton>
+              </div>
+            ) : (
+              <ConfirmButton onClick={() => props.setIsHint(false)}>
+                確認
+              </ConfirmButton>
+            )}
+          </>
         )}
       </InputContainer>
     </Background>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import firebase from "../utils/firebaseTools";
+import tools from "../utils/tools";
 import Loading from "./Loading";
 
 const Form = styled.form`
@@ -19,7 +20,7 @@ const Input = styled.input`
 `;
 const Button = styled.button`
   border: none;
-  width: 150px;
+  width: 46%;
   height: 35px;
   margin-top: 60px;
   letter-spacing: 2px;
@@ -39,7 +40,7 @@ const LoadingContainer = styled.div`
   margin-top: 30px;
 `;
 
-export const SignUpForm = () => {
+export const SignUpForm = (props) => {
   let navigate = useNavigate();
   const regexs =
     /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -57,35 +58,50 @@ export const SignUpForm = () => {
       ...prevState,
       [name]: value,
     }));
-    // 會在input的同時直接進行比較
-    // if (signUpInfo.password !== signUpInfo.confirmPassword) {
-    //   alert("您輸入的兩組密碼不相同，請重新輸入");
-    // }
   };
 
   async function submitHandler(e) {
     e.preventDefault();
+    console.log("submit");
     if (!signUpInfo.name) {
-      alert("請輸入姓名");
+      props.setHintTitle("請輸入姓名");
+      props.setIsHint(true);
     } else if (signUpInfo.name.replace(/\s*/g, "").length === 0) {
-      alert("字首請勿空格");
-    } else if (!regexs.test(signUpInfo.email)) {
-      alert("請輸入正確的email");
+      props.setHintTitle("字首請勿空格");
+      props.setIsHint(true);
+    } else if (!regexs.test(signUpInfo.email) || !signUpInfo.email) {
+      props.setHintTitle("請輸入正確的email");
+      props.setIsHint(true);
+    } else if (!signUpInfo.password || !signUpInfo.confirmPassword) {
+      props.setHintTitle("請輸入密碼");
+      props.setIsHint(true);
     } else if (signUpInfo.password !== signUpInfo.confirmPassword) {
+      props.setHintTitle("您輸入的兩組密碼不相同，請重新輸入");
+      props.setIsHint(true);
       setSignUpInfo((prevState) => ({
         ...prevState,
         password: "",
         confirmPassword: "",
       }));
-      alert("您輸入的兩組密碼不相同，請重新輸入");
     } else {
       setIsLoading(true);
-
       await firebase
         .SignUpHandler(signUpInfo.email, signUpInfo.password, signUpInfo.name)
         .then(() => {
           setIsLoading(false);
           navigate(`/books`);
+        })
+        .catch((error) => {
+          console.log(error);
+          let message = tools.errorMessage(error);
+          setIsLoading(false);
+          if (message !== "") {
+            props.setHintTitle(message);
+            props.setIsHint(true);
+          } else {
+            props.setHintTitle("帳號或密碼輸入錯誤");
+            props.setIsHint(true);
+          }
         });
     }
   }

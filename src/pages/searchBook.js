@@ -1,5 +1,7 @@
-import SearchBar from "../components/Search";
 import styled from "styled-components";
+import { useState } from "react";
+import SearchBar from "../components/Search";
+import LoadingModal from "../components/modal/LoadingModal";
 
 const Container = styled.div`
   display: flex;
@@ -7,6 +9,7 @@ const Container = styled.div`
   align-items: center;
   margin: 5% 15%; ;
 `;
+
 const Title = styled.h1`
   font-size: 22px;
   margin-bottom: 50px;
@@ -17,12 +20,22 @@ const Title = styled.h1`
 `;
 
 function SearchBook() {
+  const [isLoading, setIsLoading] = useState(false);
   return (
-    <Container>
-      <Title>輸入欲新增的書名</Title>
-      <SearchBar />
-    </Container>
+    <>
+      <Container>
+        <Title>輸入欲新增的書名</Title>
+        <SearchBar setIsLoading={setIsLoading} />
+      </Container>
+      {isLoading && <LoadingModal />}
+    </>
   );
 }
 
 export default SearchBook;
+
+{
+  /* <LoadingContainer>
+          <Loading />
+        </LoadingContainer> */
+}

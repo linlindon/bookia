@@ -5,7 +5,7 @@ import { Logout } from "@styled-icons/heroicons-outline/Logout";
 import { Menu } from "@styled-icons/heroicons-outline/Menu";
 import BookiaLogo from "../image/logo.png";
 import firebase from "../utils/firebaseTools";
-import { useNavigate, NavLink, Link } from "react-router-dom";
+import { useNavigate, NavLink, Link, Outlet } from "react-router-dom";
 import { UserProfile } from "../App";
 
 const PlaceHolder = styled.div`
@@ -203,7 +203,7 @@ function Header() {
       setToggle(false);
     }
     await firebase.LogoutHandler().then(() => {
-      navigate("/login");
+      navigate("/");
     });
   }
 
@@ -283,6 +283,7 @@ function Header() {
           {isShowLogoutHint && <LogoutHint>登出</LogoutHint>}
         </SignContainer>
       </NavbarWrapper>
+      <Outlet />
     </>
   );
 }

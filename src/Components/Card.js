@@ -5,7 +5,6 @@ import styled from "styled-components";
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
 import image from "../image/book.png";
-import Loading from "./Loading";
 
 // align-item: flex-start。讓flexbox不要stretch
 // const Wrapper = styled.div`
@@ -86,21 +85,14 @@ const BookAuthor = styled.p`
 `;
 const BookPublish = styled(BookAuthor)``;
 
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  height: 35px;
-  margin-top: 20px;
-`;
-
 function Card(props) {
   const userId = useContext(UserProfile);
-  const [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
 
   async function getBookData(book, title, authors, publisher, date, img) {
     console.log(book);
-    setIsLoading(true);
+
+    props.setIsLoading(true);
     if (date === undefined) {
       date = "無資料";
     } else if (authors === undefined) {
@@ -121,7 +113,7 @@ function Card(props) {
     console.log(data);
     const newBookId = firebase.setNewBookRef(userId);
     await firebase.addNewBook(userId, newBookId, data).then(() => {
-      setIsLoading(false);
+      props.setIsLoading(false);
       navigate(`/booknote/${newBookId}`, { state: data });
     });
   }
@@ -146,28 +138,21 @@ function Card(props) {
                 <BookPublish>{book.publishedDate}</BookPublish>
                 <BookPublish>{book.publisher}</BookPublish>
               </div>
-
-              {isLoading ? (
-                <LoadingContainer>
-                  <Loading />
-                </LoadingContainer>
-              ) : (
-                <AddButton
-                  key={`books${index}`}
-                  onClick={() =>
-                    getBookData(
-                      book,
-                      book.title,
-                      book.authors,
-                      book.publisher,
-                      book.publishedDate,
-                      img ? img.thumbnail : image
-                    )
-                  }
-                >
-                  選擇此書筆記
-                </AddButton>
-              )}
+              <AddButton
+                key={`books${index}`}
+                onClick={() =>
+                  getBookData(
+                    book,
+                    book.title,
+                    book.authors,
+                    book.publisher,
+                    book.publishedDate,
+                    img ? img.thumbnail : image
+                  )
+                }
+              >
+                選擇此書筆記
+              </AddButton>
             </BookDetail>
           </CardContainer>
         );

@@ -158,47 +158,51 @@ function BookNote() {
   return (
     <>
       <Container>
-        <TitleContainer>
-          <Title>新增筆記</Title>
-        </TitleContainer>
-        {isLoading && (
+        {!bookInfo || !bookNotesData ? (
           <LoadingContainer>
             <Loading />
           </LoadingContainer>
+        ) : (
+          <>
+            <TitleContainer>
+              <Title>新增筆記</Title>
+            </TitleContainer>
+
+            <SignContainer>
+              <AddButton onClick={showNoteInputHandler} title={"新增筆記"} />
+            </SignContainer>
+
+            <Wrapper>
+              <BookInfoContainer>
+                <BookImg>
+                  <Img src={bookInfo.img} alt="" />
+                </BookImg>
+                <ContentContainer>
+                  <BookTitle>{bookInfo.title}</BookTitle>
+                  <p>作者:{bookInfo.authors && bookInfo.authors.join("、")}</p>
+
+                  <p>出版年: {bookInfo.publish}</p>
+                </ContentContainer>
+              </BookInfoContainer>
+              {bookNotesData.length === 0 ? (
+                <NoDataContainer>
+                  <NoDataTitle>
+                    無筆記
+                    <br />
+                    請點擊右下按鈕新增筆記
+                  </NoDataTitle>
+                </NoDataContainer>
+              ) : (
+                <NoteBox
+                  bookNotesData={bookNotesData}
+                  setShowNoteInput={setShowNoteInput}
+                  setNoteData={setNoteData}
+                  // bookInfo={bookInfo}
+                />
+              )}
+            </Wrapper>
+          </>
         )}
-        <SignContainer>
-          <AddButton onClick={showNoteInputHandler} title={"新增筆記"} />
-        </SignContainer>
-
-        <Wrapper>
-          <BookInfoContainer>
-            <BookImg>
-              <Img src={bookInfo.img} alt="" />
-            </BookImg>
-            <ContentContainer>
-              <BookTitle>{bookInfo.title}</BookTitle>
-              <p>作者:{bookInfo.authors && bookInfo.authors.join("、")}</p>
-
-              <p>出版年: {bookInfo.publish}</p>
-            </ContentContainer>
-          </BookInfoContainer>
-          {bookNotesData.length === 0 ? (
-            <NoDataContainer>
-              <NoDataTitle>
-                無筆記
-                <br />
-                請點擊右下按鈕新增筆記
-              </NoDataTitle>
-            </NoDataContainer>
-          ) : (
-            <NoteBox
-              bookNotesData={bookNotesData}
-              setShowNoteInput={setShowNoteInput}
-              setNoteData={setNoteData}
-              // bookInfo={bookInfo}
-            />
-          )}
-        </Wrapper>
       </Container>
       {showNoteInput ? (
         <NewNoteModal
@@ -213,3 +217,9 @@ function BookNote() {
 }
 
 export default BookNote;
+
+// {isLoading && (
+//   <LoadingContainer>
+//     <Loading />
+//   </LoadingContainer>
+// )}

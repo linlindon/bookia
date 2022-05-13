@@ -134,55 +134,25 @@ const firebase = {
     });
   },
   SignUpHandler(email, password, name) {
-    return (
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((res) => {
-          // usersRef = collection(db, "users");
-          const ref = doc(usersRef, res.user.uid);
-          setDoc(ref, {
-            name: name,
-            id: res.user.uid,
-            email: email,
-            tagGroups: [{ name: "書籤櫃", tags: [] }],
-          });
-          return ref;
-        })
-        // .then((ref) => {
-        //   addDoc(collection(ref, "books"));
-        // })
-        .then(() => {
-          alert("註冊成功");
-        })
-
-        .catch((error) => {
-          console.log(error);
-        })
-    );
+    return createUserWithEmailAndPassword(auth, email, password).then((res) => {
+      // usersRef = collection(db, "users");
+      const ref = doc(usersRef, res.user.uid);
+      setDoc(ref, {
+        name: name,
+        id: res.user.uid,
+        email: email,
+        tagGroups: [{ name: "書籤櫃", tags: [] }],
+      });
+      return ref;
+    });
   },
   LoginHandler(email, password) {
-    return signInWithEmailAndPassword(auth, email, password)
-      .then((res) => {
-        console.log(res.user);
-        alert("登入成功");
-        return res.user;
-      })
-      .catch((error) => {
-        alert(error);
-        // const errorCode = error.code;
-        // const errorMessageArray = Object.keys(errorMessageList);
-        // let message = errorMessageArray.filter((item) => item === errorCode);
-        // let x = message[0];
-        // alert(errorMessageList[x]);
-      });
+    return signInWithEmailAndPassword(auth, email, password).then((res) => {
+      return res.user;
+    });
   },
   LogoutHandler() {
-    return signOut(auth)
-      .then(() => {
-        alert("您已成功登出");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    return signOut(auth);
   },
 };
 

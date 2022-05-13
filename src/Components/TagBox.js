@@ -5,10 +5,10 @@ import { AddCircle } from "@styled-icons/ionicons-outline/AddCircle";
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
 import { UserProfile } from "../App";
-import InputModal from "./modal/InputModal";
+
 import Note from "./Note";
+import BoxNameInput from "./BoxNameInput";
 import Loading from "../components/Loading";
-import uniqid from "uniqid";
 
 const Wrapper = styled.div`
   ${
@@ -141,20 +141,6 @@ const BoxNameDiv = styled.div`
   font-weight: 600;
   border-bottom: 2px solid #ece6e6;
 `;
-const BoxName = styled.p`
-  margin: 8px;
-  letter-spacing: 2px;
-`;
-const BoxNameInput = styled.input`
-  border: none;
-  margin-top: 6px;
-  margin-bottom: 9px;
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-  letter-spacing: 2px;
-  background-color: #eeeded;
-`;
 
 const TagsContainer = styled.div`
   display: flex;
@@ -167,7 +153,7 @@ const TagsContainer = styled.div`
 `;
 
 const Input = styled.input.attrs({ type: "checkbox" })`
-  display: none;
+  ${"" /* display: none; */}
 `;
 
 const Tag = styled.div`
@@ -182,7 +168,7 @@ const Tag = styled.div`
     color: #fff;
   }
 `;
-const Form = styled.form``;
+
 const TagContainer = styled.label`
   display: flex;
   position: relative;
@@ -213,7 +199,9 @@ const AddSign = styled(AddCircle)`
     top: 90px;
   }
 `;
-
+const TagsWrapper = styled.div`
+  position: relative;
+`;
 const DeleteTag = styled(DeleteOutline)`
   display: none;
   position: absolute;
@@ -228,7 +216,7 @@ const DeleteTag = styled(DeleteOutline)`
     color: #ff6972;
   }
 
-  ${TagContainer}:hover & {
+  ${TagsWrapper}:hover & {
     display: inline;
     z-index: 99;
   }
@@ -255,10 +243,11 @@ let allNotesData = [];
 
 function TagBox(props) {
   // const [showInputModal, setShowInputModal] = useState(false);
-  const [isUpdateTagBoxName, setIsUpdateTagBoxName] = useState(false);
+
   const [notesBoxData, setNotesBoxData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
+  console.log("tagbox render");
 
   useEffect(() => {
     allNotesData = [];
@@ -272,22 +261,16 @@ function TagBox(props) {
       });
     }
     getData();
-
-    // const groupDatasId = props.groupData.map((group) => {
-    //   return [...groupDatasId, uniqid()];
-    // });
-
-    // console.log(groupDatasId);
   }, []);
 
   function showTagInputHandler(index) {
     props.setSelectedBoxIndex(index);
-    console.log("show modal, group name", index);
     props.setShowInputModal(true);
     props.setModalTitle("新書籤名稱");
   }
 
   async function choseTagHandler(tagName) {
+    console.log("chose");
     let currentNoteData = [];
     if (clickTagNameArray.includes(tagName)) {
       clickTagNameArray = clickTagNameArray.filter((item) => {
@@ -306,55 +289,50 @@ function TagBox(props) {
     setNotesBoxData(currentNoteData);
   }
 
-  async function onBlurHandler(name, value) {
-    let currentGroupData = [...props.groupData];
-    currentGroupData.forEach((tagBox) => {
-      if (name === tagBox.name) {
-        tagBox.name = value;
-      }
-    });
-    props.setGroupData(currentGroupData);
-
-    await firebase.updateTagGroup(userId, currentGroupData);
-    setIsUpdateTagBoxName(false);
+  function showGroupHintModal(name, index) {
+    props.setIsHintTitle(`刪除「${name}」後，裡面的相關筆記標籤也將刪除`);
+    props.setDeleteGroupIndex(index);
+    props.setIsConfirmClose(true);
+    props.setIsHint(true);
   }
 
-  async function deleteTagHandler(tag, index) {
-    let currentGroupData = [...props.groupData];
-    let changeTagArray = currentGroupData[index].tags.filter((name) => {
-      return name !== tag;
-    });
-    currentGroupData[index].tags = [...changeTagArray];
-    props.setGroupData(currentGroupData);
-    await firebase.updateTagGroup(userId, currentGroupData);
-    await tools.deleteNotesTag(userId, tag);
-    await tools.deleteBooksTag(userId, tag);
+  function showHintModal(tag, index) {
+    console.log("delete tag");
+    props.setIsHintTitle(`刪除「${tag}」標籤後，所有筆記上的該標籤也將刪除`);
+    props.setDeleteTagData([tag, index]);
+    props.setIsConfirmClose(true);
+    props.setIsHint(true);
   }
 
-  async function deleteTagGroupHandler(index) {
-    setIsLoading(true);
-    let currentGroupData = [...props.groupData];
-    let tagsArray = currentGroupData[index].tags;
-    currentGroupData.splice(index, 1);
-    props.setGroupData(currentGroupData);
-    // console.log(tagsArray);
-    if (tagsArray !== 0) {
-      // 要加上警語
-      await Promise.all(
-        tagsArray.map(async (tag) => {
-          await tools.deleteNotesTag(userId, tag);
-        })
-      );
-      await Promise.all(
-        tagsArray.map(async (tag) => {
-          await tools.deleteBooksTag(userId, tag);
-        })
-      );
-    }
-    await firebase.updateTagGroup(userId, currentGroupData);
+  // async function deleteTagGroupHandler(index) {
+  //   setIsLoading(true);
+  //   let currentGroupData = [...props.groupData];
+  //   let tagsArray = currentGroupData[index].tags;
+  //   currentGroupData.splice(index, 1);
 
-    setIsLoading(false);
-  }
+  //   // console.log(tagsArray);
+  //   if (tagsArray === undefined || tagsArray.length === 0) {
+  //     props.setGroupData(currentGroupData);
+  //     setIsLoading(false);
+  //     return;
+  //   } else {
+  //     // 要加上警語
+  //     await Promise.all(
+  //       tagsArray.map(async (tag) => {
+  //         await tools.deleteNotesTag(userId, tag);
+  //       })
+  //     );
+  //     await Promise.all(
+  //       tagsArray.map(async (tag) => {
+  //         await tools.deleteBooksTag(userId, tag);
+  //       })
+  //     );
+  //     props.setGroupData([...currentGroupData]);
+  //   }
+  //   await firebase.updateTagGroup(userId, currentGroupData).then(() => {
+  //     setIsLoading(false);
+  //   });
+  // }
 
   return (
     <>
@@ -367,14 +345,19 @@ function TagBox(props) {
         {props.groupData?.map((box, index) => (
           <TagBoxContainer key={box.name}>
             <BoxDeleteTag
-              onClick={() => deleteTagGroupHandler(index)}
+              onClick={() => showGroupHintModal(box.name, index)}
               title="刪除書籤櫃"
             />
             <BoxNameDiv>
-              {isUpdateTagBoxName ? (
+              <BoxNameInput
+                name={box.name}
+                groupData={props.groupData}
+                boxIndex={index}
+                setGroupData={props.setGroupData}
+              />
+              {/* {isUpdateTagBoxName ? (
                 <Form onSubmit={(e) => e.preventDefault()}>
                   <BoxNameInput
-                    autoFocus
                     defaultValue={box.name}
                     as="input"
                     onBlur={(e) => onBlurHandler(box.name, e.target.value)}
@@ -384,15 +367,30 @@ function TagBox(props) {
                 <BoxName onClick={() => setIsUpdateTagBoxName(true)}>
                   {box.name}
                 </BoxName>
-              )}
+              )} */}
             </BoxNameDiv>
             <TagsContainer>
               {box.tags?.map((tag) => (
-                <TagContainer name={tag} key={tag}>
-                  <Input id={tag}></Input>
-                  <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
-                  <DeleteTag onClick={() => deleteTagHandler(tag, index)} />
-                </TagContainer>
+                <TagsWrapper>
+                  <TagContainer htmlFor={tag} key={tag}>
+                    <Input id={tag}></Input>
+                    <Tag
+                      onClick={() => {
+                        console.log("tags");
+                        choseTagHandler(tag);
+                      }}
+                    >
+                      {tag}
+                    </Tag>
+                  </TagContainer>
+                  <DeleteTag
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showHintModal(tag, index);
+                      console.log("hi");
+                    }}
+                  />
+                </TagsWrapper>
               ))}
 
               <AddSignContainer>

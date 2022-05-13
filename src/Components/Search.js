@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { Search } from "@styled-icons/heroicons-solid/Search";
-import Loading from "./Loading";
+// import Loading from "./Loading";
 import Card from "./Card";
 import HintModal from "./modal/HintModal";
 
@@ -38,12 +38,9 @@ const SearchInput = styled.input`
 `;
 const SearchIcon = styled(Search)`
   width: 30px;
+  cursor: pointer;
 `;
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 100px;
-`;
+
 const DataContainer = styled.div`
   ${
     "" /* width: 100%;
@@ -71,9 +68,9 @@ function SearchBar(props) {
   const [searchInput, setSearchInput] = useState("");
   const [bookList, setBookList] = useState([]);
   const [noDataHint, setNoDataHint] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [isHint, setIsHint] = useState(false);
-  const [hintTitle, setIsHintTitle] = useState("");
+  const [hintTitle, setHintTitle] = useState("");
 
   function searchData(e) {
     e.preventDefault();
@@ -84,7 +81,7 @@ function SearchBar(props) {
     if (!searchInput) {
       return;
     } else if (searchInput.replace(/\s*/g, "").length === 0) {
-      setIsHintTitle("請輸入要搜尋的書名");
+      setHintTitle("請輸入要搜尋的書名");
       setIsHint(true);
     } else if (props.searchType) {
       console.log("have search type");
@@ -93,12 +90,12 @@ function SearchBar(props) {
     } else {
       setBookList([]);
       console.log("last else");
-      setIsLoading(true);
+      props.setIsLoading(true);
       getSearchData(searchInput).then((data) => {
         let bookData = [];
 
         if (data.totalItems === 0) {
-          setIsLoading(false);
+          props.setIsLoading(false);
           setNoDataHint(true);
           return;
         } else {
@@ -106,7 +103,7 @@ function SearchBar(props) {
             bookData.push(book.volumeInfo);
           });
           setBookList(bookData);
-          setIsLoading(false);
+          props.setIsLoading(false);
           window.scrollTo({
             top: 300,
             behavior: "smooth",
@@ -127,15 +124,15 @@ function SearchBar(props) {
           <SearchIcon onClick={(e) => searchData(e)} />
         </SearchForm>
       </SearchContainer>
-      {isLoading && (
+      {/* {isLoading && (
         <LoadingContainer>
           <Loading />
         </LoadingContainer>
-      )}
+      )} */}
       {noDataHint && <h2>搜尋不到此書</h2>}
       {isHint && <HintModal hintTitle={hintTitle} setIsHint={setIsHint} />}
       <DataContainer>
-        <Card bookList={bookList} />
+        <Card bookList={bookList} setIsLoading={props.setIsLoading} />
       </DataContainer>
     </>
   );

@@ -51,6 +51,7 @@ const ModalTitle = styled.p`
 `;
 const ModalInput = styled.input`
   width: 45%;
+  background-color: white;
   font-size: 16px;
 `;
 const Warning = styled.p`
@@ -85,6 +86,7 @@ const ConfirmButton = styled.button`
 let inputValue = "";
 function InputModal(props) {
   const [isWarning, setIsWarning] = useState(false);
+  const [warningContent, setWarningContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
   const inputRef = useRef();
@@ -96,13 +98,16 @@ function InputModal(props) {
     let allTags = tools.allTagsArray(allGroupData);
     let allTitles = tools.allGroupTitleArray(allGroupData);
 
-    if (!inputValue) {
+    if (!inputValue || inputValue.replace(/\s*/g, "").length === 0) {
+      setWarningContent("請輸入名稱");
+      setIsWarning(true);
       return;
     } else {
-      console.log(inputValue);
-
+      // 加標籤的，所以沒有box index。
+      console.log(props.selectedBoxIndex);
       if (props.selectedBoxIndex === undefined) {
         if (allTitles.includes(inputValue)) {
+          setWarningContent("此名稱已存在，請輸入其他名稱");
           setIsWarning(true);
         } else {
           console.log("no selected box name");
@@ -154,7 +159,7 @@ function InputModal(props) {
           onChange={(e) => (inputValue = e.target.value)}
           type="text"
         />
-        {isWarning ? <Warning>此名稱已存在，請重新命名</Warning> : <Warning />}
+        {isWarning ? <Warning>{warningContent}</Warning> : <Warning />}
 
         {isLoading ? (
           <LoadingContainer>
