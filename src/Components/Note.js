@@ -80,22 +80,22 @@ function Note(props) {
       {props.notesBoxData?.map((note, index) => (
         <NoteBox
           onClick={() => navigate(`/booknote/${note.bookID}`)}
-          key={note}
+          key={note.bookID}
         >
-          <BoxName key={note.bookTitle}>書名: {note.bookTitle}</BoxName>
+          <BoxName>書名: {note.bookTitle}</BoxName>
           <InfoContainer>
-            <NoteName key={note.title}>{note.title}</NoteName>
-            <Page key={note.page}>頁數: {note.page}</Page>
+            <NoteName>{note.title}</NoteName>
+            <Page>頁數: {note.page}</Page>
           </InfoContainer>
           <TagsContainer key={`${note.title}${index}`}>
             {note.tagNames.map((tag, tagIndex) => (
               <Tag key={tag}>
                 {tag}
-                <DeleteSign key={tagIndex} />
+                <DeleteSign />
               </Tag>
             ))}
           </TagsContainer>
-          <Content key={`${note.bookTitle}${index}`}>{note.content}</Content>
+          <Content>{note.content}</Content>
         </NoteBox>
       ))}
     </Container>

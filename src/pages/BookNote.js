@@ -28,8 +28,9 @@ const TitleContainer = styled(Flex)`
 
 const Wrapper = styled.div`
   display: flex;
-  align-items: center;
-  margin: 5% 15%;
+  width: 70%;
+  align-items: flex-start;
+  margin: 3% 15%;
 `;
 const BookInfoContainer = styled(Flex)`
   align-items: flex-start;
@@ -168,10 +169,6 @@ function BookNote() {
               <Title>新增筆記</Title>
             </TitleContainer>
 
-            <SignContainer>
-              <AddButton onClick={showNoteInputHandler} title={"新增筆記"} />
-            </SignContainer>
-
             <Wrapper>
               <BookInfoContainer>
                 <BookImg>
@@ -184,22 +181,14 @@ function BookNote() {
                   <p>出版年: {bookInfo.publish}</p>
                 </ContentContainer>
               </BookInfoContainer>
-              {bookNotesData.length === 0 ? (
-                <NoDataContainer>
-                  <NoDataTitle>
-                    無筆記
-                    <br />
-                    請點擊右下按鈕新增筆記
-                  </NoDataTitle>
-                </NoDataContainer>
-              ) : (
-                <NoteBox
-                  bookNotesData={bookNotesData}
-                  setShowNoteInput={setShowNoteInput}
-                  setNoteData={setNoteData}
-                  // bookInfo={bookInfo}
-                />
-              )}
+
+              <NoteBox
+                bookNotesData={bookNotesData}
+                setShowNoteInput={setShowNoteInput}
+                setNoteData={setNoteData}
+                showNoteInputHandler={showNoteInputHandler}
+                // bookInfo={bookInfo}
+              />
             </Wrapper>
           </>
         )}

@@ -23,25 +23,39 @@ const HintTitle = styled.h3`
   text-align: center;
 `;
 
-const SignContainer = styled.div`
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  right: 5.5%;
-  bottom: 5%;
-  width: 65px;
-  height: 65px;
-  border-radius: 30px;
-  background-color: #ffffff;
+// const SignContainer = styled.div`
+//   position: fixed;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   right: 5.5%;
+//   bottom: 5%;
+//   width: 65px;
+//   height: 65px;
+//   border-radius: 30px;
+//   background-color: #ffffff;
 
-  box-shadow: 2px 3px 7px rgb(0 0 0 / 15%);
-  transition: 0.3s ease;
+//   box-shadow: 2px 3px 7px rgb(0 0 0 / 15%);
+//   transition: 0.3s ease;
 
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 2px 10px rgba(0 0 0 / 30%);
-  }
+//   &:hover {
+//     transform: translateY(-5px);
+//     box-shadow: 0 2px 10px rgba(0 0 0 / 30%);
+//   }
+// `;
+const LinkButton = styled.div`
+  border: none;
+  width: 150px;
+  height: 35px;
+  margin-right: 15px;
+  letter-spacing: 2px;
+  text-align: center;
+  margin: 20px;
+  padding: 3px 8px;
+  font-size: 16px;
+  border-radius: 5px;
+  color: #fff;
+  background-color: ${(props) => (props.active ? "#dca246" : "#e6c88b")};
 `;
 
 const AddNoteSign = styled(NotebookAdd)`
@@ -91,24 +105,25 @@ function Books() {
 
   return (
     <Wrapper>
-      <Title>筆記書櫃</Title>
+      <Title>我的書櫃</Title>
       {isLoading && (
         <LoadingContainer>
           <Loading />
         </LoadingContainer>
       )}
       {isHint && (
-        <HintTitle>
-          尚無書本
-          <br />
-          點擊右下按鈕新增書籍
-        </HintTitle>
+        <>
+          <HintTitle>尚無書本</HintTitle>
+          <LinkButton onClick={() => navigate(`/search`)}>
+            前往圖書館新增書籍
+          </LinkButton>
+        </>
       )}
       {bookDatas.length !== 0 && <Book bookDatas={bookDatas} />}
 
-      <SignContainer>
+      {/* <SignContainer>
         <AddNoteSign onClick={() => navigate(`/search`)} title="新增書籍" />
-      </SignContainer>
+      </SignContainer> */}
     </Wrapper>
   );
 }

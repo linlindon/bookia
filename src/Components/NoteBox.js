@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Edit } from "@styled-icons/fa-regular/Edit";
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
-import parse from "html-react-parser";
 
 const Container = styled.div`
   display: flex;
@@ -24,6 +23,20 @@ const TagBox = styled.div`
   background-color: #ffffff;
   box-shadow: 2px 2px 7px rgb(0 0 0 / 20%);
 `;
+const AddTagBox = styled(TagBox)`
+  height: 80px;
+  font-size: 16px;
+  justify-content: center;
+  color: #d3d2d1;
+  border: 3px dashed #d3d2d1;
+  cursor: pointer;
+
+  &:hover {
+    color: #404040;
+    box-shadow: 3px 3px 3px rgba(0 0 0 / 30%);
+  }
+`;
+
 const BoxNameContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -42,7 +55,7 @@ const NotePage = styled.div`
 `;
 const TagsContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   width: 80%;
   gap: 1em;
@@ -98,6 +111,7 @@ function NoteBox(props) {
   return (
     <>
       <Container>
+        <AddTagBox onClick={props.showNoteInputHandler}>新增筆記</AddTagBox>
         {props.bookNotesData?.map((item, index) => (
           <TagBox key={`${item}${index}`}>
             <BoxNameContainer>

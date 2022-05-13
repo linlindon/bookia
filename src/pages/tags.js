@@ -23,7 +23,7 @@ const TagBoxContainer = styled.div`
   height: 100%;
   align-items: center;
   align-content: space-around;
-  margin: 5% 15%;
+  margin: 3% 15%;
 `;
 
 const PageTitle = styled.h1`

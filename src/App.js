@@ -18,13 +18,9 @@ import Login from "./pages/login";
 import SiteSearch from "./pages/siteSearch";
 import backgroundImg from "./image/background.jpg";
 import NoMatch from "./pages/noMatch";
-import Loading from "./components/Loading";
+import LoadingModal from "./components/modal/LoadingModal";
 
 const UserProfile = createContext();
-
-const LoadingContainer = styled.div`
-  margin-top: 100px;
-`;
 
 const Background = styled.div`
   position: relative;
@@ -48,7 +44,7 @@ function RequireAuth({ children, loginState }) {
   if (loginState === 0) {
     return <Navigate to="/" state={{ from: location }} replace />;
   } else if (loginState === 1) {
-    return <Loading />;
+    return <LoadingModal />;
   }
   return children;
 }

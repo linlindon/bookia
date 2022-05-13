@@ -24,7 +24,7 @@ const CardContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: row-reverse;
-  width: calc((100% - 84px) / 2);
+  width: calc((100% - 86px) / 2);
   margin: 30px 20px;
   border-radius: 10px;
   border: solid 0.5px #e4e4e4;

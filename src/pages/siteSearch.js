@@ -23,13 +23,13 @@ const SearchContainer = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   padding: 20px;
-  margin: 10px;
+  margin: 20px;
 `;
 
 const Button = styled.button`
   border: none;
-  width: 150px;
-  height: 35px;
+  width: 180px;
+  height: 45px;
   margin-right: 15px;
   letter-spacing: 2px;
   text-align: center;
@@ -60,21 +60,23 @@ function SiteSearch() {
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
   // console.log("inside func ===>", booksData, notesData);
-  // console.log("outside", searchInput);
+  console.log("outside", searchInput);
 
   useEffect(() => {
     booksData = [];
     notesData = [];
-    firebase.getBooksData(userId).then((data) => {
-      data.forEach((book) => {
-        booksData.push(book.data());
+    if (userId) {
+      firebase.getBooksData(userId).then((data) => {
+        data.forEach((book) => {
+          booksData.push(book.data());
+        });
       });
-    });
-    firebase.getAllNotesData(userId).then((data) => {
-      data.forEach((note) => {
-        notesData.push(note.data());
+      firebase.getAllNotesData(userId).then((data) => {
+        data.forEach((note) => {
+          notesData.push(note.data());
+        });
       });
-    });
+    }
   }, []);
 
   useEffect(() => {
@@ -82,51 +84,50 @@ function SiteSearch() {
     setSearchNoteResults([]);
     function searchData() {
       console.log("inside", searchInput);
-      if (searchInput.length === 0) {
-        // console.log("no input length");
-        return;
-      } else {
-        setIsData(true);
-        let inputWordArray = searchInput.split(" ");
-        let filterData = [];
-        if (searchType === "book") {
-          inputWordArray.forEach((word) => {
-            filterData = booksData.filter((book) => {
-              return book.title.includes(word);
-            });
-          });
-          setIsLoading(false);
-          setSearchBookResults(filterData);
-        } else if (searchType === "note") {
-          notesData.forEach((note) => {
-            inputWordArray.every((word) => {
-              if (note.content.includes(word)) {
-                filterData.push(note);
-              } else {
-                console.log("no match keyowrd content");
-              }
-            });
-          });
 
-          filterData = notesData.filter((note) => {
-            // console.log(note.content);
-            return inputWordArray.every((word) => {
-              // console.log(note.content.includes(word));
-              return note.content.includes(word);
-            });
+      setIsData(true);
+      let inputWordArray = searchInput.split(" ");
+      let filterData = [];
+      if (searchType === "book") {
+        inputWordArray.forEach((word) => {
+          filterData = booksData.filter((book) => {
+            return book.title.includes(word);
           });
-          // console.log(filterData);
-          setIsLoading(false);
-          setSearchNoteResults(filterData);
-        }
-        if (filterData.length === 0) {
-          setIsData(false);
-        }
-        // console.log("book", booksData);
-        // console.log("note", notesData);
+        });
+        setIsLoading(false);
+        setSearchBookResults(filterData);
+      } else if (searchType === "note") {
+        notesData.forEach((note) => {
+          inputWordArray.every((word) => {
+            if (note.content.includes(word)) {
+              filterData.push(note);
+            } else {
+              console.log("no match keyowrd content");
+            }
+          });
+        });
+
+        filterData = notesData.filter((note) => {
+          // console.log(note.content);
+          return inputWordArray.every((word) => {
+            // console.log(note.content.includes(word));
+            return note.content.includes(word);
+          });
+        });
+        // console.log(filterData);
+        setIsLoading(false);
+        setSearchNoteResults(filterData);
       }
+      if (filterData.length === 0) {
+        setIsData(false);
+      }
+      // console.log("book", booksData);
+      // console.log("note", notesData);
     }
-    searchData();
+    if (searchInput.length !== 0) {
+      console.log(searchInput);
+      searchData();
+    }
   }, [searchInput, isRender]);
 
   function searchTypeHandler(type) {
@@ -146,24 +147,25 @@ function SiteSearch() {
             active={searchType === "book"}
             onClick={() => searchTypeHandler("book")}
           >
-            搜尋站內書籍
+            搜尋我的書櫃
           </Button>
 
           <Button
             active={searchType === "note"}
             onClick={() => searchTypeHandler("note")}
           >
-            搜尋筆記
+            搜尋我的筆記內容
           </Button>
         </ButtonContainer>
+        <SearchBar setSearchInput={setSearchInput} setIsRender={setIsRender} />
 
-        <SearchBar
+        {/* <SearchBar
           searchType={searchType}
           setSearchInput={setSearchInput}
-          setIsRender={setIsRender}
+          
           setIsLoading={setIsLoading}
           isLoading={isLoading}
-        />
+        /> */}
         {isLoading && (
           <LoadingContainer>
             <Loading />
