@@ -12,7 +12,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Tags from "./pages/tags";
 import Books from "./pages/books";
 import BookNote from "./pages/bookNote";
-import SearchBook from "./pages/searchBook";
+import LibrarySearch from "./pages/librarySearch";
 import Header from "./components/Header";
 import Login from "./pages/login";
 import SiteSearch from "./pages/siteSearch";
@@ -68,23 +68,6 @@ function App() {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // useEffect(() => {
-  //   const test = () => {
-  //     if (loading) {
-  //       setIsLoading(true);
-  //       console.log("loading");
-  //     }
-  //     if (error) {
-  //       console.log(error);
-  //     }
-  //     if (user) {
-  //       console.log("login", user.uid);
-  //       setLoginState(true);
-  //       setUserId(user.uid);
-  //     }
-  //   };
-  //   test();
-  // }, []);
   console.log("outside", loginState);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -107,7 +90,7 @@ function App() {
 
               <Route element={<Header />}>
                 <Route
-                  path="/books"
+                  path="books"
                   element={
                     <RequireAuth loginState={loginState}>
                       <Books />
@@ -116,10 +99,10 @@ function App() {
                 />
 
                 <Route
-                  path="search"
+                  path="libary-search"
                   element={
                     <RequireAuth loginState={loginState}>
-                      <SearchBook />
+                      <LibrarySearch />
                     </RequireAuth>
                   }
                 />

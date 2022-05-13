@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Edit } from "@styled-icons/fa-regular/Edit";
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
+import parse from "html-react-parser";
 
 const Container = styled.div`
   display: flex;
@@ -85,6 +86,7 @@ const DeleteSign = styled.span``;
 
 function NoteBox(props) {
   const userId = useContext(UserProfile);
+  const parse = require("html-react-parser");
   async function updateNote(id) {
     await firebase.getNoteData(userId, id).then((data) => {
       console.log(data);
@@ -110,7 +112,7 @@ function NoteBox(props) {
                   <DeleteSign key={`delete${tag}`} />
                 </Tag>
               ))}
-              <Content key={item.content}>{item.content}</Content>
+              <Content key={item.content}>{parse(item.content)}</Content>
               <EditSignContainer>
                 <EdditSign
                   onClick={() => updateNote(item.id)}

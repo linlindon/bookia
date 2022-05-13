@@ -151,7 +151,7 @@ function Card(props) {
                   )
                 }
               >
-                選擇此書筆記
+                加到我的書櫃
               </AddButton>
             </BookDetail>
           </CardContainer>

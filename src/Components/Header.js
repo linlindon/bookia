@@ -227,23 +227,24 @@ function Header() {
             <CloseButton onClick={closeToggleHandler}>×</CloseButton>
             <NavLinks>
               <MobileLink
+                to="/libary-search"
+                onClick={() => closeToggleHandler("/search")}
+              >
+                圖書館
+              </MobileLink>
+              <MobileLink
                 href="/books"
                 onClick={() => closeToggleHandler("/books")}
               >
-                筆記櫃
+                我的筆記櫃
               </MobileLink>
               <MobileLink
                 to="/tags"
                 onClick={() => closeToggleHandler("/tags")}
               >
-                書籤櫃
+                我的書籤櫃
               </MobileLink>
-              <MobileLink
-                to="/search"
-                onClick={() => closeToggleHandler("/search")}
-              >
-                新增筆記
-              </MobileLink>
+
               <MobileLink
                 to="/site-search"
                 onClick={() => closeToggleHandler("/site-search")}
@@ -261,9 +262,9 @@ function Header() {
           <Logo onClick={logoRedirect} alt="bookia logo" />
         </LogoContainer>
         <NavLinks>
-          <Nav to="/books">筆記櫃</Nav>
-          <Nav to="/tags">書籤櫃</Nav>
-          <Nav to="/search">新增書籍</Nav>
+          <Nav to="/libary-search">圖書館</Nav>
+          <Nav to="/books">我的書櫃</Nav>
+          <Nav to="/tags">我的書籤櫃</Nav>
         </NavLinks>
         <SignContainer>
           <Link to="/site-search">

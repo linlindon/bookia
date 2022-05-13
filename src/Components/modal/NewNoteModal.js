@@ -2,15 +2,12 @@ import { useEffect, useState, useRef, useContext } from "react";
 import styled from "styled-components";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
 import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
-// import Editor from "ckeditor5-custom-build/build/ckeditor";
-// import { CKEditor } from "@ckeditor/ckeditor5-react";
-import Editor from "../Editor";
+import ContentEditor from "../Editor";
 import firebase from "../../utils/firebaseTools";
 import { UserProfile } from "../../App";
 import InputModal from "./InputModal";
 import Loading from "../Loading";
 import HintModal from "./HintModal";
-import AddTagSign from "../AddTagSign";
 
 const Flex = styled.div`
   display: flex;
@@ -170,6 +167,7 @@ const NewNoteModal = (props) => {
     page: "",
     title: "",
   });
+  const parse = require("html-react-parser");
   // const editorConfiguration = {
   //   toolbar: ["bold", "italic"],
   // };
@@ -184,9 +182,10 @@ const NewNoteModal = (props) => {
       for (let i = 0; i < data.length; i++) {
         groupArray.push(false);
       }
-    }, []);
+    });
     console.log(props.noteData);
     if (props.noteData) {
+      console.log(props.noteData);
       setTitleInput(props.noteData.title);
       setNoteInput(props.noteData.content);
       setPageInput(props.noteData.page);
@@ -197,6 +196,8 @@ const NewNoteModal = (props) => {
         page: props.noteData.page,
         title: props.noteData.title,
       }));
+    } else {
+      console.log("new note elase");
     }
   }, []);
 
@@ -236,7 +237,7 @@ const NewNoteModal = (props) => {
     } else {
       setIsLoading(true);
       // console.log(props.noteData.id);
-      console.log(props.bookInfo.noteId);
+      console.log(noteInput);
       let inputData = {
         bookID: props.bookInfo.id,
         id: props.noteData?.id ? props.noteData.id : "",
@@ -364,13 +365,16 @@ const NewNoteModal = (props) => {
 
           <div>
             <Title>筆記內容</Title>
-            {/* <Editor noteData={props.noteData} setNoteInput={setNoteInput} /> */}
+            <ContentEditor
+              noteData={props.noteData}
+              setNoteInput={setNoteInput}
+            />
 
-            <ContentInput
+            {/* <ContentInput
               defaultValue={props.noteData ? props.noteData.content : ""}
               name="content"
               onChange={inputChangeHandler}
-            />
+            /> */}
           </div>
           {isLoading ? (
             <LoadingContainer>

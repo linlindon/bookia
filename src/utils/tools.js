@@ -74,6 +74,14 @@ const tools = {
       })
     );
   },
+  async getGoogleBooks(input) {
+    const key = "AIzaSyAFgX7hNUEGGTH7nWl-nbHL7fuDH9XIHco";
+    const type = "orderBy=newest";
+    const type2 = "maxResults=40";
+    return fetch(
+      `https://www.googleapis.com/books/v1/volumes?q=${input}&key=${key}&${type}&${type2}`
+    ).then((res) => res.json());
+  },
   errorMessage(error) {
     return error.code === "auth/email-already-in-use"
       ? "這個email已被註冊過"

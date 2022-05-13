@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Search } from "@styled-icons/heroicons-solid/Search";
 // import Loading from "./Loading";
 import Card from "./Card";
 import HintModal from "./modal/HintModal";
+import tools from "../utils/tools";
 
 const SearchContainer = styled.div`
   display: flex;
@@ -51,19 +52,6 @@ const DataContainer = styled.div`
   justify-content: center;
 `;
 
-async function getSearchData(input) {
-  const key = "AIzaSyAFgX7hNUEGGTH7nWl-nbHL7fuDH9XIHco";
-  const type = "orderBy=newest";
-  const type2 = "maxResults=40";
-  return fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=${input}&key=${key}&${type}&${type2}`
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
 function SearchBar(props) {
   const [searchInput, setSearchInput] = useState("");
   const [bookList, setBookList] = useState([]);
@@ -71,6 +59,18 @@ function SearchBar(props) {
   // const [isLoading, setIsLoading] = useState(false);
   const [isHint, setIsHint] = useState(false);
   const [hintTitle, setHintTitle] = useState("");
+
+  useEffect(() => {
+    props.setIsLoading(true);
+    tools.getGoogleBooks("靈感").then((data) => {
+      let bookData = [];
+      data.items.forEach((book) => {
+        bookData.push(book.volumeInfo);
+      });
+      setBookList(bookData);
+      props.setIsLoading(false);
+    });
+  }, []);
 
   function searchData(e) {
     e.preventDefault();
@@ -91,9 +91,8 @@ function SearchBar(props) {
       setBookList([]);
       console.log("last else");
       props.setIsLoading(true);
-      getSearchData(searchInput).then((data) => {
+      tools.getGoogleBooks(searchInput).then((data) => {
         let bookData = [];
-
         if (data.totalItems === 0) {
           props.setIsLoading(false);
           setNoDataHint(true);
