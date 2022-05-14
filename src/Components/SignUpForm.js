@@ -89,7 +89,7 @@ export const SignUpForm = (props) => {
         .SignUpHandler(signUpInfo.email, signUpInfo.password, signUpInfo.name)
         .then(() => {
           setIsLoading(false);
-          navigate(`/books`);
+          navigate(`/library-search`);
         })
         .catch((error) => {
           console.log(error);

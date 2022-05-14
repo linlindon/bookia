@@ -55,9 +55,7 @@ function Tags() {
   useEffect(() => {
     let data = [];
     setIsLoading(true);
-
     setDeleteGroupIndex("");
-
     async function getData() {
       await firebase.getTagGroupsData(userId).then((res) => {
         data.push(...res.tagGroups);
@@ -72,6 +70,7 @@ function Tags() {
   }, [userId]);
 
   async function deleteTagHandler(tag, index) {
+    console.log("delete tag");
     let currentGroupData = [...groupData];
     let changeTagArray = currentGroupData[index].tags.filter((name) => {
       return name !== tag;
@@ -88,7 +87,7 @@ function Tags() {
 
   async function deleteGroupHandler(index) {
     setIsLoading(true);
-    console.log("delete group");
+    console.log("delete group", index);
 
     let currentGroupData = [...groupData];
     let tagsArray = currentGroupData[index].tags;
@@ -97,9 +96,9 @@ function Tags() {
     console.log(tagsArray);
     setIsLoading(false);
     if (tagsArray === undefined || tagsArray.length === 0) {
+      console.log("no tag inside box");
       setGroupData(currentGroupData);
       setIsLoading(false);
-      return;
     } else {
       await Promise.all(
         tagsArray.map(async (tag) => {
@@ -113,13 +112,19 @@ function Tags() {
       );
       setGroupData([...currentGroupData]);
     }
-    await firebase.updateTagGroup(userId, currentGroupData).then(() => {
-      setDeleteTagData(undefined);
-      setDeleteGroupIndex(undefined);
-      setIsHintTitle(undefined);
-      setSelectedBoxIndex(undefined);
-      setIsLoading(false);
-    });
+    console.log(currentGroupData, "before firebase");
+    await firebase
+      .updateTagGroup(userId, currentGroupData)
+      .then(() => {
+        setDeleteTagData(undefined);
+        setDeleteGroupIndex(undefined);
+        setIsHintTitle(undefined);
+        setSelectedBoxIndex(undefined);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   console.log(groupData);
@@ -128,28 +133,30 @@ function Tags() {
     <>
       <Container>
         <PageTitle>書籤櫃</PageTitle>
-        {isLoading && (
-          <LoadingContainer>
-            <Loading />
-          </LoadingContainer>
-        )}
       </Container>
-      <TagBoxContainer>
-        <TagBox
-          data={boxDatas}
-          setboxDatas={setboxDatas}
-          groupData={groupData}
-          setGroupData={setGroupData}
-          setShowInputModal={setShowInputModal}
-          setModalTitle={setModalTitle}
-          setSelectedBoxIndex={setSelectedBoxIndex}
-          setIsHint={setIsHint}
-          setIsHintTitle={setIsHintTitle}
-          setIsConfirmClose={setIsConfirmClose}
-          setDeleteTagData={setDeleteTagData}
-          setDeleteGroupIndex={setDeleteGroupIndex}
-        />
-      </TagBoxContainer>
+
+      {isLoading ? (
+        <LoadingContainer>
+          <Loading />
+        </LoadingContainer>
+      ) : (
+        <TagBoxContainer>
+          <TagBox
+            data={boxDatas}
+            setboxDatas={setboxDatas}
+            groupData={groupData}
+            setGroupData={setGroupData}
+            setShowInputModal={setShowInputModal}
+            setModalTitle={setModalTitle}
+            setSelectedBoxIndex={setSelectedBoxIndex}
+            setIsHint={setIsHint}
+            setIsHintTitle={setIsHintTitle}
+            setIsConfirmClose={setIsConfirmClose}
+            setDeleteTagData={setDeleteTagData}
+            setDeleteGroupIndex={setDeleteGroupIndex}
+          />
+        </TagBoxContainer>
+      )}
 
       {showInputModal && (
         <InputModal

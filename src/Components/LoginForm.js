@@ -74,7 +74,7 @@ export const LoginForm = (props) => {
         .then((res) => {
           console.log(res);
           setIsLoading(false);
-          navigate("/books");
+          navigate("/library-search");
         })
         .catch((error) => {
           console.log(error);

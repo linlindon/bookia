@@ -7,7 +7,7 @@ import BookiaLogo from "../image/logo.png";
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
 import HintModal from "./modal/HintModal";
-import Loading from "../components/Loading";
+import LoadingModal from "../components/modal/LoadingModal";
 
 const PlaceHolder = styled.div`
   width: 100%;
@@ -208,6 +208,7 @@ function Header() {
       {isHint && (
         <HintModal hintTitle={"您已成功登出"} logoutRedirect={logoutRedirect} />
       )}
+      {isLoading && <LoadingModal />}
       <HamburgerNav>
         <HamburgerBtn src={Menu} onClick={() => setToggle(true)} />
         <SmallLogo onClick={logoRedirect} alt="bookia logo" />

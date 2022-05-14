@@ -87,12 +87,6 @@ function BookNote() {
   useEffect(() => {
     setIsLoading(true);
     if (userId) {
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    if (userId) {
       let notesRef = firebase.getNotesRef(userId);
       let data = [];
       onSnapshot(notesRef, (notes) => {

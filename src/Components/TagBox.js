@@ -77,6 +77,7 @@ const Wrapper = styled.div`
 const BoxWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   width: 100%;
 `;
 
@@ -114,7 +115,7 @@ const TagBoxContainer = styled.div`
   }
 `;
 const AddTagBox = styled(TagBoxContainer)`
-  height: 60px;
+  height: auto;
   color: #d3d2d1;
   border: 3px dashed #d3d2d1;
   cursor: pointer;
@@ -271,7 +272,9 @@ function TagBox(props) {
         });
       });
     }
-    getData();
+    if (userId) {
+      getData();
+    }
   }, []);
 
   function showTagInputHandler(index) {
@@ -372,7 +375,7 @@ function TagBox(props) {
                     defaultValue={box.name}
                     as="input"
                     onBlur={(e) => onBlurHandler(box.name, e.target.value)}
-                  />
+                  />v
                 </Form>
               ) : (
                 <BoxName onClick={() => setIsUpdateTagBoxName(true)}>
@@ -382,8 +385,8 @@ function TagBox(props) {
             </BoxNameDiv>
             <TagsContainer>
               {box.tags?.map((tag) => (
-                <TagsWrapper>
-                  <TagContainer htmlFor={tag} key={tag}>
+                <TagsWrapper key={tag}>
+                  <TagContainer htmlFor={tag}>
                     <Input id={tag}></Input>
                     <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
                   </TagContainer>
@@ -415,7 +418,7 @@ function TagBox(props) {
       ) : (
         <NoDataContainer>
           <NoDataTitle>
-            點選上方書籤
+            點選書籤
             <br />
             顯示相關筆記
           </NoDataTitle>

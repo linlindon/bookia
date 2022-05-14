@@ -71,7 +71,7 @@ const LoadingContainer = styled.div`
 function HintModal(props) {
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef();
-
+  console.log("hint modal");
   function closeInput(e) {
     if (inputRef.current === e.target) {
       props.setIsHint(false);
@@ -92,7 +92,7 @@ function HintModal(props) {
       setIsLoading(false);
       props.setIsHint(false);
     } else if (props.deleteGroupIndex) {
-      console.log("delete group data");
+      console.log("delete group data", props.deleteGroupIndex);
       setIsLoading(true);
       await props.deleteGroupHandler(props.deleteGroupIndex);
       setIsLoading(false);
