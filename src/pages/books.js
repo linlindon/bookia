@@ -22,26 +22,6 @@ const HintTitle = styled.h3`
   text-align: center;
 `;
 
-// const SignContainer = styled.div`
-//   position: fixed;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   right: 5.5%;
-//   bottom: 5%;
-//   width: 65px;
-//   height: 65px;
-//   border-radius: 30px;
-//   background-color: #ffffff;
-
-//   box-shadow: 2px 3px 7px rgb(0 0 0 / 15%);
-//   transition: 0.3s ease;
-
-//   &:hover {
-//     transform: translateY(-5px);
-//     box-shadow: 0 2px 10px rgba(0 0 0 / 30%);
-//   }
-// `;
 const LinkButton = styled.div`
   border: none;
   width: 150px;

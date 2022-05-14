@@ -103,9 +103,10 @@ function InputModal(props) {
       setIsWarning(true);
       return;
     } else {
-      // 加標籤的，所以沒有box index。
-      console.log(props.selectedBoxIndex);
+      // 加書籤櫃的，所以沒有box index。
+      console.log(inputValue, props.selectedBoxIndex);
       if (props.selectedBoxIndex === undefined) {
+        console.log("no selected index");
         if (allTitles.includes(inputValue)) {
           setWarningContent("此名稱已存在，請輸入其他名稱");
           setIsWarning(true);
@@ -125,7 +126,9 @@ function InputModal(props) {
       } else {
         console.log("second else", props.selectedBoxIndex);
         if (allTags.includes(inputValue)) {
+          setWarningContent("此名稱已存在，請輸入其他名稱");
           setIsWarning(true);
+          props.setSelectedBoxIndex(undefined);
         } else {
           setIsWarning(false);
           setIsLoading(true);
@@ -135,6 +138,7 @@ function InputModal(props) {
           await firebase.updateTagGroup(userId, allGroupData);
           props.setGroupData([...allGroupData]);
           setIsLoading(false);
+          props.setSelectedBoxIndex(undefined);
           props.setShowInputModal(false);
         }
       }

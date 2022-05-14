@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { Search } from "@styled-icons/heroicons-solid/Search";
-// import Loading from "./Loading";
 
 import HintModal from "./modal/HintModal";
 
@@ -56,14 +55,8 @@ function SearchBar(props) {
       setHintTitle("請輸入要搜尋的書名");
       setIsHint(true);
     } else {
-      props.setSearchInput(input);
+      props.setSearchInput(input.toLowerCase());
     }
-
-    // else if (props.searchType) {
-    //   console.log("have search type");
-    //   props.setIsLoading(true);
-    //   props.setSearchInput(searchInput);
-    // }
   }
 
   return (

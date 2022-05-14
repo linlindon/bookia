@@ -43,8 +43,8 @@ const LoadingContainer = styled.div`
 
 export const LoginForm = (props) => {
   const [loginInfo, setLoginInfo] = useState({
-    email: "",
-    password: "",
+    email: "test@gmail.com",
+    password: "123456",
   });
   const [isLoading, setIsLoading] = useState(false);
   const regexs =

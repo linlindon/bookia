@@ -121,7 +121,12 @@ function HintModal(props) {
                 </ConfirmButton>
               </div>
             ) : (
-              <ConfirmButton onClick={() => props.setIsHint(false)}>
+              <ConfirmButton
+                onClick={() => {
+                  props.setIsHint(false);
+                  props.logoutRedirect();
+                }}
+              >
                 確認
               </ConfirmButton>
             )}

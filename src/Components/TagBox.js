@@ -113,6 +113,17 @@ const TagBoxContainer = styled.div`
   } */
   }
 `;
+const AddTagBox = styled(TagBoxContainer)`
+  height: 60px;
+  color: #d3d2d1;
+  border: 3px dashed #d3d2d1;
+  cursor: pointer;
+
+  &:hover {
+    color: #404040;
+    box-shadow: 3px 3px 3px rgba(0 0 0 / 30%);
+  }
+`;
 const BoxDeleteTag = styled(DeleteOutline)`
   display: none;
   position: absolute;
@@ -153,7 +164,7 @@ const TagsContainer = styled.div`
 `;
 
 const Input = styled.input.attrs({ type: "checkbox" })`
-  ${"" /* display: none; */}
+  display: none;
 `;
 
 const Tag = styled.div`
@@ -374,22 +385,9 @@ function TagBox(props) {
                 <TagsWrapper>
                   <TagContainer htmlFor={tag} key={tag}>
                     <Input id={tag}></Input>
-                    <Tag
-                      onClick={() => {
-                        console.log("tags");
-                        choseTagHandler(tag);
-                      }}
-                    >
-                      {tag}
-                    </Tag>
+                    <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
                   </TagContainer>
-                  <DeleteTag
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      showHintModal(tag, index);
-                      console.log("hi");
-                    }}
-                  />
+                  <DeleteTag onClick={(e) => showHintModal(tag, index)} />
                 </TagsWrapper>
               ))}
 
@@ -402,6 +400,14 @@ function TagBox(props) {
             </TagsContainer>
           </TagBoxContainer>
         ))}
+        <AddTagBox
+          onClick={() => {
+            props.setModalTitle("新書籤櫃名稱");
+            props.setShowInputModal(true);
+          }}
+        >
+          新增書籤櫃
+        </AddTagBox>
       </BoxWrapper>
 
       {notesBoxData.length > 0 ? (

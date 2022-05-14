@@ -1,6 +1,5 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-import { FolderAdd } from "@styled-icons/fluentui-system-regular/FolderAdd";
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
 import TagBox from "../components/TagBox";
@@ -36,34 +35,6 @@ const LoadingContainer = styled.div`
   justify-content: center;
   margin-top: 100px;
 `;
-const SignContainer = styled.div`
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  right: 5.5%;
-  bottom: 5%;
-  width: 65px;
-  height: 65px;
-  border-radius: 30px;
-  background-color: #ffffff;
-
-  box-shadow: 2px 3px 7px rgb(0 0 0 / 15%);
-  transition: 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 2px 10px rgba(0 0 0 / 30%);
-  }
-`;
-const AddBoxSign = styled(FolderAdd)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50px;
-  color: #dca246;
-  cursor: pointer;
-`;
 
 let allGroupData = [];
 
@@ -80,7 +51,6 @@ function Tags() {
   const [selectedBoxIndex, setSelectedBoxIndex] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
-  console.log("tags render");
 
   useEffect(() => {
     let data = [];
@@ -145,7 +115,9 @@ function Tags() {
     }
     await firebase.updateTagGroup(userId, currentGroupData).then(() => {
       setDeleteTagData(undefined);
+      setDeleteGroupIndex(undefined);
       setIsHintTitle(undefined);
+      setSelectedBoxIndex(undefined);
       setIsLoading(false);
     });
   }
@@ -179,15 +151,6 @@ function Tags() {
         />
       </TagBoxContainer>
 
-      <SignContainer>
-        <AddBoxSign
-          onClick={() => {
-            setModalTitle("新書籤櫃名稱");
-            setShowInputModal(true);
-          }}
-          title="新增書籤櫃"
-        />
-      </SignContainer>
       {showInputModal && (
         <InputModal
           groupData={groupData}
@@ -195,6 +158,7 @@ function Tags() {
           setShowInputModal={setShowInputModal}
           modalTitle={modalTitle}
           selectedBoxIndex={selectedBoxIndex}
+          setSelectedBoxIndex={setSelectedBoxIndex}
         />
       )}
       {isHint && (

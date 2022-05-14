@@ -1,11 +1,13 @@
 import { useContext, useState } from "react";
+import { useNavigate, NavLink, Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Logout } from "@styled-icons/heroicons-outline/Logout";
 import { Menu } from "@styled-icons/heroicons-outline/Menu";
 import BookiaLogo from "../image/logo.png";
 import firebase from "../utils/firebaseTools";
-import { useNavigate, NavLink, Link, Outlet } from "react-router-dom";
 import { UserProfile } from "../App";
+import HintModal from "./modal/HintModal";
+import Loading from "../components/Loading";
 
 const PlaceHolder = styled.div`
   width: 100%;
@@ -171,22 +173,29 @@ const CloseButton = styled.div`
 
 function Header() {
   const [toggle, setToggle] = useState(false);
+  const [isHint, setIsHint] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isShowLogoutHint, setIsShowLogoutHint] = useState(false);
   const navigate = useNavigate();
   const userId = useContext(UserProfile);
-  console.log("header render");
 
   function closeToggleHandler(link) {
     setToggle(false);
     navigate(link);
   }
+
   async function logout() {
+    setIsLoading(true);
     if (toggle) {
       setToggle(false);
     }
     await firebase.LogoutHandler().then(() => {
-      navigate("/");
+      setIsLoading(false);
+      setIsHint(true);
     });
+  }
+  function logoutRedirect() {
+    navigate("/");
   }
 
   function logoRedirect() {
@@ -196,7 +205,9 @@ function Header() {
   return (
     <>
       <PlaceHolder />
-
+      {isHint && (
+        <HintModal hintTitle={"您已成功登出"} logoutRedirect={logoutRedirect} />
+      )}
       <HamburgerNav>
         <HamburgerBtn src={Menu} onClick={() => setToggle(true)} />
         <SmallLogo onClick={logoRedirect} alt="bookia logo" />

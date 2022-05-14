@@ -90,7 +90,7 @@ function SiteSearch() {
       if (searchType === "book") {
         inputWordArray.forEach((word) => {
           filterData = booksData.filter((book) => {
-            return book.title.includes(word);
+            return book.title.toLowerCase().includes(word);
           });
         });
         setIsLoading(false);
@@ -98,7 +98,7 @@ function SiteSearch() {
       } else if (searchType === "note") {
         notesData.forEach((note) => {
           inputWordArray.every((word) => {
-            if (note.content.includes(word)) {
+            if (note.content.toLowerCase().includes(word)) {
               filterData.push(note);
             } else {
               console.log("no match keyowrd content");

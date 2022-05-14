@@ -58,29 +58,6 @@ const BookBox = styled.div`
   }
 `;
 
-// const BookBox = styled.div`
-//   display: flex;
-//   padding: 20px;
-//   width: 48%;
-//   margin: 1%;
-//   border-radius: 10px;
-//   background-color: #ffffff;
-//   box-shadow: 2px 2px 7px rgb(0 0 0 / 20%);
-//   cursor: pointer;
-//   flex-direction: row-reverse;
-
-//   &:hover {
-//     transform: scale(1.05);
-//     background-color: #3fccdc;
-//   }
-//   @media only screen and (min-width: 785px) {
-//     ${"" /* width: 42%; */}
-//   }
-//   @media only screen and (max-width: 785px) {
-//     width: 100%;
-//   }
-// `;
-
 const BookImg = styled.div`
   width: 185px;
   overflow: hidden;
