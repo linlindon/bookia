@@ -10,6 +10,7 @@ import { UserProfile } from "../App";
 const PlaceHolder = styled.div`
   width: 100%;
   height: 60px;
+
   @media screen and (min-width: 787px) {
     display: none;
   }
@@ -116,6 +117,7 @@ const HamburgerNav = styled.div`
   align-items: center;
   justify-content: center;
   display: none;
+  background-color: #f2f1f0;
 
   @media screen and (max-width: 786px) {
     display: flex;
@@ -129,11 +131,10 @@ const HamburgerBtn = styled(Menu)`
   cursor: pointer;
 `;
 
-const HamburgerTitle = styled.div`
-  font-weight: 700;
+const SmallLogo = styled(Logo)`
+  width: 120px;
   text-align: center;
-  font-size: 24px;
-  line-height: 36px;
+  cursor: pointer;
 `;
 const MobileMenuOverlay = styled.div`
   position: fixed;
@@ -189,7 +190,7 @@ function Header() {
   }
 
   function logoRedirect() {
-    navigate("/books");
+    navigate("/libary-search");
   }
 
   return (
@@ -198,7 +199,7 @@ function Header() {
 
       <HamburgerNav>
         <HamburgerBtn src={Menu} onClick={() => setToggle(true)} />
-        <HamburgerTitle>Bookia</HamburgerTitle>
+        <SmallLogo onClick={logoRedirect} alt="bookia logo" />
       </HamburgerNav>
 
       {toggle && (
@@ -209,7 +210,7 @@ function Header() {
             <NavLinks>
               <MobileLink
                 to="/libary-search"
-                onClick={() => closeToggleHandler("/search")}
+                onClick={() => closeToggleHandler("/libary-search")}
               >
                 圖書館
               </MobileLink>

@@ -18,12 +18,11 @@ const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 15%;
+  margin: 3% 15%;
 `;
 const ButtonContainer = styled.div`
   display: flex;
-  padding: 20px;
-  margin: 20px;
+  padding: 0 20px 35px;
 `;
 
 const Button = styled.button`
@@ -158,14 +157,6 @@ function SiteSearch() {
           </Button>
         </ButtonContainer>
         <SearchBar setSearchInput={setSearchInput} setIsRender={setIsRender} />
-
-        {/* <SearchBar
-          searchType={searchType}
-          setSearchInput={setSearchInput}
-          
-          setIsLoading={setIsLoading}
-          isLoading={isLoading}
-        /> */}
         {isLoading && (
           <LoadingContainer>
             <Loading />

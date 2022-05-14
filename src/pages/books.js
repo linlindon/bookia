@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { NotebookAdd } from "@styled-icons/fluentui-system-regular/NotebookAdd";
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
 import Book from "../components/Book";
@@ -58,15 +57,6 @@ const LinkButton = styled.div`
   background-color: ${(props) => (props.active ? "#dca246" : "#e6c88b")};
 `;
 
-const AddNoteSign = styled(NotebookAdd)`
-  width: 50px;
-  color: #dca246;
-  cursor: pointer;
-  @media only screen and (max-width: 786px) {
-    width: 40px;
-  }
-`;
-
 const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -120,10 +110,6 @@ function Books() {
         </>
       )}
       {bookDatas.length !== 0 && <Book bookDatas={bookDatas} />}
-
-      {/* <SignContainer>
-        <AddNoteSign onClick={() => navigate(`/search`)} title="新增書籍" />
-      </SignContainer> */}
     </Wrapper>
   );
 }

@@ -99,7 +99,7 @@ const EdditSign = styled(Edit)`
   color: #dca246;
 `;
 
-const Content = styled.p`
+const Content = styled.div`
   margin-bottom: 10px;
 `;
 

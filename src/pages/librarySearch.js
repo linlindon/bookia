@@ -9,28 +9,25 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 3% 15%; ;
+  margin: 3% 15%;
+
+  @media only screen and (max-width: 1100px) {
+    margin: 1.5% 8%;
+  }
 `;
 const PageTitle = styled.h1`
   text-align: center;
-  ${"" /* border-bottom: 2px red solid; */}
+  @media only screen and (max-width: 786px) {
+    font-size: 20px;
+  }
 `;
 const Title = styled.h1`
   font-size: 22px;
   margin-bottom: 50px;
 
   @media only screen and (max-width: 786px) {
-    font-size: 18px;
+    font-size: 16px;
   }
-`;
-const DataContainer = styled.div`
-  ${
-    "" /* width: 100%;
-  height: 100%; */
-  }
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 function LibrarySearch() {
@@ -53,7 +50,7 @@ function LibrarySearch() {
 
   useEffect(() => {
     setBookList([]);
-    console.log("last else");
+
     if (searchInput !== "") {
       setNoDataHint(false);
       setIsLoading(true);
@@ -86,9 +83,9 @@ function LibrarySearch() {
         <SearchBar setSearchInput={setSearchInput} />
         {isLoading && <LoadingModal />}
         {noDataHint && <h2>搜尋不到此書</h2>}
-        <DataContainer>
-          <Card bookList={bookList} setIsLoading={setIsLoading} />
-        </DataContainer>
+        {/* <DataContainer> */}
+        <Card bookList={bookList} setIsLoading={setIsLoading} />
+        {/* </DataContainer> */}
       </Container>
     </>
   );

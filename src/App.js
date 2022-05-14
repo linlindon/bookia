@@ -17,7 +17,7 @@ import Header from "./components/Header";
 import Login from "./pages/login";
 import SiteSearch from "./pages/siteSearch";
 import backgroundImg from "./image/background.jpg";
-import NoMatch from "./pages/noMatch";
+import NoMatch from "./pages/noPage";
 import LoadingModal from "./components/modal/LoadingModal";
 
 const UserProfile = createContext();

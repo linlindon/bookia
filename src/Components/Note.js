@@ -21,7 +21,7 @@ const NoteBox = styled.div`
   flex-direction: column;
   padding: 10px 30px;
   margin: 15px;
-  ${"" /* width: calc((100% - 250px) / 2); */}
+  width: calc((100% - 250px) / 2);
   border: 1px solid #ece6e6;
   border-radius: 10px;
   background-color: #ffffff;
@@ -40,6 +40,8 @@ const NoteBox = styled.div`
   }
 `;
 const BoxName = styled.p`
+  margin: 12px 0 3px 0;
+  padding-bottom: 3px;
   font-weight: 600;
   border-bottom: solid 2px #d3d2d1;
 `;
@@ -48,6 +50,7 @@ const TagsContainer = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   width: 80%;
+  margin: 10px 0;
   gap: 1em;
 `;
 const InfoContainer = styled.div`
@@ -60,7 +63,6 @@ const Page = styled.p`
 `;
 const NoteName = styled.div`
   font-weight: 700;
-  margin-bottom: 5px;
 `;
 const Tag = styled.p`
   margin: 0;
@@ -74,32 +76,32 @@ const DeleteSign = styled.span``;
 
 function Note(props) {
   let navigate = useNavigate();
+  const parse = require("html-react-parser");
   return (
-    // <Wrapper>
+    // 可以和notebox 共用
     <Container>
       {props.notesBoxData?.map((note, index) => (
         <NoteBox
           onClick={() => navigate(`/booknote/${note.bookID}`)}
-          key={note.bookID}
+          key={`${note.bookID}${index}`}
         >
           <BoxName>書名: {note.bookTitle}</BoxName>
           <InfoContainer>
             <NoteName>{note.title}</NoteName>
             <Page>頁數: {note.page}</Page>
           </InfoContainer>
-          <TagsContainer key={`${note.title}${index}`}>
-            {note.tagNames.map((tag, tagIndex) => (
+          <TagsContainer>
+            {note.tagNames.map((tag) => (
               <Tag key={tag}>
                 {tag}
                 <DeleteSign />
               </Tag>
             ))}
           </TagsContainer>
-          <Content>{note.content}</Content>
+          <Content>{parse(note.content)}</Content>
         </NoteBox>
       ))}
     </Container>
-    // </Wrapper>
   );
 }
 
