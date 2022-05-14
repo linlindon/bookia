@@ -58,14 +58,22 @@ const ContentContainer = styled.div`
   flex-direction: column;
   flex-wrap: wrap;
   width: 80%;
+  margin-bottom: 10px;
 `;
 const TagsContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1em;
+  margin-bottom: 10px;
 `;
-
+const Tag = styled.p`
+  margin: 0;
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 15px;
+  background-color: #e4d36d;
+`;
 const EditSignContainer = styled.div`
   position: absolute;
   display: flex;
@@ -90,16 +98,9 @@ const EdditSign = styled(Edit)`
   cursor: pointer;
   color: #dca246;
 `;
-const Tag = styled.p`
-  margin: 0;
-  margin-top: 20px;
-  padding: 5px 10px;
-  font-size: 14px;
-  border-radius: 15px;
-  background-color: #e4d36d;
-`;
-const Content = styled.div`
-  margin-bottom: 25px;
+
+const Content = styled.p`
+  margin-bottom: 10px;
 `;
 
 function NoteBox(props) {
@@ -118,7 +119,7 @@ function NoteBox(props) {
       <Container>
         <AddTagBox onClick={props.showNoteInputHandler}>新增筆記</AddTagBox>
         {props.bookNotesData?.map((item, index) => (
-          <TagBox key={item.title}>
+          <TagBox key={item.content}>
             <BoxNameContainer>
               <NoteName>{item.title}</NoteName>
               <NotePage>頁數：{item.page}</NotePage>

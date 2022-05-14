@@ -5,7 +5,7 @@ import { onSnapshot } from "firebase/firestore";
 import firebase from "../utils/firebaseTools";
 import NewNoteModal from "../components/modal/NewNoteModal";
 import NoteBox from "../components/NoteBox";
-import Loading from "../components/Loading";
+import LoadingModal from "../components/modal/LoadingModal";
 import { UserProfile } from "../App";
 
 const Flex = styled.div`
@@ -87,36 +87,32 @@ function BookNote() {
   useEffect(() => {
     setIsLoading(true);
     if (userId) {
-      firebase.getBookInfo(userId, id).then((res) => {
-        setIsLoading(false);
-        console.log(res);
-        setBookInfo({ ...res });
-      });
     }
   }, [userId]);
 
   useEffect(() => {
-    // let noteData = [];
     setIsLoading(true);
     if (userId) {
       let notesRef = firebase.getNotesRef(userId);
+      let data = [];
       onSnapshot(notesRef, (notes) => {
         console.log("in snap shot");
-        let data = [];
         notes.forEach((note) => {
           if (note.data().bookID === id) {
             data.push(note.data());
           }
         });
-        // noteData = data;
-        setIsLoading(false);
-        setBookNotesData(data);
+        firebase.getBookInfo(userId, id).then((res) => {
+          setBookInfo({ ...res });
+          setBookNotesData(data);
+          setIsLoading(false);
+        });
       });
     }
   }, [userId]);
 
   useEffect(() => {
-    setIsLoading(true);
+    // setIsLoading(true);
     let data = [];
     if (userId) {
       firebase.getTagGroupsData(userId).then((res) => {
@@ -134,16 +130,12 @@ function BookNote() {
   return (
     <>
       <Container>
-        {!bookInfo || !bookNotesData ? (
+        {isLoading ? (
           <LoadingContainer>
-            <Loading />
+            <LoadingModal />
           </LoadingContainer>
         ) : (
           <>
-            <TitleContainer>
-              <Title>新增筆記</Title>
-            </TitleContainer>
-
             <Wrapper>
               <BookInfoContainer>
                 <BookImg>
@@ -183,9 +175,3 @@ function BookNote() {
 }
 
 export default BookNote;
-
-// {isLoading && (
-//   <LoadingContainer>
-//     <Loading />
-//   </LoadingContainer>
-// )}

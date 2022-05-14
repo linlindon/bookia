@@ -18,7 +18,9 @@ export const GlobalStyle = createGlobalStyle`
             font-size: 14px;
         }
     }
-
+    p {
+        margin-top: 0;
+    }
     button {
         border: none;
         cursor: pointer;

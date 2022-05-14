@@ -85,18 +85,17 @@ const MobileLink = styled.p`
 
 const SignContainer = styled.div`
   position: relative;
-  width: 80px;
   padding-bottom: 6px;
 `;
 
 const LogoutSign = styled(Logout)`
   posiiton: absolute;
-  width: 22px;
+  width: 24px;
   cursor: pointer;
 `;
 const LogoutHint = styled.div`
   position: absolute;
-  left: 1vw;
+  left: -2vw;
   top: 30px;
   width: 50px;
   padding: 3px 8px;
