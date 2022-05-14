@@ -1,6 +1,5 @@
 import { useContext, useState } from "react";
 import styled from "styled-components";
-import { Search } from "@styled-icons/heroicons-solid/Search";
 import { Logout } from "@styled-icons/heroicons-outline/Logout";
 import { Menu } from "@styled-icons/heroicons-outline/Menu";
 import BookiaLogo from "../image/logo.png";
@@ -89,23 +88,7 @@ const SignContainer = styled.div`
   width: 80px;
   padding-bottom: 6px;
 `;
-const SiteSearch = styled(Search)`
-  width: 22px;
-  margin-right: 25%;
-  color: #363434;
-  cursor: pointer;
-`;
-const SearchHint = styled.div`
-  position: absolute;
-  left: -2vw;
-  top: 30px;
-  width: 80px;
-  padding: 3px 8px;
-  border-radius: 5px;
-  text-align: center;
-  background-color: #ffffff;
-  font-weight: 500;
-`;
+
 const LogoutSign = styled(Logout)`
   posiiton: absolute;
   width: 22px;
@@ -188,7 +171,6 @@ const CloseButton = styled.div`
 
 function Header() {
   const [toggle, setToggle] = useState(false);
-  const [isShowSearchHint, setIsShowSearchHint] = useState(false);
   const [isShowLogoutHint, setIsShowLogoutHint] = useState(false);
   const navigate = useNavigate();
   const userId = useContext(UserProfile);
@@ -249,7 +231,7 @@ function Header() {
                 to="/site-search"
                 onClick={() => closeToggleHandler("/site-search")}
               >
-                站內搜尋
+                我的搜尋
               </MobileLink>
               <MobileLink onClick={logout}>登出</MobileLink>
             </NavLinks>
@@ -265,16 +247,9 @@ function Header() {
           <Nav to="/libary-search">圖書館</Nav>
           <Nav to="/books">我的書櫃</Nav>
           <Nav to="/tags">我的書籤櫃</Nav>
+          <Nav to="/site-search">我的搜尋</Nav>
         </NavLinks>
         <SignContainer>
-          <Link to="/site-search">
-            <SiteSearch
-              onMouseEnter={() => setIsShowSearchHint(true)}
-              onMouseLeave={() => setIsShowSearchHint(false)}
-            />
-            {isShowSearchHint && <SearchHint>站內搜尋</SearchHint>}
-          </Link>
-
           <LogoutSign
             to="/login"
             onClick={logout}

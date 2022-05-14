@@ -151,7 +151,6 @@ let groupArray = [];
 let selectedTagBox;
 
 const NewNoteModal = (props) => {
-  const [groupData, setGroupData] = useState([]);
   const [showInputModal, setShowInputModal] = useState(false);
   const [titleInput, setTitleInput] = useState("");
   const [pageInput, setPageInput] = useState("");
@@ -168,21 +167,18 @@ const NewNoteModal = (props) => {
     title: "",
   });
   const parse = require("html-react-parser");
-  // const editorConfiguration = {
-  //   toolbar: ["bold", "italic"],
-  // };
 
   useEffect(() => {
     chosenTagArray = [];
-    let data = [];
-    firebase.getTagGroupsData(userId).then((res) => {
-      data.push(...res.tagGroups);
-      setGroupData(data);
-      currentGroups = [...data];
-      for (let i = 0; i < data.length; i++) {
-        groupArray.push(false);
-      }
-    });
+    // let data = [];
+    // firebase.getTagGroupsData(userId).then((res) => {
+    //   data.push(...res.tagGroups);
+    //   setGroupData(data);
+    currentGroups = [...props.groupData];
+    for (let i = 0; i < currentGroups.length; i++) {
+      groupArray.push(false);
+    }
+
     console.log(props.noteData);
     if (props.noteData) {
       console.log(props.noteData);
@@ -330,7 +326,7 @@ const NewNoteModal = (props) => {
           ></TitleInput>
 
           <Title>選擇此筆記的書籤</Title>
-          {groupData?.map((data, index) => (
+          {props.groupData?.map((data, index) => (
             <TagContentBox key={data.name}>
               <SubTitle>{data.name}</SubTitle>
 
@@ -387,7 +383,7 @@ const NewNoteModal = (props) => {
         {showInputModal && (
           <InputModal
             groupData={currentGroups}
-            setGroupData={setGroupData}
+            setGroupData={props.setGroupData}
             setShowInputModal={setShowInputModal}
             modalTitle={"標籤名稱"}
             selectedBoxIndex={selectedTagBox}

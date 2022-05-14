@@ -140,7 +140,7 @@ function SiteSearch() {
 
   return (
     <>
-      <PageTitle>站內搜尋</PageTitle>
+      <PageTitle>我的搜尋</PageTitle>
       <SearchContainer>
         <ButtonContainer>
           <Button

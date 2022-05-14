@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { NoteAdd } from "@styled-icons/fluentui-system-regular/NoteAdd";
 import { onSnapshot } from "firebase/firestore";
 import firebase from "../utils/firebaseTools";
 import NewNoteModal from "../components/modal/NewNoteModal";
@@ -68,38 +67,6 @@ const NoDataTitle = styled.h3`
   font-weight: 900;
   text-align: center;
 `;
-const SignContainer = styled.div`
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  right: 5.5%;
-  bottom: 5%;
-  width: 65px;
-  height: 65px;
-  border-radius: 30px;
-  background-color: #ffffff;
-
-  box-shadow: 2px 3px 7px rgb(0 0 0 / 15%);
-  transition: 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 2px 10px rgba(0 0 0 / 30%);
-  }
-`;
-const AddButton = styled(NoteAdd)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50px;
-  color: #dca246;
-  cursor: pointer;
-
-  @media only screen and (max-width: 786px) {
-    width: 40px;
-  }
-`;
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -108,10 +75,8 @@ const LoadingContainer = styled.div`
 `;
 
 function BookNote() {
-  // render畫面使用
   const [bookNotesData, setBookNotesData] = useState([]);
-  // const [bookInfo, setBookInfo] = useState({});
-  // 如果是修改note，就要傳noteData到表格裡面
+  const [groupData, setGroupData] = useState([]);
   const [noteData, setNoteData] = useState(undefined);
   const [bookInfo, setBookInfo] = useState([]);
   const [showNoteInput, setShowNoteInput] = useState(false);
@@ -120,7 +85,6 @@ function BookNote() {
   const userId = useContext(UserProfile);
 
   useEffect(() => {
-    console.log("inside effect");
     setIsLoading(true);
     if (userId) {
       firebase.getBookInfo(userId, id).then((res) => {
@@ -147,6 +111,17 @@ function BookNote() {
         // noteData = data;
         setIsLoading(false);
         setBookNotesData(data);
+      });
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    let data = [];
+    if (userId) {
+      firebase.getTagGroupsData(userId).then((res) => {
+        data.push(...res.tagGroups);
+        setGroupData(data);
       });
     }
   }, [userId]);
@@ -199,6 +174,8 @@ function BookNote() {
           setShowNoteInput={setShowNoteInput}
           bookInfo={bookInfo}
           noteData={noteData}
+          setGroupData={setGroupData}
+          groupData={groupData}
         />
       ) : null}
     </>

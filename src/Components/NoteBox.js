@@ -41,7 +41,7 @@ const BoxNameContainer = styled.div`
   display: flex;
   justify-content: space-between;
   width: 80%;
-  margin-top: 30px;
+  margin: 20px 0;
   padding-bottom: 10px;
   border-bottom: 1px solid #d3d2d1;
 `;
@@ -53,11 +53,16 @@ const NoteName = styled.h4`
 const NotePage = styled.div`
   font-size: 12px;
 `;
-const TagsContainer = styled.div`
+const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   width: 80%;
+`;
+const TagsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 1em;
 `;
 
@@ -86,6 +91,7 @@ const EdditSign = styled(Edit)`
   color: #dca246;
 `;
 const Tag = styled.p`
+  margin: 0;
   margin-top: 20px;
   padding: 5px 10px;
   font-size: 14px;
@@ -95,7 +101,6 @@ const Tag = styled.p`
 const Content = styled.div`
   margin-bottom: 25px;
 `;
-const DeleteSign = styled.span``;
 
 function NoteBox(props) {
   const userId = useContext(UserProfile);
@@ -113,38 +118,26 @@ function NoteBox(props) {
       <Container>
         <AddTagBox onClick={props.showNoteInputHandler}>新增筆記</AddTagBox>
         {props.bookNotesData?.map((item, index) => (
-          <TagBox key={`${item}${index}`}>
+          <TagBox key={item.title}>
             <BoxNameContainer>
-              <NoteName key={item.title}>{item.title}</NoteName>
-              <NotePage key={item.page}>頁數：{item.page}</NotePage>
+              <NoteName>{item.title}</NoteName>
+              <NotePage>頁數：{item.page}</NotePage>
             </BoxNameContainer>
 
-            <TagsContainer key={`${item}`}>
-              {item.tagNames.map((tag) => (
-                <Tag key={tag}>
-                  {tag}
-                  <DeleteSign key={`delete${tag}`} />
-                </Tag>
-              ))}
-              <Content key={item.content}>{parse(item.content)}</Content>
+            <ContentContainer>
+              <TagsContainer>
+                {item.tagNames.map((tag) => (
+                  <Tag key={tag}>{tag}</Tag>
+                ))}
+              </TagsContainer>
+              <Content>{parse(item.content)}</Content>
               <EditSignContainer>
-                <EdditSign
-                  onClick={() => updateNote(item.id)}
-                  title="修改"
-                  key={item.id}
-                />
+                <EdditSign onClick={() => updateNote(item.id)} title="修改" />
               </EditSignContainer>
-            </TagsContainer>
+            </ContentContainer>
           </TagBox>
         ))}
       </Container>
-      {/* {showUpdate && (
-        <NewNoteModal
-          noteData={noteData}
-          show={setShowUpdate}
-          bookInfo={bookInfo}
-        />
-      )} */}
     </>
   );
 }
