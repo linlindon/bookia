@@ -26,6 +26,7 @@ export const GlobalStyle = createGlobalStyle`
 
     input {
         -webkit-appearance:none; 
+        -webkit-box-shadow: 0 0 0 0px #ffffff inset;
         border: none;
         height: 18px;
         border-bottom: solid 1px black;
