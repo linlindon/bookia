@@ -170,10 +170,6 @@ const NewNoteModal = (props) => {
 
   useEffect(() => {
     chosenTagArray = [];
-    // let data = [];
-    // firebase.getTagGroupsData(userId).then((res) => {
-    //   data.push(...res.tagGroups);
-    //   setGroupData(data);
     currentGroups = [...props.groupData];
     for (let i = 0; i < currentGroups.length; i++) {
       groupArray.push(false);
@@ -244,13 +240,6 @@ const NewNoteModal = (props) => {
         title: titleInput,
       };
 
-      // let inputData = {
-      //   ...inputDatas,
-      //   bookID: props.bookInfo.id,
-      //   id: props.noteData?.id ? props.noteData.id : "",
-      //   bookTitle: props.bookInfo.title,
-      //   tagNames: chosenTagArray,
-      // };
       console.log("新筆記資料包===>", inputData);
 
       if (!props.noteData) {
@@ -331,7 +320,7 @@ const NewNoteModal = (props) => {
               <SubTitle>{data.name}</SubTitle>
 
               <TagsContainer>
-                {data.tags.map((tag, tagIndex) => (
+                {data.tags.map((tag) => (
                   <label name={tag} key={tag}>
                     <Input
                       id={tag}
@@ -344,10 +333,6 @@ const NewNoteModal = (props) => {
                     <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
                   </label>
                 ))}
-                {/* <AddTagSign
-                  onClick={() => tagInputHandler(index)}
-                  title="新增標籤"
-                /> */}
 
                 <AddSignContainer>
                   <AddSign

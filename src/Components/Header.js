@@ -190,7 +190,7 @@ function Header() {
   }
 
   function logoRedirect() {
-    navigate("/libary-search");
+    navigate("/library-search");
   }
 
   return (
@@ -209,8 +209,8 @@ function Header() {
             <CloseButton onClick={closeToggleHandler}>×</CloseButton>
             <NavLinks>
               <MobileLink
-                to="/libary-search"
-                onClick={() => closeToggleHandler("/libary-search")}
+                to="/library-search"
+                onClick={() => closeToggleHandler("/library-search")}
               >
                 圖書館
               </MobileLink>
@@ -244,7 +244,7 @@ function Header() {
           <Logo onClick={logoRedirect} alt="bookia logo" />
         </LogoContainer>
         <NavLinks>
-          <Nav to="/libary-search">圖書館</Nav>
+          <Nav to="/library-search">圖書館</Nav>
           <Nav to="/books">我的書櫃</Nav>
           <Nav to="/tags">我的書籤櫃</Nav>
           <Nav to="/site-search">我的搜尋</Nav>

@@ -17,7 +17,7 @@ import Header from "./components/Header";
 import Login from "./pages/login";
 import SiteSearch from "./pages/siteSearch";
 import backgroundImg from "./image/background.jpg";
-import NoMatch from "./pages/noPage";
+import NoPage from "./pages/noPage";
 import LoadingModal from "./components/modal/LoadingModal";
 
 const UserProfile = createContext();
@@ -95,7 +95,7 @@ function App() {
                 />
 
                 <Route
-                  path="libary-search"
+                  path="library-search"
                   element={
                     <RequireAuth loginState={loginState}>
                       <LibrarySearch />
@@ -134,9 +134,8 @@ function App() {
                     </RequireAuth>
                   }
                 />
+                <Route path="*" element={<NoPage />} />
               </Route>
-
-              <Route path="*" element={<NoMatch />} />
             </Routes>
           </UserProfile.Provider>
         </BrowserRouter>

@@ -27,13 +27,13 @@ const Button = styled(Link)`
   }
 `;
 
-function NoMatch() {
+function NoPage() {
   return (
     <Container>
       <h1>此頁面不存在</h1>
-      <Button to="/libary-search">回到首頁</Button>
+      <Button to="/library-search">回到首頁</Button>
     </Container>
   );
 }
 
-export default NoMatch;
+export default NoPage;
