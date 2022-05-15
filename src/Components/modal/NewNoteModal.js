@@ -162,9 +162,10 @@ const NewNoteModal = (props) => {
   const inputRef = useRef();
   const userId = useContext(UserProfile);
   const [inputDatas, setInputDatas] = useState({
-    content: "",
-    page: "",
-    title: "",
+    content:
+      '<p>AI發展出感受，需要考慮三種可能:&nbsp;</p><ol><li>意識在某種程度上和有機生化機轉相關，因此只要是非生物系統，就不可能創造出意識。</li><li><mark class="marker-yellow">意識與有機生化機轉無關，而是與智能有關</mark>，如此一來<mark class="marker-yellow">只要跨過某種智能門檻，就必須發展出意識</mark>。</li><li>意識與有機生化機轉或高智能，並無重要關聯。這樣一來，電腦有可能發展出意識，但並非絕對。</li></ol>',
+    page: "88",
+    title: "書摘",
   });
   const parse = require("html-react-parser");
 
@@ -217,60 +218,59 @@ const NewNoteModal = (props) => {
     e.preventDefault();
     setIsConfirmClose(false);
     setIsLoading(false);
-    if (chosenTagArray.length === 0) {
-      setIsHintTitle("每個筆記需要至少一個標籤");
-      setIsHint(true);
-    } else if (!titleInput) {
-      setIsHintTitle("請輸入筆記標題");
-      setIsHint(true);
-    } else if (!noteInput) {
-      setIsHintTitle("請輸入筆記內容");
-      setIsHint(true);
+    // if (chosenTagArray.length === 0) {
+    //   setIsHintTitle("每個筆記需要至少一個標籤");
+    //   setIsHint(true);
+    // } else if (!titleInput) {
+    //   setIsHintTitle("請輸入筆記標題");
+    //   setIsHint(true);
+    // } else if (!noteInput) {
+    //   setIsHintTitle("請輸入筆記內容");
+    //   setIsHint(true);
+    // } else {
+    setIsLoading(true);
+    // console.log(props.noteData.id);
+    // bug: inputData和state的inputDatas能否合在一起?
+    let inputData = {
+      bookID: props.bookInfo.id,
+      id: props.noteData?.id ? props.noteData.id : "",
+      bookTitle: props.bookInfo.title,
+      tagNames: chosenTagArray,
+      content: inputDatas.content,
+      page: inputDatas.page,
+      title: inputDatas.title,
+    };
+
+    console.log("新筆記資料包===>", inputData);
+
+    if (!props.noteData) {
+      console.log("new note");
+      await firebase.addNewNote(userId, inputData);
     } else {
-      setIsLoading(true);
-      // console.log(props.noteData.id);
-      console.log(noteInput);
-      let inputData = {
-        bookID: props.bookInfo.id,
-        id: props.noteData?.id ? props.noteData.id : "",
-        bookTitle: props.bookInfo.title,
-        tagNames: chosenTagArray,
-        content: noteInput,
-        page: pageInput,
-        title: titleInput,
-      };
-
-      console.log("新筆記資料包===>", inputData);
-
-      if (!props.noteData) {
-        console.log("new note");
-        await firebase.addNewNote(userId, inputData);
-      } else {
-        console.log("update", props.bookInfo.noteId);
-        await firebase.addNewNote(userId, inputData, props.noteData.id);
-      }
-
-      // // 把標籤加到書本
-
-      let bookTagArray = [];
-      await firebase.getBookInfo(userId, props.bookInfo.id).then((data) => {
-        bookTagArray = data.tagNames;
-
-        if (bookTagArray.length === 0) {
-          bookTagArray = [...chosenTagArray];
-        } else {
-          chosenTagArray.forEach((tag) => {
-            if (!bookTagArray.includes(tag)) {
-              bookTagArray.push(tag);
-            }
-          });
-        }
-      });
-
-      await firebase.updateBookTags(userId, props.bookInfo.id, bookTagArray);
-      props.setShowNoteInput(false);
-      chosenTagArray = [];
+      console.log("update", props.bookInfo.noteId);
+      await firebase.addNewNote(userId, inputData, props.noteData.id);
     }
+
+    // // 把標籤加到書本
+    let bookTagArray = [];
+    await firebase.getBookInfo(userId, props.bookInfo.id).then((data) => {
+      bookTagArray = data.tagNames;
+
+      if (bookTagArray.length === 0) {
+        bookTagArray = [...chosenTagArray];
+      } else {
+        chosenTagArray.forEach((tag) => {
+          if (!bookTagArray.includes(tag)) {
+            bookTagArray.push(tag);
+          }
+        });
+      }
+    });
+
+    await firebase.updateBookTags(userId, props.bookInfo.id, bookTagArray);
+    props.setShowNoteInput(false);
+    chosenTagArray = [];
+    // }
   }
 
   function closeInputByWindow(e) {
@@ -302,7 +302,9 @@ const NewNoteModal = (props) => {
           <Title>筆記標題</Title>
           <TitleInput
             name="title"
-            defaultValue={props.noteData ? props.noteData.title : ""}
+            defaultValue={
+              props.noteData ? props.noteData.title : inputDatas.title
+            }
             onChange={(e) => setTitleInput(e.target.value)}
             placeholder={"ex.書摘"}
           ></TitleInput>
@@ -310,7 +312,9 @@ const NewNoteModal = (props) => {
           <Title>頁數</Title>
           <TitleInput
             name="page"
-            defaultValue={props.noteData ? props.noteData.page : ""}
+            defaultValue={
+              props.noteData ? props.noteData.page : inputDatas.page
+            }
             onChange={(e) => setPageInput(e.target.value)}
           ></TitleInput>
 
@@ -349,6 +353,7 @@ const NewNoteModal = (props) => {
             <ContentEditor
               noteData={props.noteData}
               setNoteInput={setNoteInput}
+              inputDatas={inputDatas}
             />
 
             {/* <ContentInput
