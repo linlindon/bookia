@@ -79,6 +79,13 @@ const BoxWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: flex-end;
   width: 100%;
+
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  margin-bottom: 40px;
+  box-shadow: beige;
+  box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
+  padding: 10px;
 `;
 
 const TagBoxContainer = styled.div`
@@ -87,7 +94,7 @@ const TagBoxContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: calc((100% - 108px) / 2);
+  width: calc((100% - 105px) / 2);
 
   margin: 15px;
   padding: 10px;
@@ -115,10 +122,12 @@ const TagBoxContainer = styled.div`
   }
 `;
 const AddTagBox = styled(TagBoxContainer)`
+  padding: 7px;
   height: auto;
   color: #d3d2d1;
   border: 3px dashed #d3d2d1;
   cursor: pointer;
+  flex-grow: 1;
 
   &:hover {
     color: #404040;
