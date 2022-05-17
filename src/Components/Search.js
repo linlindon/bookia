@@ -65,7 +65,7 @@ function SearchBar(props) {
         <SearchForm onSubmit={(e) => searchData(e)}>
           <SearchInput
             onChange={(e) => setInput(e.target.value)}
-            placeholder="請輸入關鍵字"
+            placeholder="請輸入書名或ISBN"
           />
           <SearchIcon onClick={searchData} />
         </SearchForm>

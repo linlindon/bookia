@@ -79,7 +79,7 @@ function LibrarySearch() {
     <>
       <PageTitle>圖書館</PageTitle>
       <Container>
-        <Title>輸入欲搜尋的書名</Title>
+        <Title>輸入欲搜尋的書名或ISBN號碼</Title>
         <SearchBar setSearchInput={setSearchInput} />
         {isLoading && <LoadingModal />}
         {noDataHint && <h2>搜尋不到此書</h2>}

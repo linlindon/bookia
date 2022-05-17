@@ -264,7 +264,7 @@ let allNotesData = [];
 
 function TagBox(props) {
   // const [showInputModal, setShowInputModal] = useState(false);
-
+  const [noDataHint, setNoDataHint] = useState(false);
   const [notesBoxData, setNotesBoxData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
@@ -294,6 +294,7 @@ function TagBox(props) {
 
   async function choseTagHandler(tagName) {
     console.log("chose");
+    setNoDataHint(false);
     let currentNoteData = [];
     if (clickTagNameArray.includes(tagName)) {
       clickTagNameArray = clickTagNameArray.filter((item) => {
@@ -309,6 +310,9 @@ function TagBox(props) {
         currentNoteData.push(note);
       }
     });
+    if (clickTagNameArray.length !== 0 && currentNoteData.length === 0) {
+      setNoDataHint(true);
+    }
     setNotesBoxData(currentNoteData);
   }
 
@@ -326,36 +330,6 @@ function TagBox(props) {
     props.setIsConfirmClose(true);
     props.setIsHint(true);
   }
-
-  // async function deleteTagGroupHandler(index) {
-  //   setIsLoading(true);
-  //   let currentGroupData = [...props.groupData];
-  //   let tagsArray = currentGroupData[index].tags;
-  //   currentGroupData.splice(index, 1);
-
-  //   // console.log(tagsArray);
-  //   if (tagsArray === undefined || tagsArray.length === 0) {
-  //     props.setGroupData(currentGroupData);
-  //     setIsLoading(false);
-  //     return;
-  //   } else {
-  //     // 要加上警語
-  //     await Promise.all(
-  //       tagsArray.map(async (tag) => {
-  //         await tools.deleteNotesTag(userId, tag);
-  //       })
-  //     );
-  //     await Promise.all(
-  //       tagsArray.map(async (tag) => {
-  //         await tools.deleteBooksTag(userId, tag);
-  //       })
-  //     );
-  //     props.setGroupData([...currentGroupData]);
-  //   }
-  //   await firebase.updateTagGroup(userId, currentGroupData).then(() => {
-  //     setIsLoading(false);
-  //   });
-  // }
 
   return (
     <>
@@ -378,19 +352,6 @@ function TagBox(props) {
                 boxIndex={index}
                 setGroupData={props.setGroupData}
               />
-              {/* {isUpdateTagBoxName ? (
-                <Form onSubmit={(e) => e.preventDefault()}>
-                  <BoxNameInput
-                    defaultValue={box.name}
-                    as="input"
-                    onBlur={(e) => onBlurHandler(box.name, e.target.value)}
-                  />v
-                </Form>
-              ) : (
-                <BoxName onClick={() => setIsUpdateTagBoxName(true)}>
-                  {box.name}
-                </BoxName>
-              )} */}
             </BoxNameDiv>
             <TagsContainer>
               {box.tags?.map((tag) => (
@@ -399,7 +360,7 @@ function TagBox(props) {
                     <Input id={tag}></Input>
                     <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
                   </TagContainer>
-                  <DeleteTag onClick={(e) => showHintModal(tag, index)} />
+                  <DeleteTag onClick={() => showHintModal(tag, index)} />
                 </TagsWrapper>
               ))}
 
@@ -426,11 +387,19 @@ function TagBox(props) {
         <Note notesBoxData={notesBoxData} />
       ) : (
         <NoDataContainer>
-          <NoDataTitle>
-            點選書籤
-            <br />
-            顯示相關筆記
-          </NoDataTitle>
+          {noDataHint ? (
+            <NoDataTitle>
+              選取的書籤
+              <br />
+              無相關筆記
+            </NoDataTitle>
+          ) : (
+            <NoDataTitle>
+              點選書籤
+              <br />
+              顯示相關筆記
+            </NoDataTitle>
+          )}
         </NoDataContainer>
       )}
     </>

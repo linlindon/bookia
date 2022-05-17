@@ -1,32 +1,14 @@
 {
   "files": {
     "main.css": "/static/css/main.31d6cfe0.css",
-<<<<<<< Updated upstream
-    "main.js": "/static/js/main.07535eb5.js",
-||||||| constructed merge base
-    "main.js": "/static/js/main.20b1d213.js",
-=======
-    "main.js": "/static/js/main.3754bbae.js",
->>>>>>> Stashed changes
+    "main.js": "/static/js/main.c577e1a1.js",
     "static/media/login-book.jpg": "/static/media/login-book.c53b5cd767fb83cc067f.jpg",
     "static/media/background.jpg": "/static/media/background.8577c7a003fccc8b1523.jpg",
     "index.html": "/index.html",
-<<<<<<< Updated upstream
-    "main.07535eb5.js.map": "/static/js/main.07535eb5.js.map"
-||||||| constructed merge base
-    "main.20b1d213.js.map": "/static/js/main.20b1d213.js.map"
-=======
-    "main.3754bbae.js.map": "/static/js/main.3754bbae.js.map"
->>>>>>> Stashed changes
+    "main.c577e1a1.js.map": "/static/js/main.c577e1a1.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-<<<<<<< Updated upstream
-    "static/js/main.07535eb5.js"
-||||||| constructed merge base
-    "static/js/main.20b1d213.js"
-=======
-    "static/js/main.3754bbae.js"
->>>>>>> Stashed changes
+    "static/js/main.c577e1a1.js"
   ]
 }

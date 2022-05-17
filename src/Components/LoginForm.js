@@ -38,7 +38,9 @@ const Button = styled.button`
   }
 `;
 const LoadingContainer = styled.div`
-  margin-top: 30px;
+  align-self: end;
+  margin-right: 100px;
+  margin-top: 70px;
 `;
 
 export const LoginForm = (props) => {
