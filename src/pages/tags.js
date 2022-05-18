@@ -39,7 +39,6 @@ const LoadingContainer = styled.div`
 let allGroupData = [];
 
 function Tags() {
-  const [boxDatas, setboxDatas] = useState([]);
   const [showInputModal, setShowInputModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [isConfirmClose, setIsConfirmClose] = useState(false);
@@ -142,8 +141,6 @@ function Tags() {
       ) : (
         <TagBoxContainer>
           <TagBox
-            data={boxDatas}
-            setboxDatas={setboxDatas}
             groupData={groupData}
             setGroupData={setGroupData}
             setShowInputModal={setShowInputModal}

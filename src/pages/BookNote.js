@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { onSnapshot } from "firebase/firestore";
+
 import firebase from "../utils/firebaseTools";
 import NewNoteModal from "../components/modal/NewNoteModal";
 import NoteBox from "../components/NoteBox";
@@ -15,14 +16,6 @@ const Flex = styled.div`
 const Container = styled(Flex)`
   flex-direction: column;
   align-items: center;
-`;
-const Title = styled.h1`
-  width: 70%;
-  text-align: center;
-`;
-const TitleContainer = styled(Flex)`
-  flex-direction: column;
-  width: 100%;
 `;
 
 const Wrapper = styled.div`
@@ -53,19 +46,7 @@ const ContentContainer = styled.div`
   padding-left: 10px;
 `;
 const BookTitle = styled.h3`
-  margin: 0;
-`;
-
-const NoDataContainer = styled.div`
-  display: flex;
-  width: 100%;
-  align-self: flex-start;
-  justify-content: space-evenly;
-`;
-const NoDataTitle = styled.h3`
-  font-size: 20px;
-  font-weight: 900;
-  text-align: center;
+  margin: 0 0 15px 0;
 `;
 
 const LoadingContainer = styled.div`
@@ -88,9 +69,8 @@ function BookNote() {
     setIsLoading(true);
     if (userId) {
       let notesRef = firebase.getNotesRef(userId);
-      let data = [];
       onSnapshot(notesRef, (notes) => {
-        console.log("in snap shot");
+        let data = [];
         notes.forEach((note) => {
           if (note.data().bookID === id) {
             data.push(note.data());
@@ -106,7 +86,6 @@ function BookNote() {
   }, [userId]);
 
   useEffect(() => {
-    // setIsLoading(true);
     let data = [];
     if (userId) {
       firebase.getTagGroupsData(userId).then((res) => {
@@ -138,7 +117,6 @@ function BookNote() {
                 <ContentContainer>
                   <BookTitle>{bookInfo.title}</BookTitle>
                   <p>作者:{bookInfo.authors && bookInfo.authors.join("、")}</p>
-
                   <p>出版年: {bookInfo.publish}</p>
                 </ContentContainer>
               </BookInfoContainer>
@@ -148,13 +126,12 @@ function BookNote() {
                 setShowNoteInput={setShowNoteInput}
                 setNoteData={setNoteData}
                 showNoteInputHandler={showNoteInputHandler}
-                // bookInfo={bookInfo}
               />
             </Wrapper>
           </>
         )}
       </Container>
-      {showNoteInput ? (
+      {showNoteInput && (
         <NewNoteModal
           showNoteInput={showNoteInput}
           setShowNoteInput={setShowNoteInput}
@@ -163,7 +140,7 @@ function BookNote() {
           setGroupData={setGroupData}
           groupData={groupData}
         />
-      ) : null}
+      )}
     </>
   );
 }

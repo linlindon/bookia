@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
 import Loading from "./Loading";
@@ -54,7 +55,6 @@ export const LoginForm = (props) => {
   let navigate = useNavigate();
 
   const inputHandler = (e) => {
-    console.log(e);
     const { name, value } = e.target;
     setLoginInfo((prevState) => ({
       ...prevState,
@@ -74,7 +74,6 @@ export const LoginForm = (props) => {
       await firebase
         .LoginHandler(loginInfo.email, loginInfo.password)
         .then((res) => {
-          console.log(res);
           setIsLoading(false);
           navigate("/library-search");
         })
@@ -92,8 +91,7 @@ export const LoginForm = (props) => {
         });
     }
   }
-  // defaultValue={"test@gmail.com"}
-  // defaultValue={"123456"}
+
   return (
     <Form onSubmit={(e) => login(e)}>
       <Title>Email</Title>
@@ -119,15 +117,3 @@ export const LoginForm = (props) => {
     </Form>
   );
 };
-
-// export const showLoginError = (error) => {
-//   if (error.code == AuthErrorCodes.INVALID_PASSWORD) {
-//     lblLoginErrorMessage.innerHTML = "Wrong password, try again.";
-//   } else {
-//     lblLoginErrorMessage.innerHTML = `Error: ${error.message}`;
-//   }
-// };
-
-// export const showLoginState = (user) => {
-//   lblAuthState.innerHTML = `you logged in as ${user.displayName} (${user.uid})`;
-// };

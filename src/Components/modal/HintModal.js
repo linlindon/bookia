@@ -124,7 +124,7 @@ function HintModal(props) {
               <ConfirmButton
                 onClick={() => {
                   props.setIsHint(false);
-                  props.logoutRedirect();
+                  props.logoutRedirect && props.logoutRedirect();
                 }}
               >
                 確認

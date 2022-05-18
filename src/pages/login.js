@@ -1,10 +1,11 @@
 import { useState } from "react";
 import styled from "styled-components";
+
 import image from "../image/login-book.jpg";
 import BookiaLogo from "../image/logo.png";
+import HintModal from "../components/modal/HintModal";
 import { LoginForm } from "../components/LoginForm";
 import { SignUpForm } from "../components/SignUpForm";
-import HintModal from "../components/modal/HintModal";
 
 const Container = styled.div`
   display: flex;

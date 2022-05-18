@@ -1,12 +1,11 @@
 import styled from "styled-components";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 15%;
-  ${"" /* justify-content: center; */}
 `;
 const Button = styled(Link)`
   border: none;

@@ -2,77 +2,12 @@ import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { DeleteOutline } from "@styled-icons/typicons/DeleteOutline";
 import { AddCircle } from "@styled-icons/ionicons-outline/AddCircle";
+
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
-import { UserProfile } from "../App";
-
 import Note from "./Note";
 import BoxNameInput from "./BoxNameInput";
-import Loading from "../components/Loading";
-
-const Wrapper = styled.div`
-  ${
-    "" /* display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly; */
-  }
-  ${
-    "" /* width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 5% 15%; */
-  }
-`;
-
-// const BoxWrapper = styled.div`
-//   display: flex;
-//   flex-wrap: wrap;
-
-//   width: 80%;
-//   padding: 20px;
-//   margin-bottom: 30px;
-//   border-bottom: 2px solid #3fccdc;
-//   border-radius: 5px;
-//   ${"" /* background-color: #3fccdc; */}
-
-//   @media only screen and (min-width: 1280px) {
-//     width: 1180px;
-//   }
-//   @media only screen and (max-width: 786px) {
-//     align-items: center;
-//     flex-direction: column;
-//     width: 90%;
-//     padding: 5px;
-//   }
-// `;
-
-// const TagBoxContainer = styled.div`
-//   position: relative;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   min-width: 30%;
-//   max-width: 50%;
-//   min-height: 150px;
-//   margin: 1%;
-//   padding: 10px;
-//   border: 1px solid #ece6e6;
-//   border-radius: 10px;
-//   background-color: #ffffff;
-
-//   @media only screen and (max-width: 786px) {
-//     max-width: none;
-//     width: 90%;
-//     min-height: 120px;
-//   }
-//   @media only screen and (min-width: 1200px) {
-//     max-width: none;
-//     width: 31.2%;
-//   }
-// `;
+import { UserProfile } from "../App";
 
 const BoxWrapper = styled.div`
   display: flex;
@@ -101,24 +36,10 @@ const TagBoxContainer = styled.div`
   border-radius: 10px;
   border: solid 0.5px #e4e4e4;
   background-color: #ffffff;
-  ${"" /* outline: 1px none transparent; */}
   transition: 0.5s ease;
 
   &:hover {
     box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
-    ${"" /* background-color: #f7f7f7; */}
-  }
-
-  ${
-    "" /* @media only screen and (max-width: 786px) {
-    max-width: none;
-    width: 90%;
-    min-height: 120px;
-  }
-  @media only screen and (min-width: 1200px) {
-    max-width: none;
-    width: 31.2%;
-  } */
   }
 `;
 const AddTagBox = styled(TagBoxContainer)`
@@ -155,7 +76,6 @@ const BoxNameDiv = styled.div`
   display: flex;
   justify-content: center;
   text-align: center;
-  ${"" /* width: 80%; */}
   margin-bottom: 16px;
   cursor: pointer;
   font-size: 16px;
@@ -254,21 +174,13 @@ const NoDataTitle = styled.h3`
   text-align: center;
 `;
 
-const LoadingContainer = styled.div`
-  position: absolute;
-  margin-top: 40px;
-`;
-
 let clickTagNameArray = [];
 let allNotesData = [];
 
 function TagBox(props) {
-  // const [showInputModal, setShowInputModal] = useState(false);
   const [noDataHint, setNoDataHint] = useState(false);
   const [notesBoxData, setNotesBoxData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
-  console.log("tagbox render");
 
   useEffect(() => {
     allNotesData = [];
@@ -293,7 +205,6 @@ function TagBox(props) {
   }
 
   async function choseTagHandler(tagName) {
-    console.log("chose");
     setNoDataHint(false);
     let currentNoteData = [];
     if (clickTagNameArray.includes(tagName)) {
@@ -304,15 +215,14 @@ function TagBox(props) {
       clickTagNameArray.push(tagName);
     }
 
-    // console.log(allNotesData);
     allNotesData.forEach((note) => {
       if (tools.isNoteIncludeTag(clickTagNameArray, note)) {
         currentNoteData.push(note);
       }
     });
-    if (clickTagNameArray.length !== 0 && currentNoteData.length === 0) {
-      setNoDataHint(true);
-    }
+    setNoDataHint(
+      clickTagNameArray.length !== 0 && currentNoteData.length === 0
+    );
     setNotesBoxData(currentNoteData);
   }
 
@@ -333,11 +243,6 @@ function TagBox(props) {
 
   return (
     <>
-      {isLoading && (
-        <LoadingContainer>
-          <Loading />
-        </LoadingContainer>
-      )}
       <BoxWrapper>
         {props.groupData?.map((box, index) => (
           <TagBoxContainer key={box.name}>

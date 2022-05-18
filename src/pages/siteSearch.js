@@ -1,11 +1,12 @@
 import { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
+
 import firebase from "../utils/firebaseTools";
-import { UserProfile } from "../App";
 import SearchBar from "../components/Search";
 import Book from "../components/Book";
 import Note from "../components/Note";
 import Loading from "../components/Loading";
+import { UserProfile } from "../App";
 
 const PageTitle = styled.h1`
   marign-top: 5%;
@@ -54,12 +55,10 @@ function SiteSearch() {
   const [searchInput, setSearchInput] = useState([]);
   const [searchBookResults, setSearchBookResults] = useState([]);
   const [searchNoteResults, setSearchNoteResults] = useState([]);
-  const [isData, setIsData] = useState(true);
+  const [noDataHint, setNoDataHint] = useState(false);
   const [isRender, setIsRender] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
-  // console.log("inside func ===>", booksData, notesData);
-  console.log("outside", searchInput);
 
   useEffect(() => {
     booksData = [];
@@ -82,9 +81,8 @@ function SiteSearch() {
     setSearchBookResults([]);
     setSearchNoteResults([]);
     function searchData() {
-      console.log("inside", searchInput);
-
-      setIsData(true);
+      setNoDataHint(false);
+      setIsLoading(true);
       let inputWordArray = searchInput.split(" ");
       let filterData = [];
       if (searchType === "book") {
@@ -100,38 +98,30 @@ function SiteSearch() {
           inputWordArray.every((word) => {
             if (note.content.toLowerCase().includes(word)) {
               filterData.push(note);
-            } else {
-              console.log("no match keyowrd content");
             }
           });
         });
 
         filterData = notesData.filter((note) => {
-          // console.log(note.content);
           return inputWordArray.every((word) => {
-            // console.log(note.content.includes(word));
             return note.content.includes(word);
           });
         });
-        // console.log(filterData);
         setIsLoading(false);
         setSearchNoteResults(filterData);
       }
-      if (filterData.length === 0) {
-        setIsData(false);
-      }
+      setNoDataHint(filterData.length === 0);
+
       // console.log("book", booksData);
       // console.log("note", notesData);
     }
     if (searchInput.length !== 0) {
-      console.log(searchInput);
       searchData();
     }
   }, [searchInput, isRender]);
 
   function searchTypeHandler(type) {
-    // console.log("handler", searchInput);
-    setIsData(true);
+    setNoDataHint(false);
     setSearchBookResults([]);
     setSearchNoteResults([]);
     setSearchType(type);
@@ -162,7 +152,7 @@ function SiteSearch() {
             <Loading />
           </LoadingContainer>
         )}
-        {isData ? null : <Title>無相關資料</Title>}
+        {noDataHint && <Title>無相關資料</Title>}
         {searchBookResults.length !== 0 && (
           <Book bookDatas={searchBookResults} />
         )}

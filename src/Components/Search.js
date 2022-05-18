@@ -44,25 +44,27 @@ function SearchBar(props) {
   const [input, setInput] = useState("");
   const [hintTitle, setHintTitle] = useState("");
 
-  function searchData(e) {
-    e.preventDefault();
-    console.log(input);
-
-    // if (props.setIsRender) {
-    //   props.setIsRender((prevState) => !prevState);
-    // }
+  function searchData() {
+    if (props.setIsRender) {
+      props.setIsRender((prevState) => !prevState);
+    }
     if (input.replace(/\s*/g, "").length === 0) {
       setHintTitle("請輸入要搜尋的書名");
       setIsHint(true);
-    } else {
-      props.setSearchInput(input.toLowerCase());
+      return;
     }
+    props.setSearchInput(input.toLowerCase());
   }
 
   return (
     <>
       <SearchContainer>
-        <SearchForm onSubmit={(e) => searchData(e)}>
+        <SearchForm
+          onSubmit={(e) => {
+            e.preventDefault();
+            searchData();
+          }}
+        >
           <SearchInput
             onChange={(e) => setInput(e.target.value)}
             placeholder="請輸入書名或ISBN"

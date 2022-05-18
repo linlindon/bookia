@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { useState, useEffect } from "react";
+import styled from "styled-components";
 import Card from "../components/Card";
 import SearchBar from "../components/Search";
 import LoadingModal from "../components/modal/LoadingModal";
@@ -60,17 +60,16 @@ function LibrarySearch() {
           setIsLoading(false);
           setNoDataHint(true);
           return;
-        } else {
-          data.items.forEach((book) => {
-            bookData.push(book.volumeInfo);
-          });
-          setBookList(bookData);
-          setIsLoading(false);
-          window.scrollTo({
-            top: 350,
-            behavior: "smooth",
-          });
         }
+        data.items.forEach((book) => {
+          bookData.push(book.volumeInfo);
+        });
+        setBookList(bookData);
+        setIsLoading(false);
+        window.scrollTo({
+          top: 350,
+          behavior: "smooth",
+        });
       });
     }
   }, [searchInput]);
@@ -83,18 +82,11 @@ function LibrarySearch() {
         <SearchBar setSearchInput={setSearchInput} />
         {isLoading && <LoadingModal />}
         {noDataHint && <h2>搜尋不到此書</h2>}
-        {/* <DataContainer> */}
+
         <Card bookList={bookList} setIsLoading={setIsLoading} />
-        {/* </DataContainer> */}
       </Container>
     </>
   );
 }
 
 export default LibrarySearch;
-
-{
-  /* <LoadingContainer>
-          <Loading />
-        </LoadingContainer> */
-}

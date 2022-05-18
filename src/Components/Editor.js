@@ -5,7 +5,6 @@ function ContentEditor(props) {
   return (
     <CKEditor
       editor={Editor}
-      // config={editorConfiguration}
       data={props.noteData ? props.noteData.content : props.inputDatas.content}
       onReady={(editor) => {
         editor.editing.view.change((writer) => {

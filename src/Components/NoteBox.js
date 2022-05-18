@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import styled from "styled-components";
 import { Edit } from "@styled-icons/fa-regular/Edit";
+
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
 
@@ -108,7 +109,6 @@ function NoteBox(props) {
   const parse = require("html-react-parser");
   async function updateNote(id) {
     await firebase.getNoteData(userId, id).then((data) => {
-      console.log(data);
       props.setNoteData(data);
       props.setShowNoteInput(true);
     });
@@ -118,7 +118,7 @@ function NoteBox(props) {
     <>
       <Container>
         <AddTagBox onClick={props.showNoteInputHandler}>新增筆記</AddTagBox>
-        {props.bookNotesData?.map((item, index) => (
+        {props.bookNotesData?.map((item) => (
           <TagBox key={item.content}>
             <BoxNameContainer>
               <NoteName>{item.title}</NoteName>
