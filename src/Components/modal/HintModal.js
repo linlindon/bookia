@@ -1,6 +1,9 @@
-import styled from "styled-components";
 import { useRef, useState } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
+
+// import AddTagSign from "../AddTagSign";
 import Loading from "../Loading";
 
 const Background = styled.div`
@@ -70,10 +73,10 @@ const LoadingContainer = styled.div`
 `;
 function HintModal(props) {
   const [isLoading, setIsLoading] = useState(false);
-  const inputRef = useRef();
+  const backgroundRef = useRef();
 
   function closeInput(e) {
-    if (inputRef.current === e.target) {
+    if (backgroundRef.current === e.target) {
       props.setIsHint(false);
     }
   }
@@ -99,11 +102,10 @@ function HintModal(props) {
   }
 
   return (
-    <Background ref={inputRef} onClick={closeInput}>
+    <Background ref={backgroundRef} onClick={closeInput}>
       <InputContainer>
         <Delete onClick={() => props.setIsHint(false)}>x</Delete>
         <ModalTitle>{props.hintTitle}</ModalTitle>
-
         {isLoading ? (
           <LoadingContainer>
             <Loading />
@@ -134,5 +136,16 @@ function HintModal(props) {
     </Background>
   );
 }
+
+HintModal.propTypes = {
+  hintTitle: PropTypes.string,
+  setIsHint: PropTypes.func,
+  setShowNoteInput: PropTypes.func,
+  isConfirmClose: PropTypes.bool,
+  deleteTagData: PropTypes.array,
+  deleteTagHandler: PropTypes.func,
+  deleteGroupIndex: PropTypes.number,
+  deleteGroupHandler: PropTypes.func,
+};
 
 export default HintModal;

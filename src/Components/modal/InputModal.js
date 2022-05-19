@@ -1,10 +1,12 @@
 import { useRef, useState, useContext } from "react";
 import styled from "styled-components";
 import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
+import PropTypes from "prop-types";
+
 import firebase from "../../utils/firebaseTools";
 import tools from "../../utils/tools";
-import { UserProfile } from "../../App";
 import Loading from "../Loading";
+import { UserProfile } from "../../App";
 
 const Background = styled.div`
   display: flex;
@@ -89,11 +91,10 @@ function InputModal(props) {
   const [warningContent, setWarningContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
-  const inputRef = useRef();
+  const backgroundRef = useRef();
   let allGroupData = [...props.groupData];
 
-  async function addTagGroupHandler(e) {
-    e.preventDefault();
+  async function addTagGroupHandler() {
     setIsWarning(false);
     let allTags = tools.allTagsArray(allGroupData);
     let allTitles = tools.allGroupTitleArray(allGroupData);
@@ -103,58 +104,53 @@ function InputModal(props) {
       setIsWarning(true);
       return;
     } else {
-      // 加書籤櫃的，所以沒有box index。
-      console.log(inputValue, props.selectedBoxIndex);
       if (props.selectedBoxIndex === undefined) {
-        console.log("no selected index");
         if (allTitles.includes(inputValue)) {
           setWarningContent("此名稱已存在，請輸入其他名稱");
           setIsWarning(true);
-        } else {
-          console.log("no selected box name");
-
-          setIsWarning(false);
-          setIsLoading(true);
-          allGroupData.push({ name: inputValue, tags: [] });
-          await firebase.updateTagGroup(userId, allGroupData);
-
-          props.setGroupData(allGroupData);
-          props.setShowInputModal(false);
-          inputValue = "";
-          setIsLoading(false);
+          return;
         }
+        setIsWarning(false);
+        setIsLoading(true);
+        allGroupData.push({ name: inputValue, tags: [] });
+        await firebase.updateTagGroup(userId, allGroupData);
+
+        props.setGroupData(allGroupData);
+        props.setShowInputModal(false);
+        inputValue = "";
+        setIsLoading(false);
       } else {
-        console.log("second else", props.selectedBoxIndex);
         if (allTags.includes(inputValue)) {
           setWarningContent("此名稱已存在，請輸入其他名稱");
           setIsWarning(true);
           props.setSelectedBoxIndex(undefined);
-        } else {
-          setIsWarning(false);
-          setIsLoading(true);
-
-          allGroupData[props.selectedBoxIndex].tags.push(inputValue);
-
-          await firebase.updateTagGroup(userId, allGroupData);
-          props.setGroupData([...allGroupData]);
-          setIsLoading(false);
-          props.setSelectedBoxIndex(undefined);
-          props.setShowInputModal(false);
+          return;
         }
+        setIsWarning(false);
+        setIsLoading(true);
+
+        allGroupData[props.selectedBoxIndex].tags.push(inputValue);
+
+        await firebase.updateTagGroup(userId, allGroupData);
+        props.setGroupData([...allGroupData]);
+        setIsLoading(false);
+        props.setSelectedBoxIndex(undefined);
+        props.setShowInputModal(false);
       }
     }
   }
 
   function closeInput(e) {
-    if (inputRef.current === e.target) {
+    if (backgroundRef.current === e.target) {
       props.setShowInputModal(false);
     }
   }
   return (
-    <Background ref={inputRef} onClick={closeInput}>
+    <Background ref={backgroundRef} onClick={closeInput}>
       <InputContainer
         onSubmit={(e) => {
-          addTagGroupHandler(e);
+          e.preventDefault();
+          addTagGroupHandler();
         }}
       >
         <Delete onClick={() => props.setShowInputModal(false)}>x</Delete>
@@ -170,11 +166,19 @@ function InputModal(props) {
             <Loading />
           </LoadingContainer>
         ) : (
-          <ConfirmButton onClick={addTagGroupHandler}>確認</ConfirmButton>
+          <ConfirmButton>確認</ConfirmButton>
         )}
       </InputContainer>
     </Background>
   );
 }
+
+InputModal.propsTypes = {
+  groupData: PropTypes.array,
+  setGroupData: PropTypes.func,
+  setShowInputModal: PropTypes.func,
+  modalTitle: PropTypes.string,
+  selectedBoxIndex: PropTypes.string,
+};
 
 export default InputModal;

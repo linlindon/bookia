@@ -1,8 +1,6 @@
 import ReactDOM from "react-dom";
-import ResetStyle from "./utils/globalStyle/resetStyles";
-import { GlobalStyle } from "./utils/globalStyle/styles";
 
-import "./index.css";
+import { GlobalStyle } from "./utils/globalStyle/styles";
 import { App } from "./App";
 
 ReactDOM.render(

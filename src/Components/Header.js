@@ -178,7 +178,6 @@ function Header() {
   const [isLoading, setIsLoading] = useState(false);
   const [isShowLogoutHint, setIsShowLogoutHint] = useState(false);
   const navigate = useNavigate();
-  const userId = useContext(UserProfile);
 
   function closeToggleHandler(link) {
     setToggle(false);

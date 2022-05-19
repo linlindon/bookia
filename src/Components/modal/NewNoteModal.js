@@ -146,15 +146,15 @@ const NewNoteModal = (props) => {
   const [isHint, setIsHint] = useState(false);
   const [hintTitle, setIsHintTitle] = useState("");
   const [isConfirmClose, setIsConfirmClose] = useState(false);
-  const inputRef = useRef();
-  const userId = useContext(UserProfile);
   const [inputDatas, setInputDatas] = useState({
     content: props.noteData && props.noteData.content,
-    page: props.noteData && props.noteData.page,
+    page: props.noteData ? props.noteData.page : "",
     title: props.noteData && props.noteData.title,
   });
+  const backgroundRef = useRef();
   let chosenTagRef = useRef([]);
   let selectedTagBox = useRef();
+  const userId = useContext(UserProfile);
 
   useEffect(() => {
     chosenTagRef.current = [];
@@ -166,7 +166,7 @@ const NewNoteModal = (props) => {
 
   function choseTagHandler(tag) {
     if (chosenTagRef.current.includes(tag)) {
-      console.log("tag to delete===>", tag);
+      // console.log("tag to delete===>", tag);
       chosenTagRef.current = chosenTagRef.current.filter((item) => {
         return item !== tag;
       });
@@ -175,11 +175,10 @@ const NewNoteModal = (props) => {
     }
   }
 
-  async function submitHandler(e) {
-    e.preventDefault();
+  async function submitHandler() {
     setIsConfirmClose(false);
     setIsLoading(false);
-    if (chosenTagRef.length === 0) {
+    if (chosenTagRef.current.length === 0) {
       setIsHintTitle("每個筆記需要至少一個標籤");
       setIsHint(true);
     } else if (!inputDatas.title) {
@@ -190,8 +189,7 @@ const NewNoteModal = (props) => {
       setIsHint(true);
     } else {
       setIsLoading(true);
-      // console.log(props.noteData.id);
-      // bug: inputData和state的inputDatas能否合在一起?
+
       let inputData = {
         bookID: props.bookInfo.id,
         id: props.noteData?.id ? props.noteData.id : "",
@@ -209,8 +207,8 @@ const NewNoteModal = (props) => {
       } else {
         await firebase.addNewNote(userId, inputData, props.noteData.id);
       }
-
-      // // 把標籤加到書本
+      console.log(props.bookInfo.id);
+      // 把標籤加到書本
       let bookTagArray = [];
       await firebase.getBookInfo(userId, props.bookInfo.id).then((data) => {
         bookTagArray = data.tagNames;
@@ -225,7 +223,6 @@ const NewNoteModal = (props) => {
           });
         }
       });
-
       await firebase.updateBookTags(userId, props.bookInfo.id, bookTagArray);
       props.setShowNoteInput(false);
       chosenTagRef.current = [];
@@ -233,7 +230,7 @@ const NewNoteModal = (props) => {
   }
 
   function closeInputByWindow(e) {
-    if (inputRef.current === e.target) {
+    if (backgroundRef.current === e.target) {
       setIsConfirmClose(true);
       setIsHintTitle("變更未儲存，確定要離開嗎");
       setIsHint(true);
@@ -251,8 +248,14 @@ const NewNoteModal = (props) => {
   }
 
   return (
-    <Background ref={inputRef} onClick={closeInputByWindow}>
-      <TagBoxFlat onSubmit={submitHandler} as="form">
+    <Background ref={backgroundRef} onClick={closeInputByWindow}>
+      <TagBoxFlat
+        onSubmit={(e) => {
+          e.preventDefault();
+          submitHandler();
+        }}
+        as="form"
+      >
         <CloseButton onClick={closeInput}>X</CloseButton>
 
         <Title>筆記標題</Title>
@@ -317,12 +320,6 @@ const NewNoteModal = (props) => {
             setInputDatas={setInputDatas}
             inputDatas={inputDatas}
           />
-
-          {/* <ContentInput
-              defaultValue={props.noteData ? props.noteData.content : ""}
-              name="content"
-              onChange={inputChangeHandler}
-            /> */}
         </div>
         {isLoading ? (
           <LoadingContainer>
