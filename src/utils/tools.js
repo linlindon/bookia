@@ -43,7 +43,7 @@ const tools = {
       });
       changeNotesArray[index].tagNames = [...changeNotesTagArray];
     });
-    console.log("更改好的資料包", changeNotesArray);
+    // console.log("更改好的資料包", changeNotesArray);
 
     // 利用id去更改firebase的資料
     await Promise.all(
@@ -66,7 +66,7 @@ const tools = {
       });
       changeBooksArray[index].tagNames = [...changeBookTagArray];
     });
-    console.log("書本promise前的資料包", changeBooksArray);
+    // console.log("書本promise前的資料包", changeBooksArray);
 
     await Promise.all(
       changeBooksArray.map(async (book) => {

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import styled from "styled-components";
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
@@ -36,8 +36,6 @@ const LoadingContainer = styled.div`
   margin-top: 100px;
 `;
 
-let allGroupData = [];
-
 function Tags() {
   const [showInputModal, setShowInputModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
@@ -59,7 +57,6 @@ function Tags() {
       await firebase.getTagGroupsData(userId).then((res) => {
         data.push(...res.tagGroups);
         setGroupData(data);
-        allGroupData = data;
         setIsLoading(false);
       });
     }
@@ -69,7 +66,6 @@ function Tags() {
   }, [userId]);
 
   async function deleteTagHandler(tag, index) {
-    console.log("delete tag");
     let currentGroupData = [...groupData];
     let changeTagArray = currentGroupData[index].tags.filter((name) => {
       return name !== tag;
@@ -79,23 +75,20 @@ function Tags() {
     await firebase.updateTagGroup(userId, currentGroupData);
     await tools.deleteNotesTag(userId, tag);
     await tools.deleteBooksTag(userId, tag);
-    console.log("delet tag data final");
     setDeleteTagData(undefined);
     setIsHintTitle(undefined);
   }
 
   async function deleteGroupHandler(index) {
     setIsLoading(true);
-    console.log("delete group", index);
+    // console.log("delete group", index);
 
     let currentGroupData = [...groupData];
     let tagsArray = currentGroupData[index].tags;
     currentGroupData.splice(index, 1);
-    console.log(currentGroupData);
-    console.log(tagsArray);
+
     setIsLoading(false);
     if (tagsArray === undefined || tagsArray.length === 0) {
-      console.log("no tag inside box");
       setGroupData(currentGroupData);
       setIsLoading(false);
     } else {
@@ -111,7 +104,7 @@ function Tags() {
       );
       setGroupData([...currentGroupData]);
     }
-    console.log(currentGroupData, "before firebase");
+    // console.log(currentGroupData, "before firebase");
     await firebase
       .updateTagGroup(userId, currentGroupData)
       .then(() => {
@@ -125,8 +118,6 @@ function Tags() {
         console.log(err);
       });
   }
-
-  console.log(groupData);
 
   return (
     <>
@@ -180,40 +171,3 @@ function Tags() {
   );
 }
 export default Tags;
-
-// async function getTagGroupData() {
-//   try {
-//     const tagGroupsDocs = await getDocs(tagGroupsRef);
-//     const tagGroupIds = [];
-//     const tagsInfo = [];
-//     tagGroupsDocs.forEach((doc) => {
-//       tagBoxData.push({
-//         title: doc.data().title,
-//         id: doc.data().id,
-//         tags: [],
-//       });
-//       tagGroupIds.push(doc.data().id);
-//     });
-
-//     await Promise.all(
-//       tagGroupIds.map(async (id) => {
-//         const tagQuery = query(tagsRef, where("tagGroupID", "==", id));
-//         const tagDocs = await getDocs(tagQuery);
-//         tagDocs.forEach((item) => {
-//           tagsInfo.push(item.data());
-//         });
-//       })
-//     );
-//     tagsInfo.forEach((tagItem) => {
-//       tagBoxData.forEach((boxItem, index) => {
-//         if (tagItem.tagGroupID === boxItem.id) {
-//           tagBoxData[index].tags.push(tagItem.name);
-//         }
-//       });
-//     });
-
-//     setboxDatas(tagBoxData);
-//   } catch (err) {
-//     console.log("fetch failed", err);
-//   }
-// }

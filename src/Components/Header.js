@@ -3,11 +3,12 @@ import { useNavigate, NavLink, Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Logout } from "@styled-icons/heroicons-outline/Logout";
 import { Menu } from "@styled-icons/heroicons-outline/Menu";
+
 import BookiaLogo from "../image/logo.png";
 import firebase from "../utils/firebaseTools";
-import { UserProfile } from "../App";
 import HintModal from "./modal/HintModal";
 import LoadingModal from "../components/modal/LoadingModal";
+import { UserProfile } from "../App";
 
 const PlaceHolder = styled.div`
   width: 100%;
@@ -194,24 +195,23 @@ function Header() {
       setIsHint(true);
     });
   }
-  function logoutRedirect() {
-    navigate("/");
-  }
-
-  function logoRedirect() {
-    navigate("/library-search");
-  }
 
   return (
     <>
       <PlaceHolder />
       {isHint && (
-        <HintModal hintTitle={"您已成功登出"} logoutRedirect={logoutRedirect} />
+        <HintModal
+          hintTitle={"您已成功登出"}
+          logoutRedirect={() => navigate("/")}
+        />
       )}
       {isLoading && <LoadingModal />}
       <HamburgerNav>
         <HamburgerBtn src={Menu} onClick={() => setToggle(true)} />
-        <SmallLogo onClick={logoRedirect} alt="bookia logo" />
+        <SmallLogo
+          onClick={() => navigate("/library-search")}
+          alt="bookia logo"
+        />
       </HamburgerNav>
 
       {toggle && (
@@ -253,7 +253,7 @@ function Header() {
 
       <NavbarWrapper>
         <LogoContainer>
-          <Logo onClick={logoRedirect} alt="bookia logo" />
+          <Logo onClick={() => navigate("/library-search")} alt="bookia logo" />
         </LogoContainer>
         <NavLinks>
           <Nav to="/library-search">圖書館</Nav>
@@ -277,30 +277,3 @@ function Header() {
 }
 
 export default Header;
-
-// import Box from '@mui/material/Box';
-// import BottomNavigation from '@mui/material/BottomNavigation';
-// import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-// import RestoreIcon from '@mui/icons-material/Restore';
-// import FavoriteIcon from '@mui/icons-material/Favorite';
-// import LocationOnIcon from '@mui/icons-material/LocationOn';
-
-// export default function SimpleBottomNavigation() {
-//   const [value, setValue] = React.useState(0);
-
-//   return (
-//     <Box sx={{ width: 500 }}>
-//       <BottomNavigation
-//         showLabels
-//         value={value}
-//         onChange={(event, newValue) => {
-//           setValue(newValue);
-//         }}
-//       >
-//         <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-//         <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-//         <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
-//       </BottomNavigation>
-//     </Box>
-//   );
-// }

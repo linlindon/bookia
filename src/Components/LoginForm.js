@@ -61,8 +61,7 @@ export const LoginForm = (props) => {
       [name]: value,
     }));
   };
-  async function login(e) {
-    e.preventDefault();
+  async function login() {
     setIsLoading(true);
     if (!loginInfo.email) {
       props.setHintTitle("請輸入電子信箱");
@@ -73,19 +72,18 @@ export const LoginForm = (props) => {
     } else {
       await firebase
         .LoginHandler(loginInfo.email, loginInfo.password)
-        .then((res) => {
+        .then(() => {
           setIsLoading(false);
           navigate("/library-search");
         })
         .catch((error) => {
-          console.log(error);
           let message = tools.errorMessage(error);
           setIsLoading(false);
           if (message !== "") {
             props.setHintTitle(message);
             props.setIsHint(true);
           } else {
-            props.setHintTitle("帳號或密碼輸入錯誤");
+            props.setHintTitle("帳號或密碼錯誤，請重新嘗試");
             props.setIsHint(true);
           }
         });
@@ -93,7 +91,12 @@ export const LoginForm = (props) => {
   }
 
   return (
-    <Form onSubmit={(e) => login(e)}>
+    <Form
+      onSubmit={(e) => {
+        e.preventDefault();
+        login();
+      }}
+    >
       <Title>Email</Title>
       <Input
         name="email"

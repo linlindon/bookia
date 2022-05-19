@@ -71,19 +71,17 @@ const LoadingContainer = styled.div`
 function HintModal(props) {
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef();
-  console.log("hint modal");
+
   function closeInput(e) {
     if (inputRef.current === e.target) {
       props.setIsHint(false);
     }
   }
   async function closeModals() {
-    console.log(props.deleteTagData);
     if (props.setShowNoteInput) {
       props.setShowNoteInput(false);
       props.setIsHint(false);
     } else if (props.deleteTagData) {
-      console.log("delete tag data");
       setIsLoading(true);
       await props.deleteTagHandler(
         props.deleteTagData[0],

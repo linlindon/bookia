@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import firebase from "../utils/firebaseTools";
@@ -48,34 +48,32 @@ const LoadingContainer = styled.div`
   margin-top: 50px;
 `;
 
-let booksData = [];
-let notesData = [];
 function SiteSearch() {
   const [searchType, setSearchType] = useState("book");
   const [searchInput, setSearchInput] = useState([]);
   const [searchBookResults, setSearchBookResults] = useState([]);
   const [searchNoteResults, setSearchNoteResults] = useState([]);
   const [noDataHint, setNoDataHint] = useState(false);
-  const [isRender, setIsRender] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
+  let booksDataRef = useRef([]);
+  let notesDataRef = useRef([]);
+  // const [isRender, setIsRender] = useState(true);
 
   useEffect(() => {
-    booksData = [];
-    notesData = [];
     if (userId) {
       firebase.getBooksData(userId).then((data) => {
         data.forEach((book) => {
-          booksData.push(book.data());
+          booksDataRef.current.push(book.data());
         });
       });
       firebase.getAllNotesData(userId).then((data) => {
         data.forEach((note) => {
-          notesData.push(note.data());
+          notesDataRef.current.push(note.data());
         });
       });
     }
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     setSearchBookResults([]);
@@ -87,22 +85,14 @@ function SiteSearch() {
       let filterData = [];
       if (searchType === "book") {
         inputWordArray.forEach((word) => {
-          filterData = booksData.filter((book) => {
+          filterData = booksDataRef.current.filter((book) => {
             return book.title.toLowerCase().includes(word);
           });
         });
         setIsLoading(false);
         setSearchBookResults(filterData);
       } else if (searchType === "note") {
-        notesData.forEach((note) => {
-          inputWordArray.every((word) => {
-            if (note.content.toLowerCase().includes(word)) {
-              filterData.push(note);
-            }
-          });
-        });
-
-        filterData = notesData.filter((note) => {
+        filterData = notesDataRef.current.filter((note) => {
           return inputWordArray.every((word) => {
             return note.content.includes(word);
           });
@@ -111,14 +101,11 @@ function SiteSearch() {
         setSearchNoteResults(filterData);
       }
       setNoDataHint(filterData.length === 0);
-
-      // console.log("book", booksData);
-      // console.log("note", notesData);
     }
     if (searchInput.length !== 0) {
       searchData();
     }
-  }, [searchInput, isRender]);
+  }, [searchInput]);
 
   function searchTypeHandler(type) {
     setNoDataHint(false);
@@ -146,7 +133,7 @@ function SiteSearch() {
             搜尋我的筆記內容
           </Button>
         </ButtonContainer>
-        <SearchBar setSearchInput={setSearchInput} setIsRender={setIsRender} />
+        <SearchBar setSearchInput={setSearchInput} />
         {isLoading && (
           <LoadingContainer>
             <Loading />

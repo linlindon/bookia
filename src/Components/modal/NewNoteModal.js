@@ -94,11 +94,6 @@ const Tag = styled.p`
     color: #fff;
   }
 `;
-const ContentInput = styled.textarea`
-  width: 98%;
-  height: 25vh;
-  border: 2px solid #d3d2d1;
-`;
 
 const AddSignContainer = styled.div`
   position: absolute;
@@ -145,16 +140,8 @@ const LoadingContainer = styled.div`
   margin-top: 10px;
 `;
 
-let chosenTagArray = [];
-let currentGroups = [];
-let groupArray = [];
-let selectedTagBox;
-
 const NewNoteModal = (props) => {
   const [showInputModal, setShowInputModal] = useState(false);
-  const [titleInput, setTitleInput] = useState("");
-  const [pageInput, setPageInput] = useState("");
-  const [noteInput, setNoteInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isHint, setIsHint] = useState(false);
   const [hintTitle, setIsHintTitle] = useState("");
@@ -162,56 +149,43 @@ const NewNoteModal = (props) => {
   const inputRef = useRef();
   const userId = useContext(UserProfile);
   const [inputDatas, setInputDatas] = useState({
-    content: "",
-    page: "",
-    title: "",
+    content: props.noteData && props.noteData.content,
+    page: props.noteData && props.noteData.page,
+    title: props.noteData && props.noteData.title,
   });
-  const parse = require("html-react-parser");
+  let chosenTagRef = useRef([]);
+  let selectedTagBox = useRef();
 
   useEffect(() => {
-    chosenTagArray = [];
-    currentGroups = [...props.groupData];
-    for (let i = 0; i < currentGroups.length; i++) {
-      groupArray.push(false);
-    }
+    chosenTagRef.current = [];
+
     if (props.noteData) {
-      console.log(props.noteData);
-      setTitleInput(props.noteData.title);
-      setNoteInput(props.noteData.content);
-      setPageInput(props.noteData.page);
-      chosenTagArray = [...props.noteData.tagNames];
-      setInputDatas((prevState) => ({
-        ...prevState,
-        content: props.noteData.content,
-        page: props.noteData.page,
-        title: props.noteData.title,
-      }));
+      chosenTagRef.current = [...props.noteData.tagNames];
     }
   }, []);
 
   function choseTagHandler(tag) {
-    if (chosenTagArray.includes(tag)) {
+    if (chosenTagRef.current.includes(tag)) {
       console.log("tag to delete===>", tag);
-      chosenTagArray = chosenTagArray.filter((item) => {
+      chosenTagRef.current = chosenTagRef.current.filter((item) => {
         return item !== tag;
       });
     } else {
-      chosenTagArray.push(tag);
+      chosenTagRef.current.push(tag);
     }
-    console.log(chosenTagArray);
   }
 
   async function submitHandler(e) {
     e.preventDefault();
     setIsConfirmClose(false);
     setIsLoading(false);
-    if (chosenTagArray.length === 0) {
+    if (chosenTagRef.length === 0) {
       setIsHintTitle("每個筆記需要至少一個標籤");
       setIsHint(true);
-    } else if (!titleInput) {
+    } else if (!inputDatas.title) {
       setIsHintTitle("請輸入筆記標題");
       setIsHint(true);
-    } else if (!noteInput) {
+    } else if (!inputDatas.content) {
       setIsHintTitle("請輸入筆記內容");
       setIsHint(true);
     } else {
@@ -222,12 +196,12 @@ const NewNoteModal = (props) => {
         bookID: props.bookInfo.id,
         id: props.noteData?.id ? props.noteData.id : "",
         bookTitle: props.bookInfo.title,
-        tagNames: chosenTagArray,
-        content: noteInput,
+        tagNames: chosenTagRef.current,
+        content: inputDatas.content,
         page: inputDatas.page,
         title: inputDatas.title,
       };
-      console.log(inputData.content);
+
       console.log("新筆記資料包===>", inputData);
 
       if (!props.noteData) {
@@ -242,9 +216,9 @@ const NewNoteModal = (props) => {
         bookTagArray = data.tagNames;
 
         if (bookTagArray.length === 0) {
-          bookTagArray = [...chosenTagArray];
+          bookTagArray = [...chosenTagRef.current];
         } else {
-          chosenTagArray.forEach((tag) => {
+          chosenTagRef.current.forEach((tag) => {
             if (!bookTagArray.includes(tag)) {
               bookTagArray.push(tag);
             }
@@ -254,7 +228,7 @@ const NewNoteModal = (props) => {
 
       await firebase.updateBookTags(userId, props.bookInfo.id, bookTagArray);
       props.setShowNoteInput(false);
-      chosenTagArray = [];
+      chosenTagRef.current = [];
     }
   }
 
@@ -273,101 +247,109 @@ const NewNoteModal = (props) => {
 
   function tagInputHandler(index) {
     setShowInputModal(true);
-    selectedTagBox = index;
+    selectedTagBox.current = index;
   }
 
   return (
-    <>
-      <Background ref={inputRef} onClick={closeInputByWindow}>
-        <TagBoxFlat onSubmit={submitHandler} as="form">
-          <CloseButton onClick={closeInput}>X</CloseButton>
+    <Background ref={inputRef} onClick={closeInputByWindow}>
+      <TagBoxFlat onSubmit={submitHandler} as="form">
+        <CloseButton onClick={closeInput}>X</CloseButton>
 
-          <Title>筆記標題</Title>
-          <TitleInput
-            name="title"
-            defaultValue={props.noteData && props.noteData.title}
-            onChange={(e) => setTitleInput(e.target.value)}
-            placeholder={"ex.書摘"}
-          ></TitleInput>
+        <Title>筆記標題</Title>
+        <TitleInput
+          name="title"
+          defaultValue={props.noteData && props.noteData.title}
+          onChange={(e) =>
+            setInputDatas((prev) => ({
+              ...prev,
+              title: e.target.value,
+            }))
+          }
+          placeholder={"ex.書摘"}
+        ></TitleInput>
 
-          <Title>頁數</Title>
-          <TitleInput
-            name="page"
-            defaultValue={props.noteData && props.noteData.page}
-            onChange={(e) => setPageInput(e.target.value)}
-          ></TitleInput>
+        <Title>頁數</Title>
+        <TitleInput
+          name="page"
+          defaultValue={props.noteData && props.noteData.page}
+          onChange={(e) =>
+            setInputDatas((prev) => ({
+              ...prev,
+              page: e.target.value,
+            }))
+          }
+        ></TitleInput>
 
-          <Title>選擇此筆記的書籤</Title>
-          {props.groupData?.map((data, index) => (
-            <TagContentBox key={data.name}>
-              <SubTitle>{data.name}</SubTitle>
+        <Title>選擇此筆記的書籤</Title>
+        {props.groupData?.map((data, index) => (
+          <TagContentBox key={data.name}>
+            <SubTitle>{data.name}</SubTitle>
 
-              <TagsContainer>
-                {data.tags.map((tag) => (
-                  <label name={tag} key={tag}>
-                    <Input
-                      id={tag}
-                      defaultChecked={
-                        props.noteData
-                          ? props.noteData.tagNames.includes(tag)
-                          : false
-                      }
-                    ></Input>
-                    <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
-                  </label>
-                ))}
+            <TagsContainer>
+              {data.tags.map((tag) => (
+                <label name={tag} key={tag}>
+                  <Input
+                    id={tag}
+                    defaultChecked={
+                      props.noteData
+                        ? props.noteData.tagNames.includes(tag)
+                        : false
+                    }
+                  ></Input>
+                  <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
+                </label>
+              ))}
 
-                <AddSignContainer>
-                  <AddSign
-                    onClick={() => tagInputHandler(index)}
-                    title="新增標籤"
-                  />
-                </AddSignContainer>
-              </TagsContainer>
-            </TagContentBox>
-          ))}
+              <AddSignContainer>
+                <AddSign
+                  onClick={() => tagInputHandler(index)}
+                  title="新增標籤"
+                />
+              </AddSignContainer>
+            </TagsContainer>
+          </TagContentBox>
+        ))}
 
-          <div>
-            <Title>筆記內容</Title>
-            <ContentEditor
-              noteData={props.noteData}
-              setNoteInput={setNoteInput}
-              inputDatas={inputDatas}
-            />
+        <div>
+          <Title>筆記內容</Title>
+          <ContentEditor
+            noteData={props.noteData}
+            setInputDatas={setInputDatas}
+            inputDatas={inputDatas}
+          />
 
-            {/* <ContentInput
+          {/* <ContentInput
               defaultValue={props.noteData ? props.noteData.content : ""}
               name="content"
               onChange={inputChangeHandler}
             /> */}
-          </div>
-          {isLoading ? (
-            <LoadingContainer>
-              <Loading />
-            </LoadingContainer>
-          ) : (
-            <SubmitButton>{props.noteData ? "修改" : "新增"}</SubmitButton>
-          )}
-        </TagBoxFlat>
-        {showInputModal && (
-          <InputModal
-            groupData={currentGroups}
-            setGroupData={props.setGroupData}
-            setShowInputModal={setShowInputModal}
-            modalTitle={"標籤名稱"}
-            selectedBoxIndex={selectedTagBox}
-          />
+        </div>
+        {isLoading ? (
+          <LoadingContainer>
+            <Loading />
+          </LoadingContainer>
+        ) : (
+          <SubmitButton>{props.noteData ? "修改" : "新增"}</SubmitButton>
         )}
-        {isHint && (
-          <HintModal
-            hintTitle={hintTitle}
-            setIsHint={setIsHint}
-            setShowNoteInput={props.setShowNoteInput}
-            isConfirmClose={isConfirmClose}
-          />
-        )}
-      </Background>
-    </>
+      </TagBoxFlat>
+      {showInputModal && (
+        <InputModal
+          groupData={props.groupData}
+          setGroupData={props.setGroupData}
+          setShowInputModal={setShowInputModal}
+          modalTitle={"標籤名稱"}
+          selectedBoxIndex={selectedTagBox.current}
+        />
+      )}
+      {isHint && (
+        <HintModal
+          hintTitle={hintTitle}
+          setIsHint={setIsHint}
+          setShowNoteInput={props.setShowNoteInput}
+          isConfirmClose={isConfirmClose}
+        />
+      )}
+    </Background>
   );
 };
 

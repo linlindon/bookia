@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
 import Loading from "./Loading";
@@ -62,9 +63,7 @@ export const SignUpForm = (props) => {
     }));
   };
 
-  async function submitHandler(e) {
-    e.preventDefault();
-    console.log("submit");
+  async function submitHandler() {
     if (!signUpInfo.name) {
       props.setHintTitle("請輸入姓名");
       props.setIsHint(true);
@@ -94,7 +93,6 @@ export const SignUpForm = (props) => {
           navigate(`/library-search`);
         })
         .catch((error) => {
-          console.log(error);
           let message = tools.errorMessage(error);
           setIsLoading(false);
           if (message !== "") {
@@ -108,7 +106,12 @@ export const SignUpForm = (props) => {
     }
   }
   return (
-    <Form onSubmit={(e) => submitHandler(e)}>
+    <Form
+      onSubmit={(e) => {
+        e.preventDefault();
+        submitHandler();
+      }}
+    >
       <Title>Name</Title>
       <Input name="name" onChange={inputHandler} value={signUpInfo.name} />
       <Title>Email</Title>

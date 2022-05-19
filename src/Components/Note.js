@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
-  ${"" /* margin-top: 60px; */}
-  ${"" /* margin: 1% 15%; */}
 
   @media only screen and (min-width: 1280px) {
     ${"" /* width: 1140px; */}
@@ -34,7 +32,6 @@ const NoteBox = styled.div`
   }
 
   @media only screen and (max-width: 786px) {
-    ${"" /* width: 100%; */}
     flex-basis: 100%;
     flex-direction: column;
   }
@@ -71,8 +68,6 @@ const Tag = styled.p`
   border-radius: 15px;
   background-color: #e4d36d;
 `;
-const Content = styled.p``;
-const DeleteSign = styled.span``;
 
 function Note(props) {
   let navigate = useNavigate();
@@ -92,13 +87,10 @@ function Note(props) {
           </InfoContainer>
           <TagsContainer>
             {note.tagNames.map((tag) => (
-              <Tag key={tag}>
-                {tag}
-                <DeleteSign />
-              </Tag>
+              <Tag key={tag}>{tag}</Tag>
             ))}
           </TagsContainer>
-          <Content>{parse(note.content)}</Content>
+          <div>{parse(note.content)}</div>
         </NoteBox>
       ))}
     </Container>

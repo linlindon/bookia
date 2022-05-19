@@ -35,6 +35,15 @@ const newUserRef = collection(db, "users");
 //   newUserRef,
 // };
 
+async deleteNote(userId, noteId) {
+  const noteRef = doc(collection(usersRef, userId, "notes"), noteId);
+  await deleteDoc(noteRef);
+},
+async deleteBook(userId, bookId) {
+  const booksRef = doc(db, "users", userId, "books", bookId);
+  await deleteDoc(booksRef);
+},
+
 const api = {
   geData(userID, docId, data) {
     const notesRef = collection(db, "users", userID, "notes");

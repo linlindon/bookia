@@ -1,17 +1,11 @@
-import { serverTimestamp } from "firebase/firestore";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import firebase from "../utils/firebaseTools";
-import { UserProfile } from "../App";
-import image from "../image/book.png";
+import { serverTimestamp } from "firebase/firestore";
 
-// align-item: flex-start。讓flexbox不要stretch
-// const Wrapper = styled.div`
-//   display: flex;
-//   width: 100%;
-//   flex-wrap: wrap;
-// `;
+import firebase from "../utils/firebaseTools";
+import image from "../image/book.png";
+import { UserProfile } from "../App";
 
 const AllCardsContainer = styled.div`
   display: flex;
@@ -68,7 +62,6 @@ const BookImageContainer = styled.div`
 const BookImage = styled.img`
   width: 100%;
   height: auto;
-  ${"" /* object-fit: contain; */}
   border: solid 1px #eeeded;
 `;
 const AddButton = styled.button`
@@ -131,9 +124,7 @@ function Card(props) {
   const userId = useContext(UserProfile);
   let navigate = useNavigate();
 
-  async function getBookData(book, title, authors, publisher, date, img) {
-    console.log(book);
-
+  async function getBookData(title, authors, publisher, date, img) {
     props.setIsLoading(true);
     if (date === undefined) {
       date = "無資料";
@@ -152,16 +143,15 @@ function Card(props) {
       tagNames: [],
       time: serverTimestamp(),
     };
-    console.log(data);
+
     const newBookId = firebase.setNewBookRef(userId);
     await firebase.addNewBook(userId, newBookId, data).then(() => {
       props.setIsLoading(false);
-      navigate(`/booknote/${newBookId}`, { state: data });
+      navigate(`/booknote/${newBookId}`);
     });
   }
 
   return (
-    // <Wrapper>
     <AllCardsContainer>
       {props.bookList?.map((book, index) => {
         let img = book.imageLinks;
@@ -184,7 +174,6 @@ function Card(props) {
                 key={`books${index}`}
                 onClick={() =>
                   getBookData(
-                    book,
                     book.title,
                     book.authors,
                     book.publisher,
@@ -200,7 +189,6 @@ function Card(props) {
         );
       })}
     </AllCardsContainer>
-    // </Wrapper>
   );
 }
 export default Card;

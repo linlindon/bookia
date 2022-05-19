@@ -1,29 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-// const Container = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   width: 90%;
-// `;
-
-// 原本的wrapper
-// const Container = styled.div`
-//   display: flex;
-//   justify-content: flex-start;
-//   flex-wrap: wrap;
-//   width: 100%
-//   padding: 0 5%;
-
-//   @media only screen and (min-width: 1280px) {
-//     width: 1280px;
-//     align-items: center;
-//   }
-//   @media only screen and (max-width: 786px) {
-//     padding: 0 2%;
-//   }
-// `;
-
 const Container = styled.div`
   display: flex;
   justify-content: flex-start;
@@ -101,7 +78,6 @@ const Tag = styled.p`
 
 function Book(props) {
   let navigate = useNavigate();
-  console.log(props.bookDatas);
 
   return (
     <Container>

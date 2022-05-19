@@ -5,7 +5,7 @@ function ContentEditor(props) {
   return (
     <CKEditor
       editor={Editor}
-      data={props.noteData ? props.noteData.content : props.inputDatas.content}
+      data={props.noteData && props.noteData.content}
       onReady={(editor) => {
         editor.editing.view.change((writer) => {
           writer.setStyle(
@@ -17,16 +17,12 @@ function ContentEditor(props) {
       }}
       onChange={(event, editor) => {
         const data = editor.getData();
-        console.log({ data });
-        props.setNoteInput(data);
+        props.setInputDatas((prev) => ({
+          ...prev,
+          content: data,
+        }));
         console.log({ event, editor, data });
       }}
-      // onBlur={(event, editor) => {
-      //   console.log("Blur.", editor);
-      // }}
-      // onFocus={(event, editor) => {
-      //   console.log("Focus.", editor);
-      // }}
     />
   );
 }

@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import styled from "styled-components";
+
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
 
@@ -10,59 +11,58 @@ const BoxName = styled.div`
 `;
 const NameInput = styled.input`
   border: none;
-  height: 22px;
-  margin-top: 6px;
-  margin-bottom: 9px;
+  height: 20px;
+  margin-top: 8px;
+  margin-bottom: 6px;
   font-size: 16px;
   font-weight: 600;
   text-align: center;
   letter-spacing: 2px;
   background-color: #eeeded;
+  border: 1px solid #404040;
+  border-radius: 5px;
 `;
-const Form = styled.form``;
 
 function BoxNameInput(props) {
   const [isUpdateTagBoxName, setIsUpdateTagBoxName] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const userId = useContext(UserProfile);
 
-  //   if (inputRef.current === e.target)
-  console.log("box name input");
-  async function submitHandler(index, e) {
-    e.preventDefault();
-    console.log(index, inputValue);
+  async function submitHandler(index) {
     let currentGroupData = [...props.groupData];
-
     if (!inputValue) {
-      console.log("no value");
       setIsUpdateTagBoxName(false);
       return;
-    } else if (inputValue.replace(/\s*/g, "").length === 0) {
-      console.log("no value2");
-      setIsUpdateTagBoxName(false);
-      return;
-    } else if (inputValue === "") {
-      setIsUpdateTagBoxName(false);
-      return;
-    } else {
-      currentGroupData[index].name = inputValue;
-      props.setGroupData(currentGroupData);
-      // await firebase.updateTagGroup(userId, currentGroupData);
-      setIsUpdateTagBoxName(false);
     }
+    if (inputValue.replace(/\s*/g, "").length === 0) {
+      setIsUpdateTagBoxName(false);
+      return;
+    }
+    currentGroupData[index].name = inputValue;
+
+    props.setGroupData(currentGroupData);
+    await firebase.updateTagGroup(userId, currentGroupData);
+    setIsUpdateTagBoxName(false);
   }
   return (
     <>
       {isUpdateTagBoxName ? (
-        <Form onSubmit={(e) => submitHandler(props.boxIndex, e)}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            submitHandler(props.boxIndex);
+          }}
+        >
           <NameInput
             autoFocus
             defaultValue={props.name}
             as="input"
-            onBlur={(e) => submitHandler(props.boxIndex, e)}
+            onBlur={() => {
+              submitHandler(props.boxIndex);
+            }}
             onChange={(e) => setInputValue(e.target.value)}
           />
-        </Form>
+        </form>
       ) : (
         <BoxName onClick={() => setIsUpdateTagBoxName(true)}>
           {props.name}

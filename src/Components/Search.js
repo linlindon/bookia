@@ -45,9 +45,9 @@ function SearchBar(props) {
   const [hintTitle, setHintTitle] = useState("");
 
   function searchData() {
-    if (props.setIsRender) {
-      props.setIsRender((prevState) => !prevState);
-    }
+    // if (props.setIsRender) {
+    //   props.setIsRender((prevState) => !prevState);
+    // }
     if (input.replace(/\s*/g, "").length === 0) {
       setHintTitle("請輸入要搜尋的書名");
       setIsHint(true);

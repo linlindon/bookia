@@ -7,7 +7,6 @@ import {
   deleteDoc,
   query,
   where,
-  addDoc,
 } from "firebase/firestore";
 import { getDoc, updateDoc, setDoc } from "firebase/firestore";
 import {
@@ -97,21 +96,7 @@ const firebase = {
   async addNewBook(userId, bookId, data) {
     const newBookRef = collection(db, "users", userId, "books");
     data = { ...data, id: bookId };
-    console.log(data);
     await setDoc(doc(newBookRef, bookId), data);
-  },
-  async deleteNote(userId, noteId) {
-    const noteRef = doc(collection(usersRef, userId, "notes"), noteId);
-    await deleteDoc(noteRef);
-  },
-  async deleteBook(userId, bookId) {
-    const booksRef = doc(db, "users", userId, "books", bookId);
-    await deleteDoc(booksRef);
-  },
-  async searchBookTitle(userId, keywords) {
-    const newBookRef = collection(db, "users", userId, "books");
-    // const q = query(newBookRef, where("title", "==", keywords));
-    // return await getDocs(q);
   },
   queryNotesByTag(userId, tagName) {
     const notesRef = collection(usersRef, userId, "notes");
@@ -135,7 +120,6 @@ const firebase = {
   },
   SignUpHandler(email, password, name) {
     return createUserWithEmailAndPassword(auth, email, password).then((res) => {
-      // usersRef = collection(db, "users");
       const ref = doc(usersRef, res.user.uid);
       setDoc(ref, {
         name: name,

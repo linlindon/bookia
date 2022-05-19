@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import styled from "styled-components";
 import { DeleteOutline } from "@styled-icons/typicons/DeleteOutline";
 import { AddCircle } from "@styled-icons/ionicons-outline/AddCircle";
@@ -174,22 +174,21 @@ const NoDataTitle = styled.h3`
   text-align: center;
 `;
 
-let clickTagNameArray = [];
-let allNotesData = [];
-
 function TagBox(props) {
   const [noDataHint, setNoDataHint] = useState(false);
   const [notesBoxData, setNotesBoxData] = useState([]);
   const userId = useContext(UserProfile);
+  let chosenTagRef = useRef([]);
+  let allNotesRef = useRef([]);
 
   useEffect(() => {
-    allNotesData = [];
-    clickTagNameArray = [];
+    allNotesRef.current = [];
+    chosenTagRef.current = [];
 
     async function getData() {
       await firebase.getAllNotesData(userId).then((notes) => {
         notes.forEach((note) => {
-          allNotesData.push(note.data());
+          allNotesRef.current.push(note.data());
         });
       });
     }
@@ -207,21 +206,21 @@ function TagBox(props) {
   async function choseTagHandler(tagName) {
     setNoDataHint(false);
     let currentNoteData = [];
-    if (clickTagNameArray.includes(tagName)) {
-      clickTagNameArray = clickTagNameArray.filter((item) => {
+    if (chosenTagRef.current.includes(tagName)) {
+      chosenTagRef.current = chosenTagRef.current.filter((item) => {
         return item !== tagName;
       });
     } else {
-      clickTagNameArray.push(tagName);
+      chosenTagRef.current.push(tagName);
     }
 
-    allNotesData.forEach((note) => {
-      if (tools.isNoteIncludeTag(clickTagNameArray, note)) {
+    allNotesRef.current.forEach((note) => {
+      if (tools.isNoteIncludeTag(chosenTagRef.current, note)) {
         currentNoteData.push(note);
       }
     });
     setNoDataHint(
-      clickTagNameArray.length !== 0 && currentNoteData.length === 0
+      chosenTagRef.current.length !== 0 && currentNoteData.length === 0
     );
     setNotesBoxData(currentNoteData);
   }
@@ -234,7 +233,6 @@ function TagBox(props) {
   }
 
   function showHintModal(tag, index) {
-    console.log("delete tag");
     props.setIsHintTitle(`刪除「${tag}」標籤後，所有筆記上的該標籤也將刪除`);
     props.setDeleteTagData([tag, index]);
     props.setIsConfirmClose(true);

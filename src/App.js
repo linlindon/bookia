@@ -50,7 +50,6 @@ function RequireAuth({ children, loginState }) {
 }
 
 function App() {
-  // 0:沒有登入/ 1:判斷中 /2:已登入
   const [loginState, setLoginState] = useState(1);
   const [userId, setUserId] = useState();
   const firebaseConfig = {
@@ -64,7 +63,6 @@ function App() {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  console.log("outside", loginState);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
