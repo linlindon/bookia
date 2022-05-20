@@ -84,7 +84,7 @@ function HintModal(props) {
     if (props.setShowNoteInput) {
       props.setShowNoteInput(false);
       props.setIsHint(false);
-    } else if (props.deleteTagData) {
+    } else if (props.deleteTagData.length !== 0) {
       setIsLoading(true);
       await props.deleteTagHandler(
         props.deleteTagData[0],
@@ -93,7 +93,6 @@ function HintModal(props) {
       setIsLoading(false);
       props.setIsHint(false);
     } else if (props.deleteGroupIndex) {
-      console.log("delete group data", props.deleteGroupIndex);
       setIsLoading(true);
       await props.deleteGroupHandler(props.deleteGroupIndex);
       setIsLoading(false);

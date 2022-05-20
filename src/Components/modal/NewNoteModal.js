@@ -1,13 +1,15 @@
 import { useEffect, useState, useRef, useContext } from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
 import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
 import ContentEditor from "../Editor";
+
 import firebase from "../../utils/firebaseTools";
-import { UserProfile } from "../../App";
 import InputModal from "./InputModal";
-import Loading from "../Loading";
 import HintModal from "./HintModal";
+import Loading from "../Loading";
+import { UserProfile } from "../../App";
 
 const Flex = styled.div`
   display: flex;
@@ -200,15 +202,14 @@ const NewNoteModal = (props) => {
         title: inputDatas.title,
       };
 
-      console.log("新筆記資料包===>", inputData);
+      // console.log("新筆記資料包===>", inputData);
 
       if (!props.noteData) {
         await firebase.addNewNote(userId, inputData);
       } else {
         await firebase.addNewNote(userId, inputData, props.noteData.id);
       }
-      console.log(props.bookInfo.id);
-      // 把標籤加到書本
+
       let bookTagArray = [];
       await firebase.getBookInfo(userId, props.bookInfo.id).then((data) => {
         bookTagArray = data.tagNames;
@@ -348,6 +349,15 @@ const NewNoteModal = (props) => {
       )}
     </Background>
   );
+};
+
+NewNoteModal.propTypes = {
+  showNoteInput: PropTypes.bool,
+  setShowNoteInput: PropTypes.func,
+  bookInfo: PropTypes.object,
+  noteData: PropTypes.object,
+  groupData: PropTypes.array,
+  setGroupData: PropTypes.func,
 };
 
 export default NewNoteModal;

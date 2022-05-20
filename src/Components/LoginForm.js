@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
@@ -119,4 +120,9 @@ export const LoginForm = (props) => {
       )}
     </Form>
   );
+};
+
+LoginForm.propTypes = {
+  setHintTitle: PropTypes.string,
+  setIsHint: PropTypes.func,
 };

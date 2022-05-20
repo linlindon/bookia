@@ -114,7 +114,6 @@ function InputModal(props) {
         setIsLoading(true);
         allGroupData.push({ name: inputValue, tags: [] });
         await firebase.updateTagGroup(userId, allGroupData);
-
         props.setGroupData(allGroupData);
         props.setShowInputModal(false);
         inputValue = "";
@@ -179,6 +178,7 @@ InputModal.propsTypes = {
   setShowInputModal: PropTypes.func,
   modalTitle: PropTypes.string,
   selectedBoxIndex: PropTypes.string,
+  setSelectedBoxIndex: PropTypes.func,
 };
 
 export default InputModal;

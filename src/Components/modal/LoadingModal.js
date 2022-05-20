@@ -31,7 +31,7 @@ const Dot = styled.div`
   width: 12px;
   height: 12px;
   margin: 0 5px;
-  /* Animation */
+
   animation: ${BounceAnimation} 0.5s linear infinite;
   animation-delay: ${(props) => props.delay};
 `;

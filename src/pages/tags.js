@@ -42,7 +42,7 @@ function Tags() {
   const [isConfirmClose, setIsConfirmClose] = useState(false);
   const [isHint, setIsHint] = useState(false);
   const [hintTitle, setIsHintTitle] = useState("");
-  const [deleteTagData, setDeleteTagData] = useState(undefined);
+  const [deleteTagData, setDeleteTagData] = useState([]);
   const [deleteGroupIndex, setDeleteGroupIndex] = useState(undefined);
   const [groupData, setGroupData] = useState([]);
   const [selectedBoxIndex, setSelectedBoxIndex] = useState(undefined);
@@ -52,7 +52,6 @@ function Tags() {
   useEffect(() => {
     let data = [];
     setIsLoading(true);
-    setDeleteGroupIndex("");
     async function getData() {
       await firebase.getTagGroupsData(userId).then((res) => {
         data.push(...res.tagGroups);
@@ -75,8 +74,8 @@ function Tags() {
     await firebase.updateTagGroup(userId, currentGroupData);
     await tools.deleteNotesTag(userId, tag);
     await tools.deleteBooksTag(userId, tag);
-    setDeleteTagData(undefined);
-    setIsHintTitle(undefined);
+    setDeleteTagData([]);
+    setIsHintTitle("");
   }
 
   async function deleteGroupHandler(index) {
@@ -108,9 +107,9 @@ function Tags() {
     await firebase
       .updateTagGroup(userId, currentGroupData)
       .then(() => {
-        setDeleteTagData(undefined);
+        setDeleteTagData([]);
         setDeleteGroupIndex(undefined);
-        setIsHintTitle(undefined);
+        setIsHintTitle("");
         setSelectedBoxIndex(undefined);
         setIsLoading(false);
       })

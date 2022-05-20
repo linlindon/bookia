@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Edit } from "@styled-icons/fa-regular/Edit";
 
@@ -142,5 +143,12 @@ function NoteBox(props) {
     </>
   );
 }
+
+NoteBox.propTypes = {
+  bookNotesData: PropTypes.array,
+  setShowNoteInput: PropTypes.func,
+  setNoteData: PropTypes.func,
+  showNoteInputHandler: PropTypes.func,
+};
 
 export default NoteBox;

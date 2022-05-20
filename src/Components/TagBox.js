@@ -2,11 +2,12 @@ import { useEffect, useState, useContext, useRef } from "react";
 import styled from "styled-components";
 import { DeleteOutline } from "@styled-icons/typicons/DeleteOutline";
 import { AddCircle } from "@styled-icons/ionicons-outline/AddCircle";
+import PropTypes from "prop-types";
 
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
 import Note from "./Note";
-import BoxNameInput from "./BoxNameInput";
+import GroupNameInput from "./GroupNameInput";
 import { UserProfile } from "../App";
 
 const BoxWrapper = styled.div`
@@ -249,7 +250,7 @@ function TagBox(props) {
               title="刪除書籤櫃"
             />
             <BoxNameDiv>
-              <BoxNameInput
+              <GroupNameInput
                 name={box.name}
                 groupData={props.groupData}
                 boxIndex={index}
@@ -308,5 +309,18 @@ function TagBox(props) {
     </>
   );
 }
+
+TagBox.propTypes = {
+  groupData: PropTypes.array,
+  setGroupData: PropTypes.func,
+  setShowInputModal: PropTypes.func,
+  setModalTitle: PropTypes.func,
+  setSelectedBoxIndex: PropTypes.func,
+  setIsHint: PropTypes.func,
+  setIsHintTitle: PropTypes.func,
+  setIsConfirmClose: PropTypes.func,
+  setDeleteTagData: PropTypes.func,
+  setDeleteGroupIndex: PropTypes.func,
+};
 
 export default TagBox;

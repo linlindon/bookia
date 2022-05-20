@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate, NavLink, Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Logout } from "@styled-icons/heroicons-outline/Logout";
@@ -8,7 +8,6 @@ import BookiaLogo from "../image/logo.png";
 import firebase from "../utils/firebaseTools";
 import HintModal from "./modal/HintModal";
 import LoadingModal from "../components/modal/LoadingModal";
-import { UserProfile } from "../App";
 
 const PlaceHolder = styled.div`
   width: 100%;

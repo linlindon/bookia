@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import propTypes from "prop-types";
 
 const Container = styled.div`
   display: flex;
@@ -73,7 +75,6 @@ function Note(props) {
   let navigate = useNavigate();
   const parse = require("html-react-parser");
   return (
-    // 可以和notebox 共用
     <Container>
       {props.notesBoxData?.map((note, index) => (
         <NoteBox
@@ -96,5 +97,9 @@ function Note(props) {
     </Container>
   );
 }
+
+Note.propTypes = {
+  notesBoxData: propTypes.array,
+};
 
 export default Note;

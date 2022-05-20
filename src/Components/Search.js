@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { Search } from "@styled-icons/heroicons-solid/Search";
+import PropTypes from "prop-types";
 
 import HintModal from "./modal/HintModal";
 
@@ -77,5 +78,9 @@ function SearchBar(props) {
     </>
   );
 }
+
+SearchBar.propTypes = {
+  setSearchInput: PropTypes.func,
+};
 
 export default SearchBar;

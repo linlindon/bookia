@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 import firebase from "../utils/firebaseTools";
 import { UserProfile } from "../App";
@@ -23,7 +24,7 @@ const NameInput = styled.input`
   border-radius: 5px;
 `;
 
-function BoxNameInput(props) {
+function GroupNameInput(props) {
   const [isUpdateTagBoxName, setIsUpdateTagBoxName] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const userId = useContext(UserProfile);
@@ -40,8 +41,8 @@ function BoxNameInput(props) {
     }
     currentGroupData[index].name = inputValue;
 
-    props.setGroupData(currentGroupData);
     await firebase.updateTagGroup(userId, currentGroupData);
+    props.setGroupData(currentGroupData);
     setIsUpdateTagBoxName(false);
   }
   return (
@@ -72,4 +73,11 @@ function BoxNameInput(props) {
   );
 }
 
-export default BoxNameInput;
+GroupNameInput.propTypes = {
+  groupData: PropTypes.array,
+  setGroupData: PropTypes.func,
+  name: PropTypes.string,
+  boxIndex: PropTypes.number,
+};
+
+export default GroupNameInput;

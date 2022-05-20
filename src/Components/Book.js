@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const Container = styled.div`
   display: flex;
@@ -102,5 +103,9 @@ function Book(props) {
     </Container>
   );
 }
+
+Book.propTypes = {
+  bookDatas: PropTypes.array,
+};
 
 export default Book;
