@@ -10,6 +10,7 @@ import Loading from "../components/Loading";
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
 `;
@@ -65,7 +66,6 @@ function Books() {
         });
         setIsLoading(false);
         setBookDatas(bookData);
-        // console.log(bookData);
       });
     }
   }, [userId]);

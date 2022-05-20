@@ -26,7 +26,7 @@ const TagBoxContainer = styled.div`
 `;
 
 const PageTitle = styled.h1`
-  @media only screen and (max-width: 786px) {
+  @media only screen and (max-width: 768px) {
     margin: 5px;
   }
 `;

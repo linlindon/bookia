@@ -14,7 +14,7 @@ export const GlobalStyle = createGlobalStyle`
         font-family: 'Noto Sans TC', sans-serif; 
 
 
-        @media only screen and (max-width: 786px) {
+        @media only screen and (max-width: 768px) {
             font-size: 14px;
         }
     }

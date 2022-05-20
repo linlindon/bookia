@@ -22,7 +22,7 @@ const AddSign = styled(AddCircle)`
   cursor: pointer;
   color: #dca246;
 
-  @media only screen and (max-width: 786px) {
+  @media only screen and (max-width: 768px) {
     top: 90px;
   }
 `;

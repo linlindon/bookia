@@ -25,7 +25,7 @@ const NavbarWrapper = styled.div`
   padding: 20px 40px;
   align-items: center;
 
-  @media screen and (max-width: 786px) {
+  @media screen and (max-width: 768px) {
     display: none;
   }
 `;
@@ -49,7 +49,7 @@ const NavLinks = styled.div`
     border-bottom: solid 3px #d3d2d1;
   }
 
-  @media screen and (max-width: 786px) {
+  @media screen and (max-width: 768px) {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -67,7 +67,7 @@ const Nav = styled(NavLink)`
   &:hover {
     color: #000;
   }
-  @media screen and (max-width: 786px) {
+  @media screen and (max-width: 768px) {
     font-weight: 500;
     font-size: 18px;
     line-height: 27px;
@@ -75,7 +75,7 @@ const Nav = styled(NavLink)`
   }
 `;
 const MobileLink = styled.p`
-  @media screen and (max-width: 786px) {
+  @media screen and (max-width: 768px) {
     padding: 4px 6px;
     margin-right: 2%;
     font-weight: 500;
@@ -121,7 +121,7 @@ const HamburgerNav = styled.div`
   display: none;
   background-color: #f2f1f0;
 
-  @media screen and (max-width: 786px) {
+  @media screen and (max-width: 768px) {
     display: flex;
   }
 `;

@@ -11,7 +11,7 @@ import { UserProfile } from "../App";
 const PageTitle = styled.h1`
   marign-top: 5%;
   text-align: center;
-  @media only screen and (max-width: 786px) {
+  @media only screen and (max-width: 768px) {
     margin: 5px;
   }
 `;

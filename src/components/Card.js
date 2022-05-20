@@ -12,7 +12,8 @@ const AllCardsContainer = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   flex-wrap: wrap;
-  @media only screen and (max-width: 1100px) {
+
+  @media only screen and (max-width: 768px) {
     flex-direction: column;
   }
 `;
@@ -32,10 +33,12 @@ const CardContainer = styled.div`
     box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
     background-color: #eeeded;
   }
-  @media only screen and (max-width: 1100px) {
-    width: 60vw;
+  @media only screen and (max-width: 1280px) {
+    width: calc((100% - 42px) / 2);
+    margin: 12px 8px;
   }
-  @media only screen and (max-width: 786px) {
+
+  @media only screen and (max-width: 768px) {
     width: 80vw;
   }
   @media only screen and (max-width: 426px) {
@@ -48,13 +51,13 @@ const BookImageContainer = styled.div`
   width: 185px;
   overflow: hidden;
   margin: 32px 15px;
-  @media only screen and (max-width: 1100px) {
+  @media only screen and (max-width: 1280px) {
     width: 18vw;
   }
-  @media only screen and (max-width: 786px) {
+  @media only screen and (max-width: 768px) {
     width: 150px;
   }
-  @media only screen and (max-width: 425px) {
+  @media only screen and (max-width: 426px) {
     width: 180px;
     margin-bottom: 0px;
   }
@@ -90,10 +93,10 @@ const BookDetail = styled.div`
   font-size: 16px;
   font-weight: 500;
 
-  @media only screen and (max-width: 1100px) {
+  @media only screen and (max-width: 1280px) {
     width: 50%;
   }
-  @media only screen and (max-width: 425px) {
+  @media only screen and (max-width: 426px) {
     justify-content: center;
     align-items: center;
     width: 80%;
@@ -102,7 +105,7 @@ const BookDetail = styled.div`
 `;
 
 const BookTextContainer = styled.div`
-  @media only screen and (max-width: 425px) {
+  @media only screen and (max-width: 426px) {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -111,7 +114,7 @@ const BookTextContainer = styled.div`
 
 const BookName = styled.h3`
   margin: 6px;
-  @media only screen and (max-width: 425px) {
+  @media only screen and (max-width: 426px) {
     text-align: center;
   }
 `;
@@ -128,9 +131,11 @@ function Card(props) {
     props.setIsLoading(true);
     if (date === undefined) {
       date = "無資料";
-    } else if (authors === undefined) {
+    }
+    if (authors === undefined) {
       authors = ["無資料"];
-    } else if (publisher === undefined) {
+    }
+    if (publisher === undefined) {
       publisher = "無資料";
     }
     let data = {

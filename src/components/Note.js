@@ -10,7 +10,7 @@ const Container = styled.div`
   @media only screen and (min-width: 1280px) {
     ${"" /* width: 1140px; */}
   }
-  @media only screen and (max-width: 786px) {
+  @media only screen and (max-width: 768px) {
     align-items: center;
     flex-direction: row;
     width: 82%;
@@ -33,7 +33,7 @@ const NoteBox = styled.div`
     box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
   }
 
-  @media only screen and (max-width: 786px) {
+  @media only screen and (max-width: 768px) {
     flex-basis: 100%;
     flex-direction: column;
   }

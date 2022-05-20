@@ -5,15 +5,15 @@ import PropTypes from "prop-types";
 const Container = styled.div`
   display: flex;
   justify-content: flex-start;
+  align-items: center;
   flex-wrap: wrap;
-  width: 1200px;
+  max-width: 1280px;
   margin: 3% 15%;
 
-  @media only screen and (min-width: 1280px) {
-    ${"" /* width: 1280px; */}
-    align-items: center;
+  @media only screen and (max-width: 1280px) {
+    margin: 2% 6%;
   }
-  @media only screen and (max-width: 786px) {
+  @media only screen and (max-width: 768px) {
     padding: 0 2%;
   }
 `;
@@ -23,7 +23,7 @@ const BookBox = styled.div`
   justify-content: center;
   flex-direction: row-reverse;
   width: calc((100% - 82px) / 2);
-  min-height: 334px;
+  min-height: 52vh;
   margin: 30px 20px;
   border-radius: 10px;
   background-color: #ffffff;
@@ -34,12 +34,31 @@ const BookBox = styled.div`
     box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
     background-color: #eeeded;
   }
+  @media only screen and (max-width: 1280px) {
+    width: calc((100% - 42px) / 2);
+    min-height: 45vh;
+    margin: 12px 8px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    width: 80vw;
+  }
+  @media only screen and (max-width: 426px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const BookImg = styled.div`
   width: 185px;
   overflow: hidden;
   margin: 32px 15px;
+  @media only screen and (max-width: 1280px) {
+    margin: 18px 10px 15px 0px;
+  }
+  @media only screen and (max-width: 426px) {
+    margin: 15px 0 5px 0;
+  }
 `;
 const Img = styled.img`
   width: 100%;
@@ -54,6 +73,15 @@ const ContentContainer = styled.div`
   margin: 23px 10px;
   font-size: 16px;
   font-weight: 500;
+  @media only screen and (max-width: 1280px) {
+    margin: 8px 10px 15px 10px;
+  }
+  @media only screen and (max-width: 426px) {
+    text-align: center;
+    align-items: center;
+    margin: 10px 0 18px 0;
+    width: 95%;
+  }
 `;
 
 const BookTitle = styled.h3`
@@ -65,6 +93,9 @@ const TagsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 1em;
+  @media only screen and (max-width: 426px) {
+    justify-content: center;
+  }
 `;
 const Tag = styled.p`
   margin: 0;
