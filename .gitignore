@@ -66,5 +66,4 @@ node_modules/
 .env
 
 .firestore.rules
-
 src/index.css
