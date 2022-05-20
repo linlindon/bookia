@@ -85,13 +85,13 @@ const ConfirmButton = styled.button`
   }
 `;
 
-let inputValue = "";
 function InputModal(props) {
   const [isWarning, setIsWarning] = useState(false);
   const [warningContent, setWarningContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
   const backgroundRef = useRef();
+  const inputRef = useRef("");
   let allGroupData = [...props.groupData];
 
   async function addTagGroupHandler() {
@@ -99,27 +99,30 @@ function InputModal(props) {
     let allTags = tools.allTagsArray(allGroupData);
     let allTitles = tools.allGroupTitleArray(allGroupData);
 
-    if (!inputValue || inputValue.replace(/\s*/g, "").length === 0) {
+    if (
+      !inputRef.current ||
+      inputRef.current.replace(/\s*/g, "").length === 0
+    ) {
       setWarningContent("請輸入名稱");
       setIsWarning(true);
       return;
     } else {
       if (props.selectedBoxIndex === undefined) {
-        if (allTitles.includes(inputValue)) {
+        if (allTitles.includes(inputRef.current)) {
           setWarningContent("此名稱已存在，請輸入其他名稱");
           setIsWarning(true);
           return;
         }
         setIsWarning(false);
         setIsLoading(true);
-        allGroupData.push({ name: inputValue, tags: [] });
+        allGroupData.push({ name: inputRef.current, tags: [] });
         await firebase.updateTagGroup(userId, allGroupData);
         props.setGroupData(allGroupData);
+        inputRef.current = "";
         props.setShowInputModal(false);
-        inputValue = "";
         setIsLoading(false);
       } else {
-        if (allTags.includes(inputValue)) {
+        if (allTags.includes(inputRef.current)) {
           setWarningContent("此名稱已存在，請輸入其他名稱");
           setIsWarning(true);
           props.setSelectedBoxIndex(undefined);
@@ -128,7 +131,7 @@ function InputModal(props) {
         setIsWarning(false);
         setIsLoading(true);
 
-        allGroupData[props.selectedBoxIndex].tags.push(inputValue);
+        allGroupData[props.selectedBoxIndex].tags.push(inputRef.current);
 
         await firebase.updateTagGroup(userId, allGroupData);
         props.setGroupData([...allGroupData]);
@@ -155,7 +158,7 @@ function InputModal(props) {
         <Delete onClick={() => props.setShowInputModal(false)}>x</Delete>
         <ModalTitle>請輸入{props.modalTitle}</ModalTitle>
         <ModalInput
-          onChange={(e) => (inputValue = e.target.value)}
+          onChange={(e) => (inputRef.current = e.target.value)}
           type="text"
         />
         {isWarning ? <Warning>{warningContent}</Warning> : <Warning />}

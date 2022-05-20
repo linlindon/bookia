@@ -228,7 +228,7 @@ function TagBox(props) {
 
   function showGroupHintModal(name, index) {
     props.setIsHintTitle(`刪除「${name}」後，裡面的相關筆記標籤也將刪除`);
-    props.setDeleteGroupIndex(index);
+    props.setSelectedBoxIndex(index);
     props.setIsConfirmClose(true);
     props.setIsHint(true);
   }
@@ -320,7 +320,6 @@ TagBox.propTypes = {
   setIsHintTitle: PropTypes.func,
   setIsConfirmClose: PropTypes.func,
   setDeleteTagData: PropTypes.func,
-  setDeleteGroupIndex: PropTypes.func,
 };
 
 export default TagBox;
