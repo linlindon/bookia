@@ -56,56 +56,51 @@ export const SignUpForm = (props) => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const inputHandler = (e) => {
-    const { name, value } = e.target;
-    setSignUpInfo((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
   async function submitHandler() {
-    if (!signUpInfo.name) {
+    if (signUpInfo.name.trim() === "") {
       props.setHintTitle("請輸入姓名");
       props.setIsHint(true);
-    } else if (signUpInfo.name.replace(/\s*/g, "").length === 0) {
-      props.setHintTitle("字首請勿空格");
-      props.setIsHint(true);
-    } else if (!regexs.test(signUpInfo.email) || !signUpInfo.email) {
+      return;
+    }
+    if (!regexs.test(signUpInfo.email) || signUpInfo.email.trim() === "") {
       props.setHintTitle("請輸入正確的email");
       props.setIsHint(true);
-    } else if (!signUpInfo.password || !signUpInfo.confirmPassword) {
+      return;
+    }
+    if (
+      signUpInfo.password.trim() === "" ||
+      signUpInfo.confirmPassword.trim() === ""
+    ) {
       props.setHintTitle("請輸入密碼");
       props.setIsHint(true);
-    } else if (signUpInfo.password !== signUpInfo.confirmPassword) {
+      return;
+    }
+    if (signUpInfo.password !== signUpInfo.confirmPassword) {
       props.setHintTitle("您輸入的兩組密碼不相同，請重新輸入");
       props.setIsHint(true);
-      setSignUpInfo((prevState) => ({
-        ...prevState,
-        password: "",
-        confirmPassword: "",
-      }));
-    } else {
-      setIsLoading(true);
-      await firebase
-        .SignUpHandler(signUpInfo.email, signUpInfo.password, signUpInfo.name)
-        .then(() => {
-          setIsLoading(false);
-          navigate(`/library-search`);
-        })
-        .catch((error) => {
-          let message = tools.errorMessage(error);
-          setIsLoading(false);
-          if (message !== "") {
-            props.setHintTitle(message);
-            props.setIsHint(true);
-          } else {
-            props.setHintTitle("帳號或密碼輸入錯誤");
-            props.setIsHint(true);
-          }
-        });
+      return;
     }
+
+    setIsLoading(true);
+    await firebase
+      .SignUpHandler(signUpInfo.email, signUpInfo.password, signUpInfo.name)
+      .then(() => {
+        setIsLoading(false);
+        navigate(`/library-search`);
+      })
+      .catch((error) => {
+        let message = tools.errorMessage(error);
+        setIsLoading(false);
+        if (message !== "") {
+          props.setHintTitle(message);
+          props.setIsHint(true);
+        } else {
+          props.setHintTitle("帳號或密碼輸入錯誤");
+          props.setIsHint(true);
+        }
+      });
   }
+
   return (
     <Form
       onSubmit={(e) => {
@@ -114,21 +109,46 @@ export const SignUpForm = (props) => {
       }}
     >
       <Title>Name</Title>
-      <Input name="name" onChange={inputHandler} value={signUpInfo.name} />
+      <Input
+        onChange={(e) =>
+          setSignUpInfo((prev) => ({
+            ...prev,
+            name: e.target.value,
+          }))
+        }
+        value={signUpInfo.name}
+      />
       <Title>Email</Title>
-      <Input name="email" onChange={inputHandler} value={signUpInfo.email} />
+      <Input
+        onChange={(e) =>
+          setSignUpInfo((prev) => ({
+            ...prev,
+            email: e.target.value,
+          }))
+        }
+        value={signUpInfo.email}
+      />
       <Title>Password</Title>
       <Input
         name="password"
-        onChange={inputHandler}
+        onChange={(e) =>
+          setSignUpInfo((prev) => ({
+            ...prev,
+            password: e.target.value,
+          }))
+        }
         type="password"
         value={signUpInfo.password}
       />
       <Title>Confirm Password</Title>
       <Input
-        name="confirmPassword"
         type="password"
-        onChange={inputHandler}
+        onChange={(e) =>
+          setSignUpInfo((prev) => ({
+            ...prev,
+            confirmPassword: e.target.value,
+          }))
+        }
         value={signUpInfo.confirmPassword}
       />
 
@@ -144,6 +164,6 @@ export const SignUpForm = (props) => {
 };
 
 SignUpForm.propTypes = {
-  setHintTitle: PropTypes.string,
+  setHintTitle: PropTypes.func,
   setIsHint: PropTypes.func,
 };

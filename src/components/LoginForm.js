@@ -51,44 +51,37 @@ export const LoginForm = (props) => {
     password: "123456",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const regexs =
-    /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   let navigate = useNavigate();
 
-  const inputHandler = (e) => {
-    const { name, value } = e.target;
-    setLoginInfo((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
   async function login() {
     setIsLoading(true);
-    if (!loginInfo.email) {
+    if (loginInfo.email.trim() === "") {
       props.setHintTitle("請輸入電子信箱");
       props.setIsHint(true);
-    } else if (!regexs.test(loginInfo.email) || !loginInfo.email) {
-      props.setHintTitle("字首請勿空格");
-      props.setIsHint(true);
-    } else {
-      await firebase
-        .LoginHandler(loginInfo.email, loginInfo.password)
-        .then(() => {
-          setIsLoading(false);
-          navigate("/library-search");
-        })
-        .catch((error) => {
-          let message = tools.errorMessage(error);
-          setIsLoading(false);
-          if (message !== "") {
-            props.setHintTitle(message);
-            props.setIsHint(true);
-          } else {
-            props.setHintTitle("帳號或密碼錯誤，請重新嘗試");
-            props.setIsHint(true);
-          }
-        });
+      return;
     }
+    if (loginInfo.password.trim() === "") {
+      props.setHintTitle("請輸入密碼");
+      props.setIsHint(true);
+      return;
+    }
+    await firebase
+      .LoginHandler(loginInfo.email, loginInfo.password)
+      .then(() => {
+        setIsLoading(false);
+        navigate("/library-search");
+      })
+      .catch((error) => {
+        let message = tools.errorMessage(error);
+        setIsLoading(false);
+        if (message !== "") {
+          props.setHintTitle(message);
+          props.setIsHint(true);
+          return;
+        }
+        props.setHintTitle("帳號或密碼錯誤，請重新嘗試");
+        props.setIsHint(true);
+      });
   }
 
   return (
@@ -100,14 +93,23 @@ export const LoginForm = (props) => {
     >
       <Title>Email</Title>
       <Input
-        name="email"
-        onChange={inputHandler}
+        onChange={(e) =>
+          setLoginInfo((prev) => ({
+            ...prev,
+            email: e.target.value,
+          }))
+        }
         defaultValue={"test@gmail.com"}
       />
       <Title>Password</Title>
       <Input
         name="password"
-        onChange={inputHandler}
+        onChange={(e) =>
+          setLoginInfo((prev) => ({
+            ...prev,
+            password: e.target.value,
+          }))
+        }
         type="password"
         defaultValue={"123456"}
       />
@@ -123,6 +125,6 @@ export const LoginForm = (props) => {
 };
 
 LoginForm.propTypes = {
-  setHintTitle: PropTypes.string,
+  setHintTitle: PropTypes.func,
   setIsHint: PropTypes.func,
 };
