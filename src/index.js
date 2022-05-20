@@ -1,12 +1,11 @@
 import ReactDOM from "react-dom";
-import ResetStyle from "./utils/resetStyles";
 
-import "./index.css";
-import App from "./App";
+import { GlobalStyle } from "./utils/globalStyle/styles";
+import { App } from "./App";
 
 ReactDOM.render(
   <>
-    <ResetStyle />
+    <GlobalStyle />
     <App />
   </>,
   document.getElementById("root")

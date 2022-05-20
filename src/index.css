@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap");
 
 * {
   box-sizing: border-box;
@@ -10,4 +10,82 @@ html {
 
 body {
   margin: 0;
+  background-color: #faf9f7;
+  text-align: center;
+  border-bottom: solid 1px black;
+  flex-wrap: wrap;
+  
+border-radius: 10px;
+
+  flex-direction: row;
+  flex-direction: column;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  flex-wrap: wrap;
+  font-size: 14px;
+  font-weight: 500;
+  padding-bottom: 3px;
+  justify-content: space-between;
+  letter-spacing: 0.2rem;
+  margin-bottom: 3px;
+  border-bottom: 2px solid #3fccdc;
+  border-radius: 10px;
+  justify-content: space-evenly;
+
+  box-shadow: 2px 2px 7px rgb(0 0 0 / 20%);
+
+  cursor: pointer;
+  color: #363434;
+  flex-basis: 30%;
+  flex-grow: 1;
+  font-family: 'Noto Serif TC', serif;
+
+  align-self: flex-start;
 }
+
+const Tag = styled.p`
+  margin: 0;
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 15px;
+  background-color: #e4d36d;
+  `; */
+
+/* 需要被選取的tag */
+/* const Tag = styled.div`
+  margin: 0;
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 15px;
+  background-color: #eeeded;
+  cursor: pointer;
+  ${Input}:checked + && {
+    background-color: #e4d36d;
+    color: #fff;
+  }
+`;
+
+const CloseButton = styled(CloseSquareOutline)`
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  width: 25px;
+  color: #d3d2d1;
+  cursor: pointer;
+
+  &:hover {
+    color: #ff6972;
+  }
+`; */
+
+/* 不錯的transition and shadow */
+/* .card-hover-shadow {
+	transition: .3s ease;
+	&:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 2px 20px rgba(#000, .1);
+	}
+} */

@@ -1,34 +1,97 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import styled from "styled-components";
+import { DeleteOutline } from "@styled-icons/typicons/DeleteOutline";
+import { AddCircle } from "@styled-icons/ionicons-outline/AddCircle";
+import PropTypes from "prop-types";
 
-import { getDocs, getDoc, updateDoc } from "firebase/firestore";
-import { tagsRef, notesRef, userRef } from "../utils/fireBaseConfig";
-import uniqid from "uniqid";
+import firebase from "../utils/firebaseTools";
+import tools from "../utils/tools";
+import Note from "./Note";
+import GroupNameInput from "./GroupNameInput";
+import { UserProfile } from "../App";
 
-const TagBoxContainer = styled.div`
+const BoxWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 60%;
-  margin-bottom: 30px;
-  border: 1px solid #ece6e6;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  width: 100%;
+
+  background-color: #f8f8f8;
   border-radius: 10px;
+  margin-bottom: 40px;
+  box-shadow: beige;
+  box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
+  padding: 10px;
 `;
 
-const BoxName = styled.h4`
-  width: 80%;
-  padding-bottom: 10px;
+const TagBoxContainer = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: calc((100% - 105px) / 2);
+
+  margin: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  border: solid 0.5px #e4e4e4;
+  background-color: #ffffff;
+  transition: 0.5s ease;
+
+  &:hover {
+    box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
+  }
+`;
+const AddTagBox = styled(TagBoxContainer)`
+  padding: 7px;
+  height: auto;
+  color: #d3d2d1;
+  border: 3px dashed #d3d2d1;
+  cursor: pointer;
+  flex-grow: 1;
+
+  &:hover {
+    color: #404040;
+    box-shadow: 3px 3px 3px rgba(0 0 0 / 30%);
+  }
+`;
+const BoxDeleteTag = styled(DeleteOutline)`
+  display: none;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 28px;
+  cursor: pointer;
+  color: #d3d2d1;
+
+  &:hover {
+    color: #ff6972;
+  }
+  ${TagBoxContainer}:hover & {
+    display: inline;
+    z-index: 99;
+  }
+`;
+const BoxNameDiv = styled.div`
+  display: flex;
+  justify-content: center;
   text-align: center;
+  margin-bottom: 16px;
+  cursor: pointer;
   font-size: 16px;
+  font-weight: 600;
   border-bottom: 2px solid #ece6e6;
 `;
 
 const TagsContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  align-content: flex-start;
   flex-wrap: wrap;
-  width: 80%;
+  width: 90%;
   gap: 1em;
+  flex-grow: 1;
+  margin-bottom: 20px;
 `;
 
 const Input = styled.input.attrs({ type: "checkbox" })`
@@ -36,193 +99,228 @@ const Input = styled.input.attrs({ type: "checkbox" })`
 `;
 
 const Tag = styled.div`
-  padding: 4px 6px;
+  margin: 0;
+  padding: 5px 10px;
   font-size: 14px;
-  border: 1px solid #ffb226;
-  border-radius: 5px;
+  border-radius: 15px;
+  background-color: #eeeded;
+  cursor: pointer;
   ${Input}:checked + && {
-    background-color: #ffb226;
+    background-color: #e4d36d;
+    color: #fff;
   }
 `;
 
-const AddSign = styled.div`
+const TagContainer = styled.label`
+  display: flex;
+  position: relative;
+  align-items: flex-start;
+`;
+const AddSignContainer = styled.div`
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 31px;
+  height: 31px;
+  border-radius: 16px;
+  background-color: white;
+
+  &:hover {
+    box-shadow: 3px 3px 3px rgba(0 0 0 / 30%);
+  }
+`;
+
+const AddSign = styled(AddCircle)`
+  position: absolute;
   width: 30px;
   height: 30px;
-  border-radius: 15px;
-  border: solid 1px black;
-  line-height: 2.5;
-`;
+  cursor: pointer;
+  color: #dca246;
 
-const Wrapper = styled.div`
+  @media only screen and (max-width: 786px) {
+    top: 90px;
+  }
+`;
+const TagsWrapper = styled.div`
   position: relative;
 `;
-
-const AddTagBox = styled.div`
+const DeleteTag = styled(DeleteOutline)`
+  display: none;
   position: absolute;
-  top: -600px;
-  width: 150px;
-  height: 60px;
-  border: solid black 1px;
-  border-radius: 10px;
-  background-color: #ffffff;
-  z-index: 9;
-`;
+  top: -10px;
+  right: -12px;
+  width: 22px;
+  margin-left: 6px;
+  cursor: pointer;
+  color: #d3d2d1;
 
-const TagInput = styled.input`
-  margin: 5%;
-`;
+  &:hover {
+    color: #ff6972;
+  }
 
-const AddTagButton = styled.button`
-  margin-left: 70%;
+  ${TagsWrapper}:hover & {
+    display: inline;
+    z-index: 99;
+  }
 `;
-const CloseTagInput = styled.span`
-  font-size: 16px;
-`;
-const NoteBox = styled.div`
+const NoDataContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 60%;
-  border: 1px solid #ece6e6;
-  border-radius: 10px;
-  margin-top: 30px;
+  width: 100%;
+  justify-content: center;
 `;
-const BookName = styled.div`
-  display: block;
-  margin-bottom: 5px;
+const NoDataTitle = styled.h3`
+  margin-top: 80px;
+  font-size: 20px;
+  font-weight: 900;
+  text-align: center;
 `;
-const DeleteSign = styled.span``;
-
-let clickTagNameArray = [];
-let allNotesData = [];
-let boxName = "";
 
 function TagBox(props) {
-  const [showTagInput, setShowTagInput] = useState(false);
-  const [inputTagName, setInputTagName] = useState("");
-  const [notesBox, setNotesBoxData] = useState([]);
+  const [noDataHint, setNoDataHint] = useState(false);
+  const [notesBoxData, setNotesBoxData] = useState([]);
+  const userId = useContext(UserProfile);
+  let chosenTagRef = useRef([]);
+  let allNotesRef = useRef([]);
 
-  useEffect(async () => {
-    allNotesData = [];
-    clickTagNameArray = [];
-    (await getDocs(notesRef)).forEach((note) => {
-      allNotesData.push(note.data());
-    });
-    // console.log(allNotesData);
-    // console.log(allTagBoxData);
+  useEffect(() => {
+    allNotesRef.current = [];
+    chosenTagRef.current = [];
+
+    async function getData() {
+      await firebase.getAllNotesData(userId).then((notes) => {
+        notes.forEach((note) => {
+          allNotesRef.current.push(note.data());
+        });
+      });
+    }
+    if (userId) {
+      getData();
+    }
   }, []);
 
-  function showTagInputHandler(name) {
-    boxName = name;
-    console.log(boxName);
-    setShowTagInput(true);
-  }
-
-  async function addTagHandler() {
-    if (!inputTagName) {
-      alert("請輸入標籤名稱");
-    } else {
-      let data = [...props.groupData];
-
-      data.forEach((tagBox) => {
-        if (tagBox.name === boxName) {
-          tagBox.tags.push(inputTagName);
-        } else {
-          console.log("no match box name");
-        }
-      });
-
-      await updateDoc(userRef, {
-        tagGroups: data,
-      });
-      setShowTagInput(false);
-      props.setGroupData(data);
-    }
-  }
-  function closeInputTagHandler() {
-    setShowTagInput(false);
+  function showTagInputHandler(index) {
+    props.setSelectedBoxIndex(index);
+    props.setShowInputModal(true);
+    props.setModalTitle("新書籤名稱");
   }
 
   async function choseTagHandler(tagName) {
-    console.log(tagName);
+    setNoDataHint(false);
     let currentNoteData = [];
-    if (clickTagNameArray.includes(tagName)) {
-      clickTagNameArray = clickTagNameArray.filter((item) => {
+    if (chosenTagRef.current.includes(tagName)) {
+      chosenTagRef.current = chosenTagRef.current.filter((item) => {
         return item !== tagName;
       });
     } else {
-      clickTagNameArray.push(tagName);
+      chosenTagRef.current.push(tagName);
     }
-    console.log(clickTagNameArray);
-    const noteIncludeTag = (tagArray, data) => {
-      if (tagArray.length === 0) {
-        return false;
-      } else {
-        return tagArray.every((i) => {
-          return data.tagNames.includes(i);
-        });
-      }
-    };
-    console.log(allNotesData);
-    allNotesData.forEach((note) => {
-      if (noteIncludeTag(clickTagNameArray, note)) {
-        console.log(note);
+
+    allNotesRef.current.forEach((note) => {
+      if (tools.isNoteIncludeTag(chosenTagRef.current, note)) {
         currentNoteData.push(note);
       }
     });
+    setNoDataHint(
+      chosenTagRef.current.length !== 0 && currentNoteData.length === 0
+    );
     setNotesBoxData(currentNoteData);
+  }
+
+  function showGroupHintModal(name, index) {
+    props.setIsHintTitle(`刪除「${name}」後，裡面的相關筆記標籤也將刪除`);
+    props.setDeleteGroupIndex(index);
+    props.setIsConfirmClose(true);
+    props.setIsHint(true);
+  }
+
+  function showHintModal(tag, index) {
+    props.setIsHintTitle(`刪除「${tag}」標籤後，所有筆記上的該標籤也將刪除`);
+    props.setDeleteTagData([tag, index]);
+    props.setIsConfirmClose(true);
+    props.setIsHint(true);
   }
 
   return (
     <>
-      {props.groupData?.map((box) => (
-        <TagBoxContainer key={uniqid()}>
-          <BoxName key={uniqid()}>{box.name}</BoxName>
-          <TagsContainer key={uniqid()}>
-            {box.tags?.map((tag) => (
-              <label key={uniqid()} name={tag}>
-                <Input key={uniqid()} id={tag}></Input>
-                <Tag onClick={() => choseTagHandler(tag)} key={uniqid()}>
-                  {tag}
-                </Tag>
-              </label>
-            ))}
-          </TagsContainer>
-          <AddSign onClick={() => showTagInputHandler(box.name)} key={uniqid()}>
-            新增
-          </AddSign>
-        </TagBoxContainer>
-      ))}
-      {showTagInput && (
-        <Wrapper>
-          <AddTagBox>
-            <TagInput
-              onChange={(e) => setInputTagName(e.target.value)}
-              placeholder="新增標籤"
-            ></TagInput>
-            <CloseTagInput onClick={closeInputTagHandler}>x</CloseTagInput>
-            <AddTagButton onClick={addTagHandler}>新增</AddTagButton>
-          </AddTagBox>
-        </Wrapper>
+      <BoxWrapper>
+        {props.groupData?.map((box, index) => (
+          <TagBoxContainer key={box.name}>
+            <BoxDeleteTag
+              onClick={() => showGroupHintModal(box.name, index)}
+              title="刪除書籤櫃"
+            />
+            <BoxNameDiv>
+              <GroupNameInput
+                name={box.name}
+                groupData={props.groupData}
+                boxIndex={index}
+                setGroupData={props.setGroupData}
+              />
+            </BoxNameDiv>
+            <TagsContainer>
+              {box.tags?.map((tag) => (
+                <TagsWrapper key={tag}>
+                  <TagContainer htmlFor={tag}>
+                    <Input id={tag}></Input>
+                    <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
+                  </TagContainer>
+                  <DeleteTag onClick={() => showHintModal(tag, index)} />
+                </TagsWrapper>
+              ))}
+
+              <AddSignContainer>
+                <AddSign
+                  onClick={() => showTagInputHandler(index)}
+                  title="新增標籤"
+                />
+              </AddSignContainer>
+            </TagsContainer>
+          </TagBoxContainer>
+        ))}
+        <AddTagBox
+          onClick={() => {
+            props.setModalTitle("新書籤櫃名稱");
+            props.setShowInputModal(true);
+          }}
+        >
+          新增書籤櫃
+        </AddTagBox>
+      </BoxWrapper>
+
+      {notesBoxData.length > 0 ? (
+        <Note notesBoxData={notesBoxData} />
+      ) : (
+        <NoDataContainer>
+          {noDataHint ? (
+            <NoDataTitle>
+              選取的書籤
+              <br />
+              無相關筆記
+            </NoDataTitle>
+          ) : (
+            <NoDataTitle>
+              點選書籤
+              <br />
+              顯示相關筆記
+            </NoDataTitle>
+          )}
+        </NoDataContainer>
       )}
-      {notesBox?.map((note) => (
-        <NoteBox key={uniqid()}>
-          <BoxName key={uniqid()}>書名: {note.bookTitle}</BoxName>
-          <BookName key={uniqid()}>{note.title}</BookName>
-          <TagsContainer key={uniqid()}>
-            {note.tagNames.map((tag) => (
-              <Tag key={uniqid()}>
-                {tag}
-                <DeleteSign key={uniqid()}>x</DeleteSign>
-              </Tag>
-            ))}
-            <p key={uniqid()}>{note.content}</p>
-            <AddSign key={uniqid()}>修改</AddSign>
-          </TagsContainer>
-        </NoteBox>
-      ))}
     </>
   );
 }
+
+TagBox.propTypes = {
+  groupData: PropTypes.array,
+  setGroupData: PropTypes.func,
+  setShowInputModal: PropTypes.func,
+  setModalTitle: PropTypes.func,
+  setSelectedBoxIndex: PropTypes.func,
+  setIsHint: PropTypes.func,
+  setIsHintTitle: PropTypes.func,
+  setIsConfirmClose: PropTypes.func,
+  setDeleteTagData: PropTypes.func,
+  setDeleteGroupIndex: PropTypes.func,
+};
 
 export default TagBox;

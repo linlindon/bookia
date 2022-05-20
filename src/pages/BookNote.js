@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import {
-  getDoc,
-  setDoc,
-  doc,
-  serverTimestamp,
-  onSnapshot,
-} from "firebase/firestore";
-import { userRef, booksRef, notesRef } from "../utils/fireBaseConfig";
-import NewNote from "../components/NewNote";
+import { onSnapshot } from "firebase/firestore";
+
+import firebase from "../utils/firebaseTools";
+import NewNoteModal from "../components/modal/NewNoteModal";
+import NoteBox from "../components/NoteBox";
+import LoadingModal from "../components/modal/LoadingModal";
+import { UserProfile } from "../App";
 
 const Flex = styled.div`
   display: flex;
@@ -16,99 +15,132 @@ const Flex = styled.div`
 `;
 const Container = styled(Flex)`
   flex-direction: column;
-  margin-bottom: 30px;
-`;
-const Title = styled.h1`
-  width: 70%;
-  text-align: center;
-  border-bottom: 1px solid black;
-`;
-const NoteBox = styled(Flex)`
   align-items: center;
-  padding: 20px;
-  width: 60%;
-  margin-bottom: 20px;
-  border: 2px solid #ece6e6;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  width: 70%;
+  align-items: flex-start;
+  margin: 3% 15%;
+`;
+const BookInfoContainer = styled(Flex)`
+  align-items: flex-start;
+  align-self: flex-start;
+  padding: 15px;
+  width: 600px;
   border-radius: 10px;
+  background-color: #ffffff;
 `;
 
 const BookImg = styled.div`
-  width: 120px;
+  width: 180px;
+  border: solid 1px #f2f1f0;
 `;
 const Img = styled.img`
   width: 100%;
   object-fit: cover;
 `;
 const ContentContainer = styled.div`
-  width: 80%;
-  padding: 20px;
+  width: 100%;
+  padding-left: 10px;
 `;
-const BookTitle = styled.h3``;
+const BookTitle = styled.h3`
+  margin: 0 0 15px 0;
+`;
 
-const Button = styled.button``;
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
 
 function BookNote() {
   const [bookNotesData, setBookNotesData] = useState([]);
-  const [showNoteInput, setShowInput] = useState(false);
-  const [choseTag, setChoseTag] = useState([]);
+  const [groupData, setGroupData] = useState([]);
+  const [noteData, setNoteData] = useState(undefined);
+  const [bookInfo, setBookInfo] = useState([]);
+  const [showNoteInput, setShowNoteInput] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { id } = useParams();
+  const userId = useContext(UserProfile);
 
   useEffect(() => {
-    let noteData = [];
-    onSnapshot(notesRef, (notes) => {
-      notes.forEach((note) => {
-        if (note.data().bookTitle === "假資料") {
-          noteData.push(note.data());
-        }
+    setIsLoading(true);
+    if (userId) {
+      let notesRef = firebase.getNotesRef(userId);
+      onSnapshot(notesRef, (notes) => {
+        let data = [];
+        notes.forEach((note) => {
+          if (note.data().bookID === id) {
+            data.push(note.data());
+          }
+        });
+        firebase.getBookInfo(userId, id).then((res) => {
+          setBookInfo({ ...res });
+          setBookNotesData(data);
+          setIsLoading(false);
+        });
       });
-    });
-    setBookNotesData(noteData);
-  }, []);
+    }
+  }, [userId]);
 
-  const noteForm = () => {
-    setShowInput((prev) => !prev);
-  };
-  async function addNewBook() {
-    const newBookRef = doc(booksRef);
-    const fakeData = {
-      author: "the who",
-      id: newBookRef.id,
-      img: "https://picsum.photos/200/300",
-      publish: "2022",
-      tagNames: [],
-      time: serverTimestamp(),
-      title: "假資料",
-    };
-    await setDoc(newBookRef, fakeData);
+  useEffect(() => {
+    let data = [];
+    if (userId) {
+      firebase.getTagGroupsData(userId).then((res) => {
+        data.push(...res.tagGroups);
+        setGroupData(data);
+      });
+    }
+  }, [userId]);
 
-    console.log("hrer");
+  function showNoteInputHandler() {
+    setNoteData(undefined);
+    setShowNoteInput(true);
   }
 
   return (
     <>
       <Container>
-        <Title>新增筆記</Title>
-        <NoteBox>
-          <BookImg>
-            <Img src="https://picsum.photos/200/300" alt="" />
-          </BookImg>
-          <ContentContainer>
-            <BookTitle>書名: 瀕臨崩潰邊緣的人</BookTitle>
-            <p>作者: OOXXZZ</p>
-            <p>出版年: 1960</p>
-            <Button onClick={addNewBook}>建立書本資料按鈕</Button>
-          </ContentContainer>
-          <Button onClick={noteForm}>新增筆記</Button>
-        </NoteBox>
-        {showNoteInput ? (
-          <NewNote showNoteInput={showNoteInput} setShowInput={setShowInput} />
-        ) : null}
-        {bookNotesData?.map((item) => (
+        {isLoading ? (
+          <LoadingContainer>
+            <LoadingModal />
+          </LoadingContainer>
+        ) : (
           <>
-            <h2>{item.bookTitle}</h2>
-            <p>{item.content}</p>
+            <Wrapper>
+              <BookInfoContainer>
+                <BookImg>
+                  <Img src={bookInfo.img} alt="" />
+                </BookImg>
+                <ContentContainer>
+                  <BookTitle>{bookInfo.title}</BookTitle>
+                  <p>作者:{bookInfo.authors && bookInfo.authors.join("、")}</p>
+                  <p>出版年: {bookInfo.publish}</p>
+                </ContentContainer>
+              </BookInfoContainer>
+
+              <NoteBox
+                bookNotesData={bookNotesData}
+                setShowNoteInput={setShowNoteInput}
+                setNoteData={setNoteData}
+                showNoteInputHandler={showNoteInputHandler}
+              />
+            </Wrapper>
           </>
-        ))}
+        )}
       </Container>
+      {showNoteInput && (
+        <NewNoteModal
+          showNoteInput={showNoteInput}
+          setShowNoteInput={setShowNoteInput}
+          bookInfo={bookInfo}
+          noteData={noteData}
+          setGroupData={setGroupData}
+          groupData={groupData}
+        />
+      )}
     </>
   );
 }

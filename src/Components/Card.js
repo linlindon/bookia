@@ -1,59 +1,193 @@
-import react from "react";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { serverTimestamp } from "firebase/firestore";
+
+import firebase from "../utils/firebaseTools";
+import image from "../image/book.png";
+import { UserProfile } from "../App";
 
 const AllCardsContainer = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: flex-start;
   flex-wrap: wrap;
-  margin: 30px 5% 40px 5%;
+  @media only screen and (max-width: 1100px) {
+    flex-direction: column;
+  }
 `;
 
 const CardContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 150px;
-  padding: 20px 10px;
+  justify-content: center;
+  flex-direction: row-reverse;
+  width: calc((100% - 86px) / 2);
+  margin: 30px 20px;
+  border-radius: 10px;
+  border: solid 0.5px #e4e4e4;
+  background-color: #ffffff;
+  transition: 0.5s ease;
+
+  &:hover {
+    box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
+    background-color: #eeeded;
+  }
+  @media only screen and (max-width: 1100px) {
+    width: 60vw;
+  }
+  @media only screen and (max-width: 786px) {
+    width: 80vw;
+  }
+  @media only screen and (max-width: 426px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const BookImageContainer = styled.div`
-  width: 130px;
+  width: 185px;
+  overflow: hidden;
+  margin: 32px 15px;
+  @media only screen and (max-width: 1100px) {
+    width: 18vw;
+  }
+  @media only screen and (max-width: 786px) {
+    width: 150px;
+  }
+  @media only screen and (max-width: 425px) {
+    width: 180px;
+    margin-bottom: 0px;
+  }
 `;
 const BookImage = styled.img`
   width: 100%;
-  object-fit: cover;
+  height: auto;
+  border: solid 1px #eeeded;
 `;
-
-const BookDetail = styled.div`
-  text-align: center;
-`;
-
 const AddButton = styled.button`
+  border: none;
+  width: 120px;
+  height: 35px;
+  letter-spacing: 2px;
+  text-align: center;
+  margin: 6px;
+  padding: 3px 8px;
   font-size: 14px;
-  margin-top: 10px;
+  border-radius: 5px;
+  background-color: #e6c88b;
+  color: #fff;
+
+  ${CardContainer}:hover & {
+    background-color: #dca246;
+  }
+`;
+const BookDetail = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 230px;
+  margin: 20px 20px 30px 20px;
+  font-size: 16px;
+  font-weight: 500;
+
+  @media only screen and (max-width: 1100px) {
+    width: 50%;
+  }
+  @media only screen and (max-width: 425px) {
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    margin-top: 0px;
+  }
 `;
 
-const BookName = styled.h3``;
-const BookAuthor = styled.p``;
-const BookPublish = styled.p``;
+const BookTextContainer = styled.div`
+  @media only screen and (max-width: 425px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+`;
 
-function Card() {
-  const datas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const BookName = styled.h3`
+  margin: 6px;
+  @media only screen and (max-width: 425px) {
+    text-align: center;
+  }
+`;
+const BookAuthor = styled.p`
+  margin: 6px;
+`;
+const BookPublish = styled(BookAuthor)``;
+
+function Card(props) {
+  const userId = useContext(UserProfile);
+  let navigate = useNavigate();
+
+  async function getBookData(title, authors, publisher, date, img) {
+    props.setIsLoading(true);
+    if (date === undefined) {
+      date = "無資料";
+    } else if (authors === undefined) {
+      authors = ["無資料"];
+    } else if (publisher === undefined) {
+      publisher = "無資料";
+    }
+    let data = {
+      title: title,
+      authors: authors,
+      publisher: publisher,
+      publish: date,
+      img: img,
+      id: "",
+      tagNames: [],
+      time: serverTimestamp(),
+    };
+
+    const newBookId = firebase.setNewBookRef(userId);
+    await firebase.addNewBook(userId, newBookId, data).then(() => {
+      props.setIsLoading(false);
+      navigate(`/booknote/${newBookId}`);
+    });
+  }
+
   return (
     <AllCardsContainer>
-      {datas.map(() => (
-        <CardContainer>
-          <BookImageContainer>
-            <BookImage src={require("../img/dress.png")} alt={"book photo"} />
-          </BookImageContainer>
-          <AddButton>選擇此書筆記</AddButton>
-          <BookDetail>
-            <BookName>書名</BookName>
-            <BookAuthor>作者</BookAuthor>
-            <BookPublish>出版年份</BookPublish>
-          </BookDetail>
-        </CardContainer>
-      ))}
+      {props.bookList?.map((book, index) => {
+        let img = book.imageLinks;
+        return (
+          <CardContainer key={index}>
+            <BookImageContainer>
+              <BookImage src={img ? img.smallThumbnail : image} />
+            </BookImageContainer>
+
+            <BookDetail>
+              <BookTextContainer>
+                <BookName>{book.title}</BookName>
+                <BookAuthor>
+                  {book.authors && book.authors.join("、")}
+                </BookAuthor>
+                <BookPublish>{book.publishedDate}</BookPublish>
+                <BookPublish>{book.publisher}</BookPublish>
+              </BookTextContainer>
+              <AddButton
+                key={`books${index}`}
+                onClick={() =>
+                  getBookData(
+                    book.title,
+                    book.authors,
+                    book.publisher,
+                    book.publishedDate,
+                    img ? img.thumbnail : image
+                  )
+                }
+              >
+                加到我的書櫃
+              </AddButton>
+            </BookDetail>
+          </CardContainer>
+        );
+      })}
     </AllCardsContainer>
   );
 }
