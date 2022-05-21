@@ -11,11 +11,12 @@ import HintModal from "./modal/HintModal";
 import LoadingModal from "../components/modal/LoadingModal";
 
 const PlaceHolder = styled.div`
+  display: none;
   width: 100%;
   height: 60px;
 
-  @media screen and (min-width: 787px) {
-    display: none;
+  @media screen and (max-width: 768px) {
+    display: block;
   }
 `;
 
@@ -47,7 +48,7 @@ const NavLinks = styled.div`
   width: 80%;
 
   .active {
-    border-bottom: solid 3px #eeeded;
+    border-bottom: solid 3px #d3d2d1;
   }
 
   @media screen and (max-width: 768px) {
@@ -56,6 +57,9 @@ const NavLinks = styled.div`
     align-items: center;
     width: 100%;
     margin-top: 20%;
+    .active {
+      border-bottom: solid 3px #dca246;
+    }
   }
 `;
 const Nav = styled(NavLink)`
@@ -66,7 +70,7 @@ const Nav = styled(NavLink)`
   font-weight: 600;
 
   &:hover {
-    color: #000;
+    color: #404040;
   }
   @media screen and (max-width: 768px) {
     font-weight: 500;
@@ -79,7 +83,6 @@ const MobileLink = styled(NavLink)`
   display: none;
 
   .active {
-    color: red;
     border-bottom: solid 3px #d3d2d1;
   }
 
@@ -106,6 +109,10 @@ const LogoutLink = styled.p`
     margin: 0 30px 20px;
     color: #fff;
     cursor: pointer;
+
+    &:hover {
+      color: #404040;
+    }
   }
 `;
 const SignContainer = styled.div`

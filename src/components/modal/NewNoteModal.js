@@ -33,9 +33,18 @@ const TagBoxFlat = styled.div`
   overflow-y: scroll;
   padding: 20px 40px;
   width: 60%;
+  max-width: 1000px;
   height: 600px;
-  margin-bottom: 20px;
   background-color: white;
+
+  @media only screen and (max-width: 768px) {
+    width: 70%;
+  }
+  @media only screen and (max-width: 426px) {
+    width: 80%;
+    padding: 10px 25px;
+    text-align: center;
+  }
 `;
 
 const Title = styled.h3`
@@ -69,16 +78,35 @@ const TagContentBox = styled(Flex)`
   border-radius: 5px;
   border: 2px solid #d3d2d1;
   margin-bottom: 20px;
+
+  @media only screen and (max-width: 426px) {
+    align-items: center;
+  }
 `;
+
 const TagsContainer = styled(Flex)`
-  flex-direction: row;
   flex-wrap: wrap;
   gap: 1em;
+
+  @media only screen and (max-width: 768px) {
+    margin-right: 20px;
+  }
+  @media only screen and (max-width: 426px) {
+    margin-right: 0px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
 `;
 const SubTitle = styled.h3`
   margin: 0;
   padding: 5px 0 15px 0;
   font-size: 16px;
+
+  @media only screen and (max-width: 426px) {
+    padding: 0px 0 1px 0;
+    margin-bottom: 15px;
+    border-bottom: solid 2px #d3d2d1;
+  }
 `;
 
 const Input = styled.input.attrs({ type: "checkbox" })`
@@ -109,6 +137,10 @@ const AddSignContainer = styled.div`
   &:hover {
     box-shadow: 3px 3px 3px rgba(0 0 0 / 30%);
   }
+  @media only screen and (max-width: 426px) {
+    right: 16px;
+    bottom: 2px;
+  }
 `;
 const AddSign = styled(AddCircle)`
   position: absolute;
@@ -122,8 +154,7 @@ const SubmitButton = styled.button`
   border: none;
   width: 120px;
   height: 35px;
-  margin-top: 10px;
-  margin-right: 20px;
+  margin: 20px 0px;
   padding: 3px 8px;
   letter-spacing: 2px;
   text-align: center;
@@ -288,29 +319,29 @@ const NewNoteModal = (props) => {
         {props.groupData?.map((data, index) => (
           <TagContentBox key={data.name}>
             <SubTitle>{data.name}</SubTitle>
-
-            <TagsContainer>
-              {data.tags.map((tag) => (
-                <label name={tag} key={tag}>
-                  <Input
-                    id={tag}
-                    defaultChecked={
-                      props.noteData
-                        ? props.noteData.tagNames.includes(tag)
-                        : false
-                    }
-                  ></Input>
-                  <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
-                </label>
-              ))}
-
+            <div>
+              <TagsContainer>
+                {data.tags.map((tag) => (
+                  <label name={tag} key={tag}>
+                    <Input
+                      id={tag}
+                      defaultChecked={
+                        props.noteData
+                          ? props.noteData.tagNames.includes(tag)
+                          : false
+                      }
+                    ></Input>
+                    <Tag onClick={() => choseTagHandler(tag)}>{tag}</Tag>
+                  </label>
+                ))}
+              </TagsContainer>
               <AddSignContainer>
                 <AddSign
                   onClick={() => tagInputHandler(index)}
                   title="新增標籤"
                 />
               </AddSignContainer>
-            </TagsContainer>
+            </div>
           </TagContentBox>
         ))}
 

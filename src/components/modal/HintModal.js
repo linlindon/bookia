@@ -29,12 +29,13 @@ const InputContainer = styled.div`
   align-items: center;
   padding: 20px;
   width: 60%;
+  max-width: 600px;
   height: 180px;
   background-color: white;
   border-radius: 10px;
 
-  @media only screen and (min-width: 860px) {
-    width: 600px;
+  @media only screen and (max-width: 768px) {
+    text-align: center;
   }
 `;
 const Delete = styled(CloseSquareOutline)`
@@ -47,6 +48,9 @@ const Delete = styled(CloseSquareOutline)`
   &:hover {
     color: #ff6972;
   }
+`;
+const ButtonContainer = styled.div`
+  display: flex;
 `;
 
 const ConfirmButton = styled.button`
@@ -63,6 +67,10 @@ const ConfirmButton = styled.button`
 
   &:hover {
     background-color: #dca246;
+  }
+  @media only screen and (max-width: 768px) {
+    width: 20vw;
+    margin: 0 10px;
   }
 `;
 const LoadingContainer = styled.div`
@@ -113,13 +121,13 @@ function HintModal(props) {
         ) : (
           <>
             {props.isConfirmClose ? (
-              <div>
+              <ButtonContainer>
                 <ConfirmButton onClick={closeModals}>是</ConfirmButton>
-                <span> </span>
+
                 <ConfirmButton onClick={() => props.setIsHint(false)}>
                   否
                 </ConfirmButton>
-              </div>
+              </ButtonContainer>
             ) : (
               <ConfirmButton
                 onClick={() => {

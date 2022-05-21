@@ -27,6 +27,7 @@ const InputContainer = styled.form`
   align-items: center;
   padding: 20px;
   width: 60%;
+  max-width: 600px;
   height: 180px;
   background-color: white;
   border-radius: 10px;
@@ -82,6 +83,9 @@ const ConfirmButton = styled.button`
 
   &:hover {
     background-color: #dca246;
+  }
+  @media only screen and (max-width: 768px) {
+    width: 20vw;
   }
 `;
 
