@@ -186,13 +186,12 @@ function TagBox(props) {
   const [noDataHint, setNoDataHint] = useState(false);
   const [notesBoxData, setNotesBoxData] = useState([]);
   const userId = useContext(UserProfile);
-  let chosenTagRef = useRef([]);
   let allNotesRef = useRef([]);
 
   useEffect(() => {
     allNotesRef.current = [];
-    chosenTagRef.current = [];
-
+    props.setChosenTags([]);
+    console.log("TagBox effect", props.chosenTags);
     async function getData() {
       await firebase.getAllNotesData(userId).then((notes) => {
         notes.forEach((note) => {
@@ -203,7 +202,7 @@ function TagBox(props) {
     if (userId) {
       getData();
     }
-  }, []);
+  }, [userId]);
 
   function showTagInputHandler(index) {
     props.setSelectedBoxIndex(index);
@@ -214,22 +213,23 @@ function TagBox(props) {
   async function choseTagHandler(tagName) {
     setNoDataHint(false);
     let currentNoteData = [];
-    if (chosenTagRef.current.includes(tagName)) {
-      chosenTagRef.current = chosenTagRef.current.filter((item) => {
+    let tagsArray = [...props.chosenTags];
+    if (props.chosenTags.includes(tagName)) {
+      tagsArray = props.chosenTags.filter((item) => {
         return item !== tagName;
       });
+      props.setChosenTags(tagsArray);
     } else {
-      chosenTagRef.current.push(tagName);
+      tagsArray.push(tagName);
+      props.setChosenTags(tagsArray);
     }
 
     allNotesRef.current.forEach((note) => {
-      if (tools.isNoteIncludeTag(chosenTagRef.current, note)) {
+      if (tools.isNoteIncludeTag(tagsArray, note)) {
         currentNoteData.push(note);
       }
     });
-    setNoDataHint(
-      chosenTagRef.current.length !== 0 && currentNoteData.length === 0
-    );
+    setNoDataHint(tagsArray.length !== 0 && currentNoteData.length === 0);
     setNotesBoxData(currentNoteData);
   }
 

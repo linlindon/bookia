@@ -84,9 +84,11 @@ function SiteSearch() {
   const [searchInput, setSearchInput] = useState([]);
   const [searchBookResults, setSearchBookResults] = useState([]);
   const [searchNoteResults, setSearchNoteResults] = useState([]);
+  // const [searchHint, setSearchHint] = useState("請輸入關鍵字")
   const [noDataHint, setNoDataHint] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
+  const searchHintRef = useRef("請輸入關鍵字");
   let booksDataRef = useRef([]);
   let notesDataRef = useRef([]);
   // const [isRender, setIsRender] = useState(true);
@@ -164,7 +166,7 @@ function SiteSearch() {
             搜尋我的筆記內容
           </Button>
         </ButtonContainer>
-        <SearchBar setSearchInput={setSearchInput} />
+        <SearchBar setSearchInput={setSearchInput} ref={searchHintRef} />
         {isLoading && (
           <LoadingContainer>
             <Loading />

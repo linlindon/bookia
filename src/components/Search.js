@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import styled from "styled-components";
 import { Search } from "@styled-icons/heroicons-solid/Search";
 import PropTypes from "prop-types";
@@ -38,7 +38,7 @@ const SearchIcon = styled(Search)`
   cursor: pointer;
 `;
 
-function SearchBar(props) {
+const SearchBar = forwardRef((props, ref) => {
   const [isHint, setIsHint] = useState(false);
   const [input, setInput] = useState("");
   const [hintTitle, setHintTitle] = useState("");
@@ -66,7 +66,7 @@ function SearchBar(props) {
         >
           <SearchInput
             onChange={(e) => setInput(e.target.value)}
-            placeholder="請輸入書名或ISBN"
+            placeholder={ref ? ref.current : "請輸入書名或ISBN"}
           />
           <SearchIcon onClick={searchData} />
         </SearchForm>
@@ -75,7 +75,7 @@ function SearchBar(props) {
       {isHint && <HintModal hintTitle={hintTitle} setIsHint={setIsHint} />}
     </>
   );
-}
+});
 
 SearchBar.propTypes = {
   setSearchInput: PropTypes.func,

@@ -49,11 +49,13 @@ function Tags() {
   const [deleteTagData, setDeleteTagData] = useState([]);
   const [groupData, setGroupData] = useState([]);
   const [selectedBoxIndex, setSelectedBoxIndex] = useState(undefined);
+  const [chosenTags, setChosenTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
 
   useEffect(() => {
     let data = [];
+    console.log("Tags effect", chosenTags);
     setIsLoading(true);
     async function getData() {
       await firebase.getTagGroupsData(userId).then((res) => {
@@ -77,6 +79,10 @@ function Tags() {
     await firebase.updateTagGroup(userId, currentGroupData);
     await tools.deleteNotesTag(userId, tag);
     await tools.deleteBooksTag(userId, tag);
+    if (chosenTags.includes(tag)) {
+      setChosenTags(chosenTags.splice(index, 1));
+    }
+    console.log("Tags delete handler", chosenTags);
     setDeleteTagData([]);
     setIsHintTitle("");
   }
@@ -138,6 +144,8 @@ function Tags() {
             setIsHintTitle={setIsHintTitle}
             setIsConfirmClose={setIsConfirmClose}
             setDeleteTagData={setDeleteTagData}
+            setChosenTags={setChosenTags}
+            chosenTags={chosenTags}
           />
         </TagBoxContainer>
       )}
