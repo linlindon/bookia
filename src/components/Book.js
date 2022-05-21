@@ -23,7 +23,7 @@ const BookBox = styled.div`
   justify-content: center;
   flex-direction: row-reverse;
   width: calc((100% - 82px) / 2);
-  min-height: 52vh;
+  min-height: 38vh;
   margin: 30px 20px;
   border-radius: 10px;
   background-color: #ffffff;
@@ -36,7 +36,7 @@ const BookBox = styled.div`
   }
   @media only screen and (max-width: 1280px) {
     width: calc((100% - 42px) / 2);
-    min-height: 45vh;
+    min-height: 30vh;
     margin: 12px 8px;
   }
 
@@ -68,7 +68,7 @@ const Img = styled.img`
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 230px;
   margin: 23px 10px;
   font-size: 16px;
@@ -92,6 +92,7 @@ const BookTitle = styled.h3`
 const TagsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
+  margin-top: 15px;
   gap: 1em;
   @media only screen and (max-width: 426px) {
     justify-content: center;

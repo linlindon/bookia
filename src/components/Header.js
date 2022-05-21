@@ -120,6 +120,7 @@ const HamburgerNav = styled.div`
   justify-content: center;
   display: none;
   background-color: #f2f1f0;
+  z-index: 9;
 
   @media screen and (max-width: 768px) {
     display: flex;

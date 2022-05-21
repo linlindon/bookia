@@ -11,9 +11,8 @@ import Loading from "../components/Loading";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  width: 100%;
-  margin-bottom: 20px;
 `;
 
 const TagBoxContainer = styled.div`
@@ -22,7 +21,12 @@ const TagBoxContainer = styled.div`
   height: 100%;
   align-items: center;
   align-content: space-around;
+  max-width: 1280px;
   margin: 3% 15%;
+
+  @media only screen and (max-width: 1280px) {
+    margin: 2% 6%;
+  }
 `;
 
 const PageTitle = styled.h1`
@@ -115,10 +119,8 @@ function Tags() {
   }
 
   return (
-    <>
-      <Container>
-        <PageTitle>書籤櫃</PageTitle>
-      </Container>
+    <Container>
+      <PageTitle>書籤櫃</PageTitle>
 
       {isLoading ? (
         <LoadingContainer>
@@ -161,7 +163,7 @@ function Tags() {
           deleteGroupHandler={deleteGroupHandler}
         />
       )}
-    </>
+    </Container>
   );
 }
 export default Tags;

@@ -7,13 +7,9 @@ const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
 
-  @media only screen and (min-width: 1280px) {
-    ${"" /* width: 1140px; */}
-  }
   @media only screen and (max-width: 768px) {
     align-items: center;
     flex-direction: row;
-    width: 82%;
   }
 `;
 const NoteBox = styled.div`

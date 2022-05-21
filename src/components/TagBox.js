@@ -22,6 +22,10 @@ const BoxWrapper = styled.div`
   box-shadow: beige;
   box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
   padding: 10px;
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const TagBoxContainer = styled.div`
@@ -41,6 +45,10 @@ const TagBoxContainer = styled.div`
 
   &:hover {
     box-shadow: 2px 2px 7px rgb(0 0 0 / 30%);
+  }
+
+  @media only screen and (max-width: 768px) {
+    width: 85%;
   }
 `;
 const AddTagBox = styled(TagBoxContainer)`
@@ -138,7 +146,6 @@ const AddSign = styled(AddCircle)`
   color: #dca246;
 
   @media only screen and (max-width: 768px) {
-    top: 90px;
   }
 `;
 const TagsWrapper = styled.div`
