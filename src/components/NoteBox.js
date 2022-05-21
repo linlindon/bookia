@@ -24,6 +24,10 @@ const TagBox = styled.div`
   border-radius: 10px;
   background-color: #ffffff;
   box-shadow: 2px 2px 7px rgb(0 0 0 / 20%);
+
+  @media only screen and (max-width: 426px) {
+    width: 95%;
+  }
 `;
 const AddTagBox = styled(TagBox)`
   height: 80px;
@@ -36,6 +40,16 @@ const AddTagBox = styled(TagBox)`
   &:hover {
     color: #404040;
     box-shadow: 3px 3px 3px rgba(0 0 0 / 30%);
+  }
+
+  @media only screen and (max-width: 1280px) {
+    height: 60px;
+  }
+  @media only screen and (max-width: 768px) {
+    height: 40px;
+  }
+  @media only screen and (max-width: 426px) {
+    height: 30px;
   }
 `;
 

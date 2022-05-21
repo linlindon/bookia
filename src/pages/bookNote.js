@@ -20,9 +20,19 @@ const Container = styled(Flex)`
 
 const Wrapper = styled.div`
   display: flex;
-  width: 70%;
+  max-width: 1280px;
   align-items: flex-start;
   margin: 3% 15%;
+
+  @media only screen and (max-width: 1280px) {
+    flex-direction: column;
+    align-items: center;
+    margin: 2% 6%;
+  }
+  @media only screen and (max-width: 768px) {
+    width: 90%;
+    padding: 0 2%;
+  }
 `;
 const BookInfoContainer = styled(Flex)`
   align-items: flex-start;
@@ -31,6 +41,17 @@ const BookInfoContainer = styled(Flex)`
   width: 600px;
   border-radius: 10px;
   background-color: #ffffff;
+
+  @media only screen and (max-width: 1280px) {
+    align-self: center;
+    margin: 40px;
+    width: 86%;
+  }
+  @media only screen and (max-width: 426px) {
+    flex-direction: column;
+    align-items: center;
+    margin: 15px;
+  }
 `;
 
 const BookImg = styled.div`
@@ -44,6 +65,11 @@ const Img = styled.img`
 const ContentContainer = styled.div`
   width: 100%;
   padding-left: 10px;
+
+  @media only screen and (max-width: 426px) {
+    text-align: center;
+    padding: 10px 0 0 0;
+  }
 `;
 const BookTitle = styled.h3`
   margin: 0 0 15px 0;
