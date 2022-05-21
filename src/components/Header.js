@@ -3,6 +3,7 @@ import { useNavigate, NavLink, Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Logout } from "@styled-icons/heroicons-outline/Logout";
 import { Menu } from "@styled-icons/heroicons-outline/Menu";
+import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
 
 import BookiaLogo from "../image/logo.png";
 import firebase from "../utils/firebaseTools";
@@ -46,14 +47,14 @@ const NavLinks = styled.div`
   width: 80%;
 
   .active {
-    border-bottom: solid 3px #d3d2d1;
+    border-bottom: solid 3px #eeeded;
   }
 
   @media screen and (max-width: 768px) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 80%;
+    width: 100%;
     margin-top: 20%;
   }
 `;
@@ -74,18 +75,39 @@ const Nav = styled(NavLink)`
     margin: 0 30px 20px;
   }
 `;
-const MobileLink = styled.p`
+const MobileLink = styled(NavLink)`
+  display: none;
+
+  .active {
+    color: red;
+    border-bottom: solid 3px #d3d2d1;
+  }
+
   @media screen and (max-width: 768px) {
+    display: block;
     padding: 4px 6px;
     margin-right: 2%;
+    font-size: 16px;
     font-weight: 500;
     line-height: 27px;
     margin: 0 30px 20px;
-    color: #363434;
+    color: #fff;
     cursor: pointer;
   }
 `;
-
+const LogoutLink = styled.p`
+  @media screen and (max-width: 768px) {
+    display: block;
+    padding: 4px 6px;
+    margin-right: 2%;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 27px;
+    margin: 0 30px 20px;
+    color: #fff;
+    cursor: pointer;
+  }
+`;
 const SignContainer = styled.div`
   position: relative;
   padding-bottom: 6px;
@@ -110,10 +132,9 @@ const LogoutHint = styled.div`
 
 ////////漢堡選單/////////////
 const HamburgerNav = styled.div`
+  position: fixed;
   width: 100%;
   height: 68px;
-  background-color: ;
-  position: fixed;
   top: 0;
   right: 0;
   align-items: center;
@@ -135,41 +156,48 @@ const HamburgerBtn = styled(Menu)`
 `;
 
 const SmallLogo = styled(Logo)`
-  width: 120px;
+  width: 100px;
   text-align: center;
   cursor: pointer;
 `;
 const MobileMenuOverlay = styled.div`
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: red;
   background: rgba(0, 0, 0, 0.5);
-  @media screen and (min-width: 787px) {
-    display: none;
+  @media screen and (max-width: 768px) {
+    display: block;
   }
 `;
 
 const MobileNavWrapper = styled.div`
+  display: none;
   position: fixed;
   top: 0;
-  width: 300px;
+  width: 40%;
   height: 100vh;
-  background-color: #dadedf;
+  background-color: #e6c88b;
   z-index: 10;
-  @media screen and (min-width: 787px) {
-    display: none;
+  @media screen and (max-width: 768px) {
+    display: block;
+  }
+  @media screen and (max-width: 426px) {
+    width: 200px;
   }
 `;
-const CloseButton = styled.div`
+const CloseButton = styled(CloseSquareOutline)`
   position: absolute;
-  top: 27px;
-  right: 32px;
-  font-size: 20px;
+  top: 8px;
+  right: 12px;
+  width: 24px;
   cursor: pointer;
   color: #fff;
+  &:hover {
+    color: #ff6972;
+  }
 `;
 
 function Header() {
@@ -226,7 +254,7 @@ function Header() {
                 圖書館
               </MobileLink>
               <MobileLink
-                href="/books"
+                to="/books"
                 onClick={() => closeToggleHandler("/books")}
               >
                 我的筆記櫃
@@ -244,7 +272,7 @@ function Header() {
               >
                 我的搜尋
               </MobileLink>
-              <MobileLink onClick={logout}>登出</MobileLink>
+              <LogoutLink onClick={logout}>登出</LogoutLink>
             </NavLinks>
           </MobileNavWrapper>
         </>

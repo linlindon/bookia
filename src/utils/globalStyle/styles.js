@@ -49,6 +49,11 @@ export const GlobalStyle = createGlobalStyle`
       text-decoration: none;
       color: inherit;
     }
+    h1 {
+        @media only screen and (max-width: 426px) {
+            font-size: 1.5em;
+        } 
+    }
 `;
 
 // export const MediaQuerySmall = `@media only screen and {max-width: 768px}`;

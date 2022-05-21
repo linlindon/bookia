@@ -59,6 +59,7 @@ const Button = styled.button`
     margin: 10px;
   }
   @media only screen and (max-width: 426px) {
+    font-size: 14px;
     width: 90%;
   }
 `;

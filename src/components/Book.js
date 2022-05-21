@@ -7,7 +7,7 @@ const BookBox = styled.div`
   justify-content: center;
   flex-direction: row-reverse;
   width: calc((100% - 82px) / 2);
-  height: 40vh;
+  height: 34vh;
   margin: 30px 20px;
   border-radius: 10px;
   background-color: #ffffff;
@@ -26,11 +26,11 @@ const BookBox = styled.div`
 
   @media only screen and (max-width: 768px) {
     width: 80vw;
+    height: auto;
   }
   @media only screen and (max-width: 426px) {
     flex-direction: column;
     align-items: center;
-    height: auto;
   }
 `;
 

@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
 
-// import AddTagSign from "../AddTagSign";
 import Loading from "../Loading";
 
 const Background = styled.div`
