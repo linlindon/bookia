@@ -15,6 +15,22 @@ const Wrapper = styled.div`
   flex-wrap: wrap;
 `;
 
+const BooksContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1280px;
+  margin: 3% 15%;
+
+  @media only screen and (max-width: 1280px) {
+    margin: 2% 6%;
+  }
+  @media only screen and (max-width: 768px) {
+    padding: 0 2%;
+  }
+`;
+
 const Title = styled.h1`
   text-align: center;
 `;
@@ -86,7 +102,11 @@ function Books() {
           </LinkButton>
         </>
       )}
-      {bookDatas.length !== 0 && <Book bookDatas={bookDatas} />}
+      {bookDatas.length !== 0 && (
+        <BooksContainer>
+          <Book bookDatas={bookDatas} />
+        </BooksContainer>
+      )}
     </Wrapper>
   );
 }

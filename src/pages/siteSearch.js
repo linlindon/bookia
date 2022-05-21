@@ -12,7 +12,7 @@ const PageTitle = styled.h1`
   marign-top: 5%;
   text-align: center;
   @media only screen and (max-width: 768px) {
-    margin: 5px;
+    margin-top: 20px;
   }
 `;
 const SearchContainer = styled.div`
@@ -20,10 +20,25 @@ const SearchContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 3% 15%;
+
+  @media only screen and (max-width: 1280px) {
+    margin: 2% 6%;
+  }
+  @media only screen and (max-width: 768px) {
+    padding: 0 2%;
+  }
 `;
 const ButtonContainer = styled.div`
   display: flex;
   padding: 0 20px 35px;
+
+  @media only screen and (max-width: 768px) {
+    padding: 0 0 30px;
+  }
+  @media only screen and (max-width: 426px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const Button = styled.button`
@@ -39,6 +54,21 @@ const Button = styled.button`
   border-radius: 5px;
   color: #fff;
   background-color: ${(props) => (props.active ? "#dca246" : "#e6c88b")};
+
+  @media only screen and (max-width: 768px) {
+    margin: 10px;
+  }
+  @media only screen and (max-width: 426px) {
+    width: 90%;
+  }
+`;
+const BooksContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1280px;
+  width: 100%;
 `;
 
 const Title = styled.h3`
@@ -141,7 +171,9 @@ function SiteSearch() {
         )}
         {noDataHint && <Title>無相關資料</Title>}
         {searchBookResults.length !== 0 && (
-          <Book bookDatas={searchBookResults} />
+          <BooksContainer>
+            <Book bookDatas={searchBookResults} />
+          </BooksContainer>
         )}
         {searchNoteResults.length !== 0 && (
           <Note notesBoxData={searchNoteResults} />

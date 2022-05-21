@@ -2,28 +2,12 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-const Container = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-wrap: wrap;
-  max-width: 1280px;
-  margin: 3% 15%;
-
-  @media only screen and (max-width: 1280px) {
-    margin: 2% 6%;
-  }
-  @media only screen and (max-width: 768px) {
-    padding: 0 2%;
-  }
-`;
-
 const BookBox = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: row-reverse;
   width: calc((100% - 82px) / 2);
-  min-height: 38vh;
+  height: 40vh;
   margin: 30px 20px;
   border-radius: 10px;
   background-color: #ffffff;
@@ -35,8 +19,8 @@ const BookBox = styled.div`
     background-color: #eeeded;
   }
   @media only screen and (max-width: 1280px) {
-    width: calc((100% - 42px) / 2);
-    min-height: 30vh;
+    width: calc((100% - 33px) / 2);
+    height: 35vh;
     margin: 12px 8px;
   }
 
@@ -46,6 +30,7 @@ const BookBox = styled.div`
   @media only screen and (max-width: 426px) {
     flex-direction: column;
     align-items: center;
+    height: auto;
   }
 `;
 
@@ -113,7 +98,7 @@ function Book(props) {
   let navigate = useNavigate();
 
   return (
-    <Container>
+    <>
       {props.bookDatas?.map((book, index) => (
         <BookBox onClick={() => navigate(`/booknote/${book.id}`)} key={book.id}>
           <BookImg key={book.img}>
@@ -132,7 +117,7 @@ function Book(props) {
           </ContentContainer>
         </BookBox>
       ))}
-    </Container>
+    </>
   );
 }
 

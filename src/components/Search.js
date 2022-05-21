@@ -9,10 +9,11 @@ const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 1280px;
   width: 60%;
 
-  @media only screen and (min-width: 1280px) {
-    width: 1300px;
+  @media only screen and (max-width: 1280px) {
+    width: 80%;
   }
 `;
 
@@ -20,9 +21,6 @@ const SearchForm = styled.form`
   display: flex;
   margin-bottom: 50px;
   border-bottom: solid 1px black;
-  @media only screen and (min-width: 1280px) {
-    ${"" /* width: 1130px; */}
-  }
 `;
 
 const SearchInput = styled.input`
