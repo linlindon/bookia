@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
 import propTypes from "prop-types";
 
 const Container = styled.div`

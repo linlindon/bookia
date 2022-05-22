@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useRef } from "react";
 import styled from "styled-components";
 import { Search } from "@styled-icons/heroicons-solid/Search";
 import PropTypes from "prop-types";
@@ -40,19 +40,20 @@ const SearchIcon = styled(Search)`
 
 const SearchBar = forwardRef((props, ref) => {
   const [isHint, setIsHint] = useState(false);
-  const [input, setInput] = useState("");
   const [hintTitle, setHintTitle] = useState("");
+  let inputValueRef = useRef("");
 
-  function searchData() {
-    // if (props.setIsRender) {
-    //   props.setIsRender((prevState) => !prevState);
-    // }
-    if (input.replace(/\s*/g, "").length === 0) {
+  function getInputData() {
+    if (inputValueRef.current.replace(/\s*/g, "").length === 0) {
       setHintTitle("請輸入要搜尋的書名");
       setIsHint(true);
       return;
     }
-    props.setSearchInput(input.toLowerCase());
+    if (props.setSearchInput) {
+      props.setSearchInput(inputValueRef.current);
+      return;
+    }
+    props.searchData(inputValueRef.current.toLowerCase());
   }
 
   return (
@@ -61,14 +62,14 @@ const SearchBar = forwardRef((props, ref) => {
         <SearchForm
           onSubmit={(e) => {
             e.preventDefault();
-            searchData();
+            getInputData();
           }}
         >
           <SearchInput
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => (inputValueRef.current = e.target.value)}
             placeholder={ref ? ref.current : "請輸入書名或ISBN"}
           />
-          <SearchIcon onClick={searchData} />
+          <SearchIcon onClick={getInputData} />
         </SearchForm>
       </SearchContainer>
 
@@ -79,6 +80,7 @@ const SearchBar = forwardRef((props, ref) => {
 
 SearchBar.propTypes = {
   setSearchInput: PropTypes.func,
+  refProp: PropTypes.shape({ current: PropTypes.string }),
 };
 
 export default SearchBar;

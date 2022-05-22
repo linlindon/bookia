@@ -81,17 +81,14 @@ const LoadingContainer = styled.div`
 
 function SiteSearch() {
   const [searchType, setSearchType] = useState("book");
-  const [searchInput, setSearchInput] = useState([]);
   const [searchBookResults, setSearchBookResults] = useState([]);
   const [searchNoteResults, setSearchNoteResults] = useState([]);
-  // const [searchHint, setSearchHint] = useState("請輸入關鍵字")
   const [noDataHint, setNoDataHint] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
   const searchHintRef = useRef("請輸入關鍵字");
   let booksDataRef = useRef([]);
   let notesDataRef = useRef([]);
-  // const [isRender, setIsRender] = useState(true);
 
   useEffect(() => {
     if (userId) {
@@ -108,37 +105,32 @@ function SiteSearch() {
     }
   }, [userId]);
 
-  useEffect(() => {
+  function searchData(inputValue) {
     setSearchBookResults([]);
     setSearchNoteResults([]);
-    function searchData() {
-      setNoDataHint(false);
-      setIsLoading(true);
-      let inputWordArray = searchInput.split(" ");
-      let filterData = [];
-      if (searchType === "book") {
-        inputWordArray.forEach((word) => {
-          filterData = booksDataRef.current.filter((book) => {
-            return book.title.toLowerCase().includes(word.toLowerCase());
-          });
+    setNoDataHint(false);
+    setIsLoading(true);
+    let inputWordArray = inputValue.split(" ");
+    let filterData = [];
+    if (searchType === "book") {
+      inputWordArray.forEach((word) => {
+        filterData = booksDataRef.current.filter((book) => {
+          return book.title.toLowerCase().includes(word.toLowerCase());
         });
-        setIsLoading(false);
-        setSearchBookResults(filterData);
-      } else if (searchType === "note") {
-        filterData = notesDataRef.current.filter((note) => {
-          return inputWordArray.every((word) => {
-            return note.content.toLowerCase().includes(word.toLowerCase());
-          });
+      });
+      setIsLoading(false);
+      setSearchBookResults(filterData);
+    } else if (searchType === "note") {
+      filterData = notesDataRef.current.filter((note) => {
+        return inputWordArray.every((word) => {
+          return note.content.toLowerCase().includes(word.toLowerCase());
         });
-        setIsLoading(false);
-        setSearchNoteResults(filterData);
-      }
-      setNoDataHint(filterData.length === 0);
+      });
+      setIsLoading(false);
+      setSearchNoteResults(filterData);
     }
-    if (searchInput.length !== 0) {
-      searchData();
-    }
-  }, [searchInput]);
+    setNoDataHint(filterData.length === 0);
+  }
 
   function searchTypeHandler(type) {
     setNoDataHint(false);
@@ -166,7 +158,7 @@ function SiteSearch() {
             搜尋我的筆記內容
           </Button>
         </ButtonContainer>
-        <SearchBar setSearchInput={setSearchInput} ref={searchHintRef} />
+        <SearchBar searchData={searchData} ref={searchHintRef} />
         {isLoading && (
           <LoadingContainer>
             <Loading />

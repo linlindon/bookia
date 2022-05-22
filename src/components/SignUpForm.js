@@ -47,6 +47,7 @@ const LoadingContainer = styled.div`
 export const SignUpForm = (props) => {
   let navigate = useNavigate();
   const regexs =
+    // eslint-disable-next-line
     /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   const [signUpInfo, setSignUpInfo] = useState({
     name: "",

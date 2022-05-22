@@ -195,11 +195,10 @@ const NewNoteModal = (props) => {
     if (props.noteData) {
       chosenTagRef.current = [...props.noteData.tagNames];
     }
-  }, []);
+  }, [props.noteData]);
 
   function choseTagHandler(tag) {
     if (chosenTagRef.current.includes(tag)) {
-      // console.log("tag to delete===>", tag);
       chosenTagRef.current = chosenTagRef.current.filter((item) => {
         return item !== tag;
       });
@@ -214,51 +213,53 @@ const NewNoteModal = (props) => {
     if (chosenTagRef.current.length === 0) {
       setIsHintTitle("每個筆記需要至少一個標籤");
       setIsHint(true);
-    } else if (!inputDatas.title) {
+      return;
+    }
+    if (!inputDatas.title) {
       setIsHintTitle("請輸入筆記標題");
       setIsHint(true);
-    } else if (!inputDatas.content) {
+      return;
+    }
+    if (!inputDatas.content) {
       setIsHintTitle("請輸入筆記內容");
       setIsHint(true);
-    } else {
-      setIsLoading(true);
-
-      let inputData = {
-        bookID: props.bookInfo.id,
-        id: props.noteData?.id ? props.noteData.id : "",
-        bookTitle: props.bookInfo.title,
-        tagNames: chosenTagRef.current,
-        content: inputDatas.content,
-        page: inputDatas.page,
-        title: inputDatas.title,
-      };
-
-      // console.log("新筆記資料包===>", inputData);
-
-      if (!props.noteData) {
-        await firebase.addNewNote(userId, inputData);
-      } else {
-        await firebase.addNewNote(userId, inputData, props.noteData.id);
-      }
-
-      let bookTagArray = [];
-      await firebase.getBookInfo(userId, props.bookInfo.id).then((data) => {
-        bookTagArray = data.tagNames;
-
-        if (bookTagArray.length === 0) {
-          bookTagArray = [...chosenTagRef.current];
-        } else {
-          chosenTagRef.current.forEach((tag) => {
-            if (!bookTagArray.includes(tag)) {
-              bookTagArray.push(tag);
-            }
-          });
-        }
-      });
-      await firebase.updateBookTags(userId, props.bookInfo.id, bookTagArray);
-      props.setShowNoteInput(false);
-      chosenTagRef.current = [];
+      return;
     }
+    setIsLoading(true);
+
+    let inputData = {
+      bookID: props.bookInfo.id,
+      id: props.noteData?.id ? props.noteData.id : "",
+      bookTitle: props.bookInfo.title,
+      tagNames: chosenTagRef.current,
+      content: inputDatas.content,
+      page: inputDatas.page,
+      title: inputDatas.title,
+    };
+
+    if (!props.noteData) {
+      await firebase.addNewNote(userId, inputData);
+    } else {
+      await firebase.addNewNote(userId, inputData, props.noteData.id);
+    }
+
+    let bookTagArray = [];
+    await firebase.getBookInfo(userId, props.bookInfo.id).then((data) => {
+      bookTagArray = data.tagNames;
+
+      if (bookTagArray.length === 0) {
+        bookTagArray = [...chosenTagRef.current];
+      } else {
+        chosenTagRef.current.forEach((tag) => {
+          if (!bookTagArray.includes(tag)) {
+            bookTagArray.push(tag);
+          }
+        });
+      }
+    });
+    await firebase.updateBookTags(userId, props.bookInfo.id, bookTagArray);
+    props.setShowNoteInput(false);
+    chosenTagRef.current = [];
   }
 
   function closeInputByWindow(e) {

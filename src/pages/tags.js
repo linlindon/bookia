@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import styled from "styled-components";
 import firebase from "../utils/firebaseTools";
 import tools from "../utils/tools";
@@ -49,25 +49,47 @@ function Tags() {
   const [deleteTagData, setDeleteTagData] = useState([]);
   const [groupData, setGroupData] = useState([]);
   const [selectedBoxIndex, setSelectedBoxIndex] = useState(undefined);
-  const [chosenTags, setChosenTags] = useState([]);
+  const [notesBoxData, setNotesBoxData] = useState([]);
+  const [noDataHint, setNoDataHint] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
+  let allNotesRef = useRef([]);
+  let chosenTagsRef = useRef([]);
 
   useEffect(() => {
     let data = [];
-    console.log("Tags effect", chosenTags);
+    allNotesRef.current = [];
     setIsLoading(true);
+
     async function getData() {
       await firebase.getTagGroupsData(userId).then((res) => {
         data.push(...res.tagGroups);
         setGroupData(data);
         setIsLoading(false);
       });
+      await firebase.getAllNotesData(userId).then((notes) => {
+        notes.forEach((note) => {
+          allNotesRef.current.push(note.data());
+        });
+      });
     }
     if (userId) {
       getData();
     }
   }, [userId]);
+
+  function getTagsNoteData() {
+    let currentNoteData = [];
+    allNotesRef.current.forEach((note) => {
+      if (tools.isNoteIncludeTag(chosenTagsRef.current, note)) {
+        currentNoteData.push(note);
+      }
+    });
+    setNoDataHint(
+      chosenTagsRef.current.length !== 0 && currentNoteData.length === 0
+    );
+    setNotesBoxData(currentNoteData);
+  }
 
   async function deleteTagHandler(tag, index) {
     let currentGroupData = [...groupData];
@@ -79,10 +101,12 @@ function Tags() {
     await firebase.updateTagGroup(userId, currentGroupData);
     await tools.deleteNotesTag(userId, tag);
     await tools.deleteBooksTag(userId, tag);
-    if (chosenTags.includes(tag)) {
-      setChosenTags(chosenTags.splice(index, 1));
+    if (chosenTagsRef.current.includes(tag)) {
+      chosenTagsRef.current = chosenTagsRef.current.filter((item) => {
+        return item !== tag;
+      });
     }
-    console.log("Tags delete handler", chosenTags);
+    getTagsNoteData();
     setDeleteTagData([]);
     setIsHintTitle("");
   }
@@ -144,8 +168,11 @@ function Tags() {
             setIsHintTitle={setIsHintTitle}
             setIsConfirmClose={setIsConfirmClose}
             setDeleteTagData={setDeleteTagData}
-            setChosenTags={setChosenTags}
-            chosenTags={chosenTags}
+            notesBoxData={notesBoxData}
+            setNoDataHint={setNoDataHint}
+            noDataHint={noDataHint}
+            getTagsNoteData={getTagsNoteData}
+            ref={chosenTagsRef}
           />
         </TagBoxContainer>
       )}

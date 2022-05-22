@@ -40,10 +40,10 @@ const Background = styled.div`
 
 function RequireAuth({ children, loginState }) {
   let location = useLocation();
-  // 會導回你當初登入的頁面。children指的就是被RequireAuth包住的所有東西(路徑)
   if (loginState === 0) {
     return <Navigate to="/" state={{ from: location }} replace />;
-  } else if (loginState === 1) {
+  }
+  if (loginState === 1) {
     return <LoadingModal />;
   }
   return children;
@@ -68,10 +68,11 @@ function App() {
       if (user) {
         setLoginState(2);
         setUserId(user.uid);
-      } else {
-        setLoginState(0);
+        return;
       }
+      setLoginState(0);
     });
+    // eslint-disable-next-line
   }, [userId]);
 
   return (

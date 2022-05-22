@@ -175,6 +175,7 @@ const MobileMenuOverlay = styled.div`
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.5);
+  z-index: 9;
   @media screen and (max-width: 768px) {
     display: block;
   }
@@ -252,7 +253,7 @@ function Header() {
         <>
           <MobileMenuOverlay />
           <MobileNavWrapper>
-            <CloseButton onClick={closeToggleHandler}>×</CloseButton>
+            <CloseButton onClick={closeToggleHandler} />
             <NavLinks>
               <MobileLink
                 to="/library-search"

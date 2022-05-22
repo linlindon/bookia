@@ -1,14 +1,11 @@
-import { useEffect, useState, useContext, useRef } from "react";
+import { forwardRef } from "react";
 import styled from "styled-components";
 import { DeleteOutline } from "@styled-icons/typicons/DeleteOutline";
 import { AddCircle } from "@styled-icons/ionicons-outline/AddCircle";
 import PropTypes from "prop-types";
 
-import firebase from "../utils/firebaseTools";
-import tools from "../utils/tools";
 import Note from "./Note";
 import GroupNameInput from "./GroupNameInput";
-import { UserProfile } from "../App";
 
 const BoxWrapper = styled.div`
   display: flex;
@@ -182,28 +179,7 @@ const NoDataTitle = styled.h3`
   text-align: center;
 `;
 
-function TagBox(props) {
-  const [noDataHint, setNoDataHint] = useState(false);
-  const [notesBoxData, setNotesBoxData] = useState([]);
-  const userId = useContext(UserProfile);
-  let allNotesRef = useRef([]);
-
-  useEffect(() => {
-    allNotesRef.current = [];
-    props.setChosenTags([]);
-    console.log("TagBox effect", props.chosenTags);
-    async function getData() {
-      await firebase.getAllNotesData(userId).then((notes) => {
-        notes.forEach((note) => {
-          allNotesRef.current.push(note.data());
-        });
-      });
-    }
-    if (userId) {
-      getData();
-    }
-  }, [userId]);
-
+const TagBox = forwardRef((props, ref) => {
   function showTagInputHandler(index) {
     props.setSelectedBoxIndex(index);
     props.setShowInputModal(true);
@@ -211,26 +187,16 @@ function TagBox(props) {
   }
 
   async function choseTagHandler(tagName) {
-    setNoDataHint(false);
-    let currentNoteData = [];
-    let tagsArray = [...props.chosenTags];
-    if (props.chosenTags.includes(tagName)) {
-      tagsArray = props.chosenTags.filter((item) => {
+    props.setNoDataHint(false);
+
+    if (ref.current.includes(tagName)) {
+      ref.current = ref.current.filter((item) => {
         return item !== tagName;
       });
-      props.setChosenTags(tagsArray);
     } else {
-      tagsArray.push(tagName);
-      props.setChosenTags(tagsArray);
+      ref.current.push(tagName);
     }
-
-    allNotesRef.current.forEach((note) => {
-      if (tools.isNoteIncludeTag(tagsArray, note)) {
-        currentNoteData.push(note);
-      }
-    });
-    setNoDataHint(tagsArray.length !== 0 && currentNoteData.length === 0);
-    setNotesBoxData(currentNoteData);
+    props.getTagsNoteData();
   }
 
   function showGroupHintModal(name, index) {
@@ -294,11 +260,11 @@ function TagBox(props) {
         </AddTagBox>
       </BoxWrapper>
 
-      {notesBoxData.length > 0 ? (
-        <Note notesBoxData={notesBoxData} />
+      {props.notesBoxData.length > 0 ? (
+        <Note notesBoxData={props.notesBoxData} />
       ) : (
         <NoDataContainer>
-          {noDataHint ? (
+          {props.noDataHint ? (
             <NoDataTitle>
               選取的書籤
               <br />
@@ -315,7 +281,7 @@ function TagBox(props) {
       )}
     </>
   );
-}
+});
 
 TagBox.propTypes = {
   groupData: PropTypes.array,
@@ -327,6 +293,11 @@ TagBox.propTypes = {
   setIsHintTitle: PropTypes.func,
   setIsConfirmClose: PropTypes.func,
   setDeleteTagData: PropTypes.func,
+  getTagsNoteData: PropTypes.func,
+  notesBoxData: PropTypes.array,
+  setNoDataHint: PropTypes.func,
+  noDataHint: PropTypes.bool,
+  refProp: PropTypes.shape({ current: PropTypes.object }),
 };
 
 export default TagBox;
