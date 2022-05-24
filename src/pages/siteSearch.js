@@ -120,7 +120,10 @@ function SiteSearch() {
       });
       setIsLoading(false);
       setSearchBookResults(filterData);
-    } else if (searchType === "note") {
+      setNoDataHint(filterData.length === 0);
+      return;
+    }
+    if (searchType === "note") {
       filterData = notesDataRef.current.filter((note) => {
         return inputWordArray.every((word) => {
           return note.content.toLowerCase().includes(word.toLowerCase());
@@ -128,8 +131,8 @@ function SiteSearch() {
       });
       setIsLoading(false);
       setSearchNoteResults(filterData);
+      setNoDataHint(filterData.length === 0);
     }
-    setNoDataHint(filterData.length === 0);
   }
 
   function searchTypeHandler(type) {

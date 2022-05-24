@@ -9,7 +9,6 @@ export const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
         letter-spacing: .1rem;
         color: #404040;
-        ${"" /* font-family: 'Noto Serif TC', serif;  */}
         font-size: 14px;
         font-family: 'Noto Sans TC', sans-serif; 
 
@@ -55,8 +54,3 @@ export const GlobalStyle = createGlobalStyle`
         } 
     }
 `;
-
-// export const MediaQuerySmall = `@media only screen and {max-width: 768px}`;
-// export const MediaQueryLarge = `@media only screen and {min-width: 1280px}`;
-
-// export { GlobalStyle };

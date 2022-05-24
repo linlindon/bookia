@@ -45,7 +45,7 @@ const SearchBar = forwardRef((props, ref) => {
 
   function getInputData() {
     if (inputValueRef.current.replace(/\s*/g, "").length === 0) {
-      setHintTitle("請輸入要搜尋的書名");
+      setHintTitle("請輸入要搜尋的關鍵字");
       setIsHint(true);
       return;
     }

@@ -1,11 +1,11 @@
 import { useRef, useState, useContext } from "react";
 import styled from "styled-components";
-import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
 import PropTypes from "prop-types";
 
 import firebase from "../../utils/firebaseTools";
 import tools from "../../utils/tools";
 import Loading from "../Loading";
+import { Delete } from "../../utils/style/styledComponents";
 import { UserProfile } from "../../App";
 
 const Background = styled.div`
@@ -36,17 +36,7 @@ const InputContainer = styled.form`
     width: 600px;
   }
 `;
-const Delete = styled(CloseSquareOutline)`
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  width: 20px;
-  color: #d3d2d1;
-  cursor: pointer;
-  &:hover {
-    color: #ff6972;
-  }
-`;
+
 const ModalTitle = styled.p`
   margin-bottom: 25px;
   font-size: 16px;
@@ -103,17 +93,14 @@ function InputModal(props) {
     let allTags = tools.allTagsArray(allGroupData);
     let allTitles = tools.allGroupTitleArray(allGroupData);
 
-    if (
-      !inputRef.current ||
-      inputRef.current.replace(/\s*/g, "").length === 0
-    ) {
+    if (inputRef.current.replace(/\s*/g, "").length === 0) {
       setWarningContent("請輸入名稱");
       setIsWarning(true);
       return;
     } else {
       if (props.selectedBoxIndex === undefined) {
         if (allTitles.includes(inputRef.current)) {
-          setWarningContent("此名稱已存在，請輸入其他名稱");
+          setWarningContent("此書籤櫃名稱已存在，請輸入其他名稱");
           setIsWarning(true);
           return;
         }
@@ -127,9 +114,8 @@ function InputModal(props) {
         setIsLoading(false);
       } else {
         if (allTags.includes(inputRef.current)) {
-          setWarningContent("此名稱已存在，請輸入其他名稱");
+          setWarningContent("此書籤已存在，請輸入其他名稱");
           setIsWarning(true);
-          props.setSelectedBoxIndex(undefined);
           return;
         }
         setIsWarning(false);

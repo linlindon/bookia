@@ -3,12 +3,12 @@ import { useNavigate, NavLink, Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Logout } from "@styled-icons/heroicons-outline/Logout";
 import { Menu } from "@styled-icons/heroicons-outline/Menu";
-import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
 
 import BookiaLogo from "../image/logo.png";
 import firebase from "../utils/firebaseTools";
 import HintModal from "./modal/HintModal";
 import LoadingModal from "../components/modal/LoadingModal";
+import { Delete } from "../utils/style/styledComponents";
 
 const PlaceHolder = styled.div`
   display: none;
@@ -196,17 +196,6 @@ const MobileNavWrapper = styled.div`
     width: 200px;
   }
 `;
-const CloseButton = styled(CloseSquareOutline)`
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  width: 24px;
-  cursor: pointer;
-  color: #fff;
-  &:hover {
-    color: #ff6972;
-  }
-`;
 
 function Header() {
   const [toggle, setToggle] = useState(false);
@@ -253,7 +242,7 @@ function Header() {
         <>
           <MobileMenuOverlay />
           <MobileNavWrapper>
-            <CloseButton onClick={closeToggleHandler} />
+            <Delete onClick={closeToggleHandler} dependency={true} />
             <NavLinks>
               <MobileLink
                 to="/library-search"

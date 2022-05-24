@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
 
+import { Delete } from "../../utils/style/styledComponents";
 import Loading from "../Loading";
 
 const Background = styled.div`
@@ -38,17 +38,7 @@ const InputContainer = styled.div`
     text-align: center;
   }
 `;
-const Delete = styled(CloseSquareOutline)`
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  width: 20px;
-  color: #d3d2d1;
-  cursor: pointer;
-  &:hover {
-    color: #ff6972;
-  }
-`;
+
 const ButtonContainer = styled.div`
   display: flex;
 `;

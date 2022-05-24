@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { AddCircle } from "@styled-icons/ionicons-solid/AddCircle";
-import { CloseSquareOutline } from "@styled-icons/evaicons-outline/CloseSquareOutline";
 import ContentEditor from "../Editor";
 
 import firebase from "../../utils/firebaseTools";
@@ -10,6 +8,11 @@ import InputModal from "./InputModal";
 import HintModal from "./HintModal";
 import Loading from "../Loading";
 import { UserProfile } from "../../App";
+import {
+  AddSignContainer,
+  AddSign,
+  Delete,
+} from "../../utils/style/styledComponents";
 
 const Flex = styled.div`
   display: flex;
@@ -58,18 +61,6 @@ const TitleInput = styled.input`
   border: 2px solid #d3d2d1;
 `;
 
-const CloseButton = styled(CloseSquareOutline)`
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  width: 25px;
-  color: #d3d2d1;
-  cursor: pointer;
-
-  &:hover {
-    color: #ff6972;
-  }
-`;
 const TagContentBox = styled(Flex)`
   position: relative;
   flex-direction: column;
@@ -125,31 +116,6 @@ const Tag = styled.p`
   }
 `;
 
-const AddSignContainer = styled.div`
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  width: 31px;
-  height: 31px;
-  border-radius: 16px;
-  background-color: white;
-
-  &:hover {
-    box-shadow: 3px 3px 3px rgba(0 0 0 / 30%);
-  }
-  @media only screen and (max-width: 426px) {
-    right: 16px;
-    bottom: 2px;
-  }
-`;
-const AddSign = styled(AddCircle)`
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  color: #dca246;
-`;
-
 const SubmitButton = styled.button`
   border: none;
   width: 120px;
@@ -179,6 +145,7 @@ const NewNoteModal = (props) => {
   const [isHint, setIsHint] = useState(false);
   const [hintTitle, setIsHintTitle] = useState("");
   const [isConfirmClose, setIsConfirmClose] = useState(false);
+  const [selectedBoxIndex, setSelectedBoxIndex] = useState(undefined);
   const [inputDatas, setInputDatas] = useState({
     content: props.noteData && props.noteData.content,
     page: props.noteData ? props.noteData.page : "",
@@ -186,9 +153,7 @@ const NewNoteModal = (props) => {
   });
   const backgroundRef = useRef();
   let chosenTagRef = useRef([]);
-  let selectedTagBox = useRef();
   const userId = useContext(UserProfile);
-
   useEffect(() => {
     chosenTagRef.current = [];
 
@@ -277,7 +242,7 @@ const NewNoteModal = (props) => {
 
   function tagInputHandler(index) {
     setShowInputModal(true);
-    selectedTagBox.current = index;
+    setSelectedBoxIndex(index);
   }
 
   return (
@@ -289,7 +254,7 @@ const NewNoteModal = (props) => {
         }}
         as="form"
       >
-        <CloseButton onClick={closeInput}>X</CloseButton>
+        <Delete onClick={closeInput}>X</Delete>
 
         <Title>筆記標題</Title>
         <TitleInput
@@ -339,7 +304,7 @@ const NewNoteModal = (props) => {
               <AddSignContainer>
                 <AddSign
                   onClick={() => tagInputHandler(index)}
-                  title="新增標籤"
+                  title="新增書籤"
                 />
               </AddSignContainer>
             </div>
@@ -368,7 +333,8 @@ const NewNoteModal = (props) => {
           setGroupData={props.setGroupData}
           setShowInputModal={setShowInputModal}
           modalTitle={"標籤名稱"}
-          selectedBoxIndex={selectedTagBox.current}
+          setSelectedBoxIndex={setSelectedBoxIndex}
+          selectedBoxIndex={selectedBoxIndex}
         />
       )}
       {isHint && (

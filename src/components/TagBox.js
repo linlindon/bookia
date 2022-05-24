@@ -1,11 +1,11 @@
 import { forwardRef } from "react";
 import styled from "styled-components";
 import { DeleteOutline } from "@styled-icons/typicons/DeleteOutline";
-import { AddCircle } from "@styled-icons/ionicons-outline/AddCircle";
 import PropTypes from "prop-types";
 
 import Note from "./Note";
 import GroupNameInput from "./GroupNameInput";
+import { AddSignContainer, AddSign } from "../utils/style/styledComponents";
 
 const BoxWrapper = styled.div`
   display: flex;
@@ -22,6 +22,9 @@ const BoxWrapper = styled.div`
   @media only screen and (max-width: 768px) {
     flex-direction: column;
     align-items: center;
+  }
+  @media only screen and (max-width: 426px) {
+    flex-wrap: nowrap;
   }
 `;
 
@@ -121,30 +124,6 @@ const TagContainer = styled.label`
   position: relative;
   align-items: flex-start;
 `;
-const AddSignContainer = styled.div`
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  width: 31px;
-  height: 31px;
-  border-radius: 16px;
-  background-color: white;
-
-  &:hover {
-    box-shadow: 3px 3px 3px rgba(0 0 0 / 30%);
-  }
-`;
-
-const AddSign = styled(AddCircle)`
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  color: #dca246;
-
-  @media only screen and (max-width: 768px) {
-  }
-`;
 const TagsWrapper = styled.div`
   position: relative;
 `;
@@ -240,12 +219,8 @@ const TagBox = forwardRef((props, ref) => {
                   <DeleteTag onClick={() => showHintModal(tag, index)} />
                 </TagsWrapper>
               ))}
-
               <AddSignContainer>
-                <AddSign
-                  onClick={() => showTagInputHandler(index)}
-                  title="新增標籤"
-                />
+                <AddSign onClick={() => showTagInputHandler(index)} />
               </AddSignContainer>
             </TagsContainer>
           </TagBoxContainer>

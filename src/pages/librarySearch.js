@@ -45,35 +45,39 @@ function LibrarySearch() {
   const [noDataHint, setNoDataHint] = useState(false);
   const [searchInput, setSearchInput] = useState("");
 
-  useEffect(() => {
-    setIsLoading(true);
-    tools.getGoogleBooks("靈感").then((data) => {
-      let bookData = [];
+  async function fetchData(input) {
+    let bookData = [];
+    await tools.getGoogleBooks(input).then((data) => {
+      if (data.totalItems === 0) {
+        return;
+      }
       data.items.forEach((book) => {
         bookData.push(book.volumeInfo);
       });
-      setBookList(bookData);
+    });
+    return bookData;
+  }
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchData("靈感").then((data) => {
+      setBookList(data);
       setIsLoading(false);
     });
   }, []);
 
   useEffect(() => {
-    setBookList([]);
-
     if (searchInput !== "") {
+      setBookList([]);
       setNoDataHint(false);
       setIsLoading(true);
-      tools.getGoogleBooks(searchInput).then((data) => {
-        let bookData = [];
-        if (data.totalItems === 0) {
+      fetchData(searchInput).then((data) => {
+        if (data.length === 0) {
           setIsLoading(false);
           setNoDataHint(true);
           return;
         }
-        data.items.forEach((book) => {
-          bookData.push(book.volumeInfo);
-        });
-        setBookList(bookData);
+        setBookList(data);
         setIsLoading(false);
         window.scrollTo({
           top: 350,

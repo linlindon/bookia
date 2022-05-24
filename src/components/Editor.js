@@ -15,13 +15,12 @@ function ContentEditor(props) {
           );
         });
       }}
-      onChange={(event, editor) => {
+      onChange={(__, editor) => {
         const data = editor.getData();
         props.setInputDatas((prev) => ({
           ...prev,
           content: data,
         }));
-        console.log({ event, editor, data });
       }}
     />
   );
