@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 import Note from "./Note";
 import GroupNameInput from "./GroupNameInput";
-import { AddSignContainer, AddSign } from "../utils/style/styledComponents";
+import { AddSignContainer, AddSign } from "../utils/style/commonStyles";
 
 const BoxWrapper = styled.div`
   display: flex;

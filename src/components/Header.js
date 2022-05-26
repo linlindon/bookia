@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { useNavigate, NavLink, Outlet } from "react-router-dom";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Logout } from "@styled-icons/heroicons-outline/Logout";
 import { Menu } from "@styled-icons/heroicons-outline/Menu";
 
 import BookiaLogo from "../image/logo.png";
-import firebase from "../utils/firebaseTools";
-import HintModal from "./modal/HintModal";
 import LoadingModal from "../components/modal/LoadingModal";
-import { Delete } from "../utils/style/styledComponents";
+import { Delete } from "../utils/style/commonStyles";
 
 const PlaceHolder = styled.div`
   display: none;
@@ -197,9 +196,8 @@ const MobileNavWrapper = styled.div`
   }
 `;
 
-function Header() {
+function Header(props) {
   const [toggle, setToggle] = useState(false);
-  const [isHint, setIsHint] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isShowLogoutHint, setIsShowLogoutHint] = useState(false);
   const navigate = useNavigate();
@@ -214,21 +212,12 @@ function Header() {
     if (toggle) {
       setToggle(false);
     }
-    await firebase.LogoutHandler().then(() => {
-      setIsLoading(false);
-      setIsHint(true);
-    });
+    props.logout();
   }
 
   return (
     <>
       <PlaceHolder />
-      {isHint && (
-        <HintModal
-          hintTitle={"您已成功登出"}
-          logoutRedirect={() => navigate("/")}
-        />
-      )}
       {isLoading && <LoadingModal />}
       <HamburgerNav>
         <HamburgerBtn src={Menu} onClick={() => setToggle(true)} />
@@ -299,5 +288,9 @@ function Header() {
     </>
   );
 }
+
+Header.propTypes = {
+  logout: PropTypes.func,
+};
 
 export default Header;

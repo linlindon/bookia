@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import firebase from "../../utils/firebaseTools";
 import tools from "../../utils/tools";
 import Loading from "../Loading";
-import { Delete } from "../../utils/style/styledComponents";
+import { Delete } from "../../utils/style/commonStyles";
 import { UserProfile } from "../../App";
 
 const Background = styled.div`

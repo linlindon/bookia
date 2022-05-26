@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import image from "../image/login-book.jpg";
@@ -73,7 +74,7 @@ const Logo = styled.img.attrs({
   object-fit: cover;
 `;
 
-function Login() {
+function Login(props) {
   const [type, setType] = useState("login");
   const [isHint, setIsHint] = useState(false);
   const [hintTitle, setHintTitle] = useState("");
@@ -117,9 +118,19 @@ function Login() {
           )}
         </LoginContainer>
       </Container>
-      {isHint && <HintModal hintTitle={hintTitle} setIsHint={setIsHint} />}
+      {(isHint || props.isHint) && (
+        <HintModal
+          hintTitle={props.isHint ? "您已成功登出" : hintTitle}
+          setIsHint={props.setIsHint}
+        />
+      )}
     </>
   );
 }
+
+Login.propTypes = {
+  setIsHint: PropTypes.func,
+  isHint: PropTypes.string,
+};
 
 export default Login;

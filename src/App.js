@@ -9,6 +9,8 @@ import {
 import styled from "styled-components";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+import firebase from "./utils/firebaseTools";
 import Tags from "./pages/tags";
 import Books from "./pages/books";
 import BookNote from "./pages/bookNote";
@@ -51,6 +53,7 @@ function RequireAuth({ children, loginState }) {
 
 function App() {
   const [loginState, setLoginState] = useState(1);
+  const [isHint, setIsHint] = useState(false);
   const [userId, setUserId] = useState();
   const firebaseConfig = {
     apiKey: "AIzaSyBM3IamCWyJi_8vyVPP34KUixJJKXlAwQ8",
@@ -75,15 +78,24 @@ function App() {
     // eslint-disable-next-line
   }, [userId]);
 
+  async function logout() {
+    await firebase.LogoutHandler().then(() => {
+      setIsHint(true);
+    });
+  }
+
   return (
     <>
       <Background>
         <BrowserRouter>
           <UserProfile.Provider value={userId}>
             <Routes>
-              <Route path="/" element={<Login />} />
+              <Route
+                path="/"
+                element={<Login isHint={isHint} setIsHint={setIsHint} />}
+              />
 
-              <Route element={<Header />}>
+              <Route element={<Header logout={logout} />}>
                 <Route
                   path="books"
                   element={

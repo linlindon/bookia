@@ -12,7 +12,7 @@ import {
   AddSignContainer,
   AddSign,
   Delete,
-} from "../../utils/style/styledComponents";
+} from "../../utils/style/commonStyles";
 
 const Flex = styled.div`
   display: flex;

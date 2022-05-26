@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { Delete } from "../../utils/style/styledComponents";
+import { Delete } from "../../utils/style/commonStyles";
 import Loading from "../Loading";
 
 const Background = styled.div`
@@ -122,7 +122,6 @@ function HintModal(props) {
               <ConfirmButton
                 onClick={() => {
                   props.setIsHint(false);
-                  props.logoutRedirect && props.logoutRedirect();
                 }}
               >
                 確認
