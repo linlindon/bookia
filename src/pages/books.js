@@ -115,7 +115,7 @@ const LoadingContainer = styled.div`
 function Books() {
   const [bookDatas, setBookDatas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSignHint, setIsSignHint] = useState(true);
+  const [isSignHint, setIsSignHint] = useState(false);
   const [isHint, setIsHint] = useState(false);
   const userId = useContext(UserProfile);
   let navigate = useNavigate();
