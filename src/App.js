@@ -9,6 +9,8 @@ import {
 import styled from "styled-components";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+import firebase from "./utils/firebaseTools";
 import Tags from "./pages/tags";
 import Books from "./pages/books";
 import BookNote from "./pages/bookNote";
@@ -40,10 +42,10 @@ const Background = styled.div`
 
 function RequireAuth({ children, loginState }) {
   let location = useLocation();
-  // 會導回你當初登入的頁面。children指的就是被RequireAuth包住的所有東西(路徑)
   if (loginState === 0) {
     return <Navigate to="/" state={{ from: location }} replace />;
-  } else if (loginState === 1) {
+  }
+  if (loginState === 1) {
     return <LoadingModal />;
   }
   return children;
@@ -51,6 +53,7 @@ function RequireAuth({ children, loginState }) {
 
 function App() {
   const [loginState, setLoginState] = useState(1);
+  const [isHint, setIsHint] = useState(false);
   const [userId, setUserId] = useState();
   const firebaseConfig = {
     apiKey: "AIzaSyBM3IamCWyJi_8vyVPP34KUixJJKXlAwQ8",
@@ -68,11 +71,18 @@ function App() {
       if (user) {
         setLoginState(2);
         setUserId(user.uid);
-      } else {
-        setLoginState(0);
+        return;
       }
+      setLoginState(0);
     });
+    // eslint-disable-next-line
   }, [userId]);
+
+  async function logout() {
+    await firebase.LogoutHandler().then(() => {
+      setIsHint(true);
+    });
+  }
 
   return (
     <>
@@ -80,9 +90,12 @@ function App() {
         <BrowserRouter>
           <UserProfile.Provider value={userId}>
             <Routes>
-              <Route path="/" element={<Login />} />
+              <Route
+                path="/"
+                element={<Login isHint={isHint} setIsHint={setIsHint} />}
+              />
 
-              <Route element={<Header />}>
+              <Route element={<Header logout={logout} />}>
                 <Route
                   path="books"
                   element={

@@ -4,9 +4,6 @@
   "private": true,
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^5.0.0",
-    "@testing-library/jest-dom": "^5.11.6",
-    "@testing-library/react": "^11.2.2",
-    "@testing-library/user-event": "^12.5.0",
     "ckeditor5-custom-build": "file:ckeditor5",
     "firebase": "^9.6.10",
     "html-react-parser": "^1.4.12",

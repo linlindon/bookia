@@ -11,8 +11,8 @@ import { UserProfile } from "../App";
 const PageTitle = styled.h1`
   marign-top: 5%;
   text-align: center;
-  @media only screen and (max-width: 786px) {
-    margin: 5px;
+  @media only screen and (max-width: 768px) {
+    margin-top: 20px;
   }
 `;
 const SearchContainer = styled.div`
@@ -20,10 +20,25 @@ const SearchContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 3% 15%;
+
+  @media only screen and (max-width: 1280px) {
+    margin: 2% 6%;
+  }
+  @media only screen and (max-width: 768px) {
+    padding: 0 2%;
+  }
 `;
 const ButtonContainer = styled.div`
   display: flex;
   padding: 0 20px 35px;
+
+  @media only screen and (max-width: 768px) {
+    padding: 0 0 30px;
+  }
+  @media only screen and (max-width: 426px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const Button = styled.button`
@@ -39,6 +54,22 @@ const Button = styled.button`
   border-radius: 5px;
   color: #fff;
   background-color: ${(props) => (props.active ? "#dca246" : "#e6c88b")};
+
+  @media only screen and (max-width: 768px) {
+    margin: 10px;
+  }
+  @media only screen and (max-width: 426px) {
+    font-size: 14px;
+    width: 90%;
+  }
+`;
+const BooksContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1280px;
+  width: 100%;
 `;
 
 const Title = styled.h3`
@@ -50,15 +81,14 @@ const LoadingContainer = styled.div`
 
 function SiteSearch() {
   const [searchType, setSearchType] = useState("book");
-  const [searchInput, setSearchInput] = useState([]);
   const [searchBookResults, setSearchBookResults] = useState([]);
   const [searchNoteResults, setSearchNoteResults] = useState([]);
   const [noDataHint, setNoDataHint] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
+  const searchHintRef = useRef("請輸入關鍵字");
   let booksDataRef = useRef([]);
   let notesDataRef = useRef([]);
-  // const [isRender, setIsRender] = useState(true);
 
   useEffect(() => {
     if (userId) {
@@ -75,37 +105,35 @@ function SiteSearch() {
     }
   }, [userId]);
 
-  useEffect(() => {
+  function searchData(inputValue) {
     setSearchBookResults([]);
     setSearchNoteResults([]);
-    function searchData() {
-      setNoDataHint(false);
-      setIsLoading(true);
-      let inputWordArray = searchInput.split(" ");
-      let filterData = [];
-      if (searchType === "book") {
-        inputWordArray.forEach((word) => {
-          filterData = booksDataRef.current.filter((book) => {
-            return book.title.toLowerCase().includes(word);
-          });
+    setNoDataHint(false);
+    setIsLoading(true);
+    let inputWordArray = inputValue.split(" ");
+    let filterData = [];
+    if (searchType === "book") {
+      inputWordArray.forEach((word) => {
+        filterData = booksDataRef.current.filter((book) => {
+          return book.title.toLowerCase().includes(word.toLowerCase());
         });
-        setIsLoading(false);
-        setSearchBookResults(filterData);
-      } else if (searchType === "note") {
-        filterData = notesDataRef.current.filter((note) => {
-          return inputWordArray.every((word) => {
-            return note.content.includes(word);
-          });
+      });
+      setIsLoading(false);
+      setSearchBookResults(filterData);
+      setNoDataHint(filterData.length === 0);
+      return;
+    }
+    if (searchType === "note") {
+      filterData = notesDataRef.current.filter((note) => {
+        return inputWordArray.every((word) => {
+          return note.content.toLowerCase().includes(word.toLowerCase());
         });
-        setIsLoading(false);
-        setSearchNoteResults(filterData);
-      }
+      });
+      setIsLoading(false);
+      setSearchNoteResults(filterData);
       setNoDataHint(filterData.length === 0);
     }
-    if (searchInput.length !== 0) {
-      searchData();
-    }
-  }, [searchInput]);
+  }
 
   function searchTypeHandler(type) {
     setNoDataHint(false);
@@ -133,7 +161,7 @@ function SiteSearch() {
             搜尋我的筆記內容
           </Button>
         </ButtonContainer>
-        <SearchBar setSearchInput={setSearchInput} />
+        <SearchBar searchData={searchData} ref={searchHintRef} />
         {isLoading && (
           <LoadingContainer>
             <Loading />
@@ -141,7 +169,9 @@ function SiteSearch() {
         )}
         {noDataHint && <Title>無相關資料</Title>}
         {searchBookResults.length !== 0 && (
-          <Book bookDatas={searchBookResults} />
+          <BooksContainer>
+            <Book bookDatas={searchBookResults} />
+          </BooksContainer>
         )}
         {searchNoteResults.length !== 0 && (
           <Note notesBoxData={searchNoteResults} />
