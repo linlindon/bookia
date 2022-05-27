@@ -21,6 +21,7 @@ const TagBoxContainer = styled.div`
   height: 100%;
   align-items: center;
   align-content: space-around;
+  width: 70%;
   max-width: 1280px;
   margin: 3% 15%;
 

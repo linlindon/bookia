@@ -21,6 +21,7 @@ const BooksContainer = styled.div`
   justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
+  width: 70%;
   max-width: 1280px;
   margin: 3% 15%;
 
@@ -86,7 +87,7 @@ const Hint = styled.div`
 `;
 
 const HintTitle = styled.h3`
-  font-size: 16px;
+  font-size: 18px;
   margin-top: 5%;
   text-align: center;
 `;
@@ -104,6 +105,10 @@ const LinkButton = styled.div`
   border-radius: 5px;
   color: #fff;
   background-color: ${(props) => (props.active ? "#dca246" : "#e6c88b")};
+  cursor: pointer;
+  &:hover {
+    background-color: #dca246;
+  }
 `;
 
 const LoadingContainer = styled.div`

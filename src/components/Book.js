@@ -7,7 +7,7 @@ const BookBox = styled.div`
   justify-content: center;
   flex-direction: row-reverse;
   width: calc((100% - 82px) / 2);
-  height: 34vh;
+  min-height: 34vh;
   margin: 30px 20px;
   border-radius: 10px;
   background-color: #ffffff;
@@ -36,6 +36,7 @@ const BookBox = styled.div`
 
 const BookImg = styled.div`
   width: 185px;
+  height: 255px;
   overflow: hidden;
   margin: 32px 15px;
   @media only screen and (max-width: 1280px) {
