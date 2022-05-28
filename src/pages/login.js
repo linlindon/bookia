@@ -118,11 +118,9 @@ function Login(props) {
           )}
         </LoginContainer>
       </Container>
-      {(isHint || props.isHint) && (
-        <HintModal
-          hintTitle={props.isHint ? "您已成功登出" : hintTitle}
-          setIsHint={props.setIsHint}
-        />
+      {isHint && <HintModal hintTitle={hintTitle} setIsHint={setIsHint} />}
+      {props.isHint && (
+        <HintModal hintTitle={"您已成功登出"} setIsHint={props.setIsHint} />
       )}
     </>
   );
@@ -130,7 +128,7 @@ function Login(props) {
 
 Login.propTypes = {
   setIsHint: PropTypes.func,
-  isHint: PropTypes.string,
+  isHint: PropTypes.bool,
 };
 
 export default Login;
