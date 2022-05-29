@@ -2,7 +2,7 @@
 
 <div align= "center">
   
-  [![](https://i.imgur.com/D1iJlXv.png)](https://bookia-280d8.web.app/ "Bookia logo")
+  [![](https://i.imgur.com/ITo3ADh.png)](https://bookia-280d8.web.app/ "Bookia logo")
   
 </div>
 
@@ -34,18 +34,40 @@ Link: https://bookia-280d8.web.app/
 ### Packages
 
 - react-html-parser
-- CKEditor 5
+- CKEditor 5  
+  <br/>
 
 # Features
 
-- 搜尋書籍加到書櫃
-- 建立新筆記
-- 點擊書籤做篩選
-- 站內搜尋
+- Search book from google books API and add book to bookcase
+
+  ![image](https://imgur.com/3eGSaRH.gif)
+
+  <br/>
+
+- Create new note of the book.
+
+  ![image](https://i.imgur.com/1xNkn1N.gif)
+
+  <br/>
+
+- Click tag to filter notes.
+
+  ![image](https://i.imgur.com/uwu15Q0.gif)
+
+  <br/>
+
+- CRUD tags and tag group for management.
+
+  ![image](https://i.imgur.com/L8qIwax.gif)
+
+<br/>
 
 # Flow Chart
 
 ![](https://i.imgur.com/aFTG6Z9.png)
+
+<br/>
 
 # Future Features
 
@@ -54,6 +76,6 @@ Link: https://bookia-280d8.web.app/
 
 # Contact
 
-Feel free to contact me if you have any feedback!
+Look forward to your feedbacks and suggestions!
 
 Email： a31420o@gmail.com
