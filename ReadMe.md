@@ -41,31 +41,31 @@ Link: https://bookia-280d8.web.app/
 
 - Search book from google books API and add book to bookcase
 
-  ![image](https://imgur.com/3eGSaRH.gif)
+  ![image](./src/demo/library-search.gif)
 
   <br/>
 
-- Create new note of the book.
+- Create new note with editor and add not's tag of the book.
 
-  ![image](https://i.imgur.com/1xNkn1N.gif)
+  ![image](./src/demo/add-note.gif)
 
   <br/>
 
-- Click tag to filter notes.
+- Click tag to filter notes. Click on the note to enter the book information page
 
-  ![image](https://i.imgur.com/uwu15Q0.gif)
+  ![image](./src/demo/tag-filter.gif)
 
   <br/>
 
 - CRUD tags and tag group for management.
 
-  ![image](https://i.imgur.com/L8qIwax.gif)
+  ![image](./src/demo/crud-tag.gif)
 
 <br/>
 
 # Flow Chart
 
-![](https://i.imgur.com/aFTG6Z9.png)
+![image](./src/demo/flowchart.drawio.svg "flow-chart")
 
 <br/>
 
