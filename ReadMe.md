@@ -39,11 +39,6 @@ Link: https://bookia-280d8.web.app/
 
 # Features
 
-- Search book from google books API and add book to bookcase
-
-  ![image](https://i.imgur.com/3eGSaRH.gif)
-
-  <br/>
 
 - Create new note of the book.
 
@@ -51,11 +46,6 @@ Link: https://bookia-280d8.web.app/
 
   <br/>
 
-- Click tag to filter notes.
-
-  ![image](https://i.imgur.com/uwu15Q0.gif)
-
-  <br/>
 
 - CRUD tags and tag group for management.
 
