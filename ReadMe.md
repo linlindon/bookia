@@ -41,7 +41,7 @@ Link: https://bookia-280d8.web.app/
 
 - Search book from google books API and add book to bookcase
 
-  ![image](https://imgur.com/3eGSaRH.gif)
+  ![image](https://i.imgur.com/3eGSaRH.gif)
 
   <br/>
 
