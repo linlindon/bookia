@@ -20,6 +20,7 @@ const SearchContainer = styled.div`
 
 const SearchForm = styled.form`
   display: flex;
+  height: 22px;
   border-bottom: solid 1px black;
 `;
 
