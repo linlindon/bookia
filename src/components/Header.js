@@ -243,7 +243,7 @@ function Header(props) {
                 to="/books"
                 onClick={() => closeToggleHandler("/books")}
               >
-                我的筆記櫃
+                我的書櫃
               </MobileLink>
               <MobileLink
                 to="/tags"

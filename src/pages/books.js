@@ -166,7 +166,7 @@ function Books() {
       {isHint && (
         <>
           <HintTitle>尚無書本</HintTitle>
-          <LinkButton onClick={() => navigate(`/search`)}>
+          <LinkButton onClick={() => navigate("/library-search")}>
             前往圖書館新增書籍
           </LinkButton>
         </>

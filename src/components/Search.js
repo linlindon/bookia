@@ -10,6 +10,7 @@ const SearchContainer = styled.div`
   flex-direction: column;
   align-items: center;
   max-width: 1280px;
+  margin-bottom: 50px;
   width: 60%;
 
   @media only screen and (max-width: 1280px) {
@@ -19,7 +20,6 @@ const SearchContainer = styled.div`
 
 const SearchForm = styled.form`
   display: flex;
-  margin-bottom: 50px;
   border-bottom: solid 1px black;
 `;
 

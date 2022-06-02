@@ -39,27 +39,23 @@ Link: https://bookia-280d8.web.app/
 
 # Features
 
-
 - Search book from google books API and add book to bookcase
 
   ![image](./src/demo/library-search.gif)
 
   <br/>
 
-
-- Create new note with editor and add not's tag of the book.
+- Create new note with editor and add note's tag of the book.
 
   ![image](./src/demo/add-note.gif)
 
   <br/>
-
 
 - Click tag to filter notes. Click on the note to enter the book information page
 
   ![image](./src/demo/tag-filter.gif)
 
   <br/>
-
 
 - CRUD tags and tag group for management.
 
