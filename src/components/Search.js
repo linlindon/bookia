@@ -42,7 +42,7 @@ const SearchIcon = styled(Search)`
 const SearchBar = forwardRef((props, ref) => {
   const [isHint, setIsHint] = useState(false);
   const [hintTitle, setHintTitle] = useState("");
-  let inputValueRef = useRef("");
+  const inputValueRef = useRef("");
 
   function getInputData() {
     if (inputValueRef.current.replace(/\s*/g, "").length === 0) {

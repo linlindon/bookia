@@ -44,8 +44,8 @@ const tools = {
     });
 
     await Promise.all(
-      changeNotesArray.map(async (note) => {
-        await firebase.updateNoteTag(userId, note.id, note.tagNames);
+      changeNotesArray.map((note) => {
+        return firebase.updateNoteTag(userId, note.id, note.tagNames);
       })
     );
   },
@@ -65,8 +65,8 @@ const tools = {
     });
 
     await Promise.all(
-      changeBooksArray.map(async (book) => {
-        await firebase.updateBookTags(userId, book.id, book.tagNames);
+      changeBooksArray.map((book) => {
+        return firebase.updateBookTags(userId, book.id, book.tagNames);
       })
     );
   },

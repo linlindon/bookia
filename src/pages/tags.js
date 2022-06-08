@@ -54,8 +54,8 @@ function Tags() {
   const [noDataHint, setNoDataHint] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
-  let allNotesRef = useRef([]);
-  let chosenTagsRef = useRef([]);
+  const allNotesRef = useRef([]);
+  const chosenTagsRef = useRef([]);
 
   useEffect(() => {
     let data = [];

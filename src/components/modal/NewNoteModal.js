@@ -152,7 +152,7 @@ const NewNoteModal = (props) => {
     title: props.noteData && props.noteData.title,
   });
   const backgroundRef = useRef();
-  let chosenTagRef = useRef([]);
+  const chosenTagRef = useRef([]);
   const userId = useContext(UserProfile);
   useEffect(() => {
     chosenTagRef.current = [];
