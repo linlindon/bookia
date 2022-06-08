@@ -87,8 +87,8 @@ function SiteSearch() {
   const [isLoading, setIsLoading] = useState(false);
   const userId = useContext(UserProfile);
   const searchHintRef = useRef("請輸入關鍵字");
-  let booksDataRef = useRef([]);
-  let notesDataRef = useRef([]);
+  const booksDataRef = useRef([]);
+  const notesDataRef = useRef([]);
 
   useEffect(() => {
     if (userId) {
