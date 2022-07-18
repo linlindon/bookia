@@ -6,6 +6,7 @@ import {
   getDocs,
   query,
   where,
+  deleteDoc,
 } from "firebase/firestore";
 import { getDoc, updateDoc, setDoc } from "firebase/firestore";
 import {
@@ -96,6 +97,10 @@ const firebase = {
     const newBookRef = collection(db, "users", userId, "books");
     data = { ...data, id: bookId };
     await setDoc(doc(newBookRef, bookId), data);
+  },
+  async deleteBook(userId, bookId) {
+    const bookRef = doc(db, "users", userId, "books", bookId);
+    await deleteDoc(bookRef);
   },
   queryNotesByTag(userId, tagName) {
     const notesRef = collection(usersRef, userId, "notes");
