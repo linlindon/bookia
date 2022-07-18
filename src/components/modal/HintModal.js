@@ -83,7 +83,15 @@ function HintModal(props) {
       props.setIsHint(false);
       return;
     }
-    if (props.deleteTagData.length !== 0) {
+    if (props.deleteBook) {
+      setIsLoading(true);
+      props.deleteBook(props.deleteBookId).then(() => {
+        setIsLoading(false);
+        props.setIsHint(false);
+      });
+      return;
+    }
+    if (props.deleteTagData && props.deleteTagData.length !== 0) {
       setIsLoading(true);
       await props.deleteTagHandler(
         props.deleteTagData[0],
@@ -93,6 +101,7 @@ function HintModal(props) {
       props.setIsHint(false);
       return;
     }
+
     setIsLoading(true);
     await props.deleteGroupHandler(props.selectedBoxIndex);
     setIsLoading(false);
@@ -143,6 +152,7 @@ HintModal.propTypes = {
   deleteTagHandler: PropTypes.func,
   setSelectedBoxIndex: PropTypes.number,
   deleteGroupHandler: PropTypes.func,
+  deleteBook: PropTypes.func,
 };
 
 export default HintModal;

@@ -29,9 +29,9 @@ const AddSign = styled(AddCircle)`
 `;
 
 const Delete = styled(CloseSquareOutline)`
-  position: absolute;
-  top: 5px;
-  right: 10px;
+  position: ${(props) => (props.position ? "relative" : "absolute")};
+  top: ${(props) => (props.position ? "-16vh" : "5px")};
+  right: ${(props) => (props.position ? "0.5vw" : "10px")};
   width: ${(props) => (props.dependency ? "24px" : "20px")};
   color: ${(props) => (props.dependency ? "#fff" : "#d3d2d1")};
   cursor: pointer;
