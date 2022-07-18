@@ -125,13 +125,13 @@ function Tags() {
       setIsLoading(false);
     } else {
       await Promise.all(
-        tagsArray.map(async (tag) => {
-          await tools.deleteNotesTag(userId, tag);
+        tagsArray.map((tag) => {
+          return tools.deleteNotesTag(userId, tag);
         })
       );
       await Promise.all(
-        tagsArray.map(async (tag) => {
-          await tools.deleteBooksTag(userId, tag);
+        tagsArray.map((tag) => {
+          return tools.deleteBooksTag(userId, tag);
         })
       );
       setGroupData([...currentGroupData]);
