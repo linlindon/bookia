@@ -95,7 +95,8 @@ function BookNote() {
     setIsLoading(true);
     if (userId) {
       let notesRef = firebase.getNotesRef(userId);
-      onSnapshot(notesRef, (notes) => {
+
+      const unsub = onSnapshot(notesRef, (notes) => {
         let data = [];
         notes.forEach((note) => {
           if (note.data().bookID === id) {
@@ -108,6 +109,8 @@ function BookNote() {
           setIsLoading(false);
         });
       });
+
+      return unsub;
     }
     // eslint-disable-next-line
   }, [userId]);

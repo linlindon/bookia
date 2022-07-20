@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { onSnapshot } from "firebase/firestore";
 import { BookmarkOutlineAdd } from "@styled-icons/zondicons/BookmarkOutlineAdd";
 
 import { UserProfile } from "../App";
@@ -129,25 +130,28 @@ function Books() {
   let navigate = useNavigate();
 
   useEffect(() => {
-    let bookData = [];
     setIsLoading(true);
     if (userId) {
-      firebase.getBooksData(userId).then((data) => {
-        if (data.docs.length === 0) {
+      let booksRef = firebase.getBooksRef(userId);
+      const unsub = onSnapshot(booksRef, (books) => {
+        const bookData = [];
+        books.forEach((book) => {
+          bookData.push(book.data());
+        });
+
+        if (bookData.length === 0) {
           setIsLoading(false);
           setIsNoBookHint(true);
         }
-        data.docs.forEach((book) => {
-          bookData.push(book.data());
-        });
         setIsLoading(false);
         setBookDatas(bookData);
       });
+      return unsub;
     }
   }, [userId]);
 
-  async function deleteBook(bookId) {
-    await firebase.deleteBook(userId, bookId);
+  async function deleteBook() {
+    return await firebase.deleteBook(userId, deleteBookId);
   }
 
   return (

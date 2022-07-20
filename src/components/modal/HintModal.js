@@ -85,7 +85,8 @@ function HintModal(props) {
     }
     if (props.deleteBook) {
       setIsLoading(true);
-      props.deleteBook(props.deleteBookId).then(() => {
+
+      props.deleteBook().then(() => {
         setIsLoading(false);
         props.setIsHint(false);
       });
