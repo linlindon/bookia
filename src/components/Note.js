@@ -5,6 +5,7 @@ import propTypes from "prop-types";
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
 
   @media only screen and (max-width: 768px) {
     align-items: center;
