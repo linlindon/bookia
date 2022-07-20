@@ -7,6 +7,7 @@ import { UserProfile } from "../App";
 import firebase from "../utils/firebaseTools";
 import Book from "../components/Book";
 import Loading from "../components/Loading";
+import HintModal from "../components/modal/HintModal";
 
 const Wrapper = styled.div`
   display: flex;
@@ -121,7 +122,9 @@ function Books() {
   const [bookDatas, setBookDatas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSignHint, setIsSignHint] = useState(false);
+  const [isNoBookHint, setIsNoBookHint] = useState(false);
   const [isHint, setIsHint] = useState(false);
+  const [deleteBookId, setDeleteBookId] = useState("");
   const userId = useContext(UserProfile);
   let navigate = useNavigate();
 
@@ -132,7 +135,7 @@ function Books() {
       firebase.getBooksData(userId).then((data) => {
         if (data.docs.length === 0) {
           setIsLoading(false);
-          setIsHint(true);
+          setIsNoBookHint(true);
         }
         data.docs.forEach((book) => {
           bookData.push(book.data());
@@ -142,6 +145,10 @@ function Books() {
       });
     }
   }, [userId]);
+
+  async function deleteBook(bookId) {
+    await firebase.deleteBook(userId, bookId);
+  }
 
   return (
     <Wrapper>
@@ -163,7 +170,7 @@ function Books() {
         </LoadingContainer>
       )}
 
-      {isHint && (
+      {isNoBookHint && (
         <>
           <HintTitle>尚無書本</HintTitle>
           <LinkButton onClick={() => navigate("/library-search")}>
@@ -173,8 +180,22 @@ function Books() {
       )}
       {bookDatas.length !== 0 && (
         <BooksContainer>
-          <Book bookDatas={bookDatas} />
+          <Book
+            bookDatas={bookDatas}
+            deleteBook={deleteBook}
+            setIsHint={setIsHint}
+            setDeleteBookId={setDeleteBookId}
+          />
         </BooksContainer>
+      )}
+      {isHint && (
+        <HintModal
+          hintTitle={"確定要刪除此書嗎？"}
+          setIsHint={setIsHint}
+          deleteBook={deleteBook}
+          deleteBookId={deleteBookId}
+          isConfirmClose={true}
+        />
       )}
     </Wrapper>
   );

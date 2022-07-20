@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { Delete } from "../utils/style/commonStyles";
 import PropTypes from "prop-types";
 
 const BookBox = styled.div`
@@ -98,10 +99,31 @@ const Tag = styled.p`
 function Book(props) {
   let navigate = useNavigate();
 
+  function bookBoxHandler(e, bookId) {
+    e.stopPropagation();
+    if (e.currentTarget.tagName === "svg") {
+      props.setIsHint(true);
+      props.setDeleteBookId(bookId);
+      return;
+    }
+    navigate(`/booknote/${bookId}`);
+  }
+
   return (
     <>
       {props.bookDatas?.map((book, index) => (
-        <BookBox onClick={() => navigate(`/booknote/${book.id}`)} key={book.id}>
+        <BookBox
+          onClick={(e) => bookBoxHandler(e, book.id)}
+          id="bookcont"
+          key={book.id}
+        >
+          {book.tagNames.length === 0 && (
+            <Delete
+              onClick={(e) => bookBoxHandler(e, book.id)}
+              id="deleteSign"
+              position={true}
+            />
+          )}
           <BookImg key={book.img}>
             <Img src={book.img} key={`${book}${index}`} alt="book photo" />
           </BookImg>
@@ -124,6 +146,7 @@ function Book(props) {
 
 Book.propTypes = {
   bookDatas: PropTypes.array,
+  setIsHint: PropTypes.func,
 };
 
 export default Book;

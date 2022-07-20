@@ -60,7 +60,7 @@ function LibrarySearch() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetchData("創意").then((data) => {
+    fetchData("科學").then((data) => {
       setBookList(data);
       setIsLoading(false);
     });
