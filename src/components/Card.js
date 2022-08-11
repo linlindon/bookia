@@ -159,9 +159,10 @@ function Card(props) {
   return (
     <AllCardsContainer>
       {props.bookList?.map((book, index) => {
+        console.log(book);
         let img = book.imageLinks;
         return (
-          <CardContainer key={index}>
+          <CardContainer key={book.canonicalVolumeLink + index}>
             <BookImageContainer>
               <BookImage src={img ? img.smallThumbnail : image} />
             </BookImageContainer>
